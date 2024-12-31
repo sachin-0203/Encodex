@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function Home() {
   return (
@@ -37,8 +38,8 @@ function Home() {
 
       <div id="about" className="py-8 md:py-16 px-4 md:px-8 my-8">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold py-8">
-            Highlights
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold py-8 text-text-dark">
+            Features
           </h1>
           <div className="flex flex-wrap gap-4 justify-center">
             <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4">
@@ -98,12 +99,76 @@ function Home() {
           </div>
         </div>
       </div>
+
       <div id="guide" className="py-4 px-4 md:px-8 mb-8 text-center">
-        <div className="text-4xl md:text-5xl lg:text-6xl font-bold py-8">Guide</div>
-        <div></div>
+        <div className="text-4xl md:text-5xl lg:text-6xl font-bold py-8 text-text-dark">
+          Guide
+        </div>
+        <div className="flex flex-wrap gap-4 justify-center bg-accent-dark text-text-light">
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1>icon</h1>
+            <h1>Step - 1</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            </p>
+          </div>
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1>icon</h1>
+            <h1>Step - 1</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            </p>
+          </div>
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1>icon</h1>
+            <h1>Step - 1</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            </p>
+          </div>
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1>icon</h1>
+            <h1>Step - 1</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            </p>
+          </div>
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1>icon</h1>
+            <h1>Step - 1</h1>
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            </p>
+          </div>
+        </div>
+        <div>
+          <button className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-transparent text-accent-dark hover:text-text-light "> 
+            <Link to="/guide">
+            Watch a Demo
+            </Link>
+          </button>
+          <p>Step-by-step tutorial for encryption and decryption</p>
+        </div>
+      </div>
+
+      <div id="testimonials" className="py-4 px-4 md:px-8 mb-8 text-center">
+        <div className="text-3xl md:text-4xl lg:text-5xl font-bold py-8 text-text-dark" >
+          Where Encodex Shines
+        </div>
+        <div className="size-18 p-4 m-2">
+          This contain the User Card
+        </div>
+      </div>
+      
+      <div id="signUp-page" className="text-text-light py-4 px-4 md:px-8 mb-8 text-center bg-background-dark">
+        <div className="Heading text-3xl md:text-4xl lg:text-5xl font-bold py-8">
+          Start Securing Your Data Today!
+        </div>
+        <div className="Content"> Sign up in just 2 minutes!</div>
+        <button className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-white text-accent-dark hover:text-text-light ">Get Started</button>
       </div>
     </div>
-  );
+  )
 }
 
 export default Home;

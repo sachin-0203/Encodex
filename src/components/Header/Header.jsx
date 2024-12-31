@@ -9,12 +9,15 @@ function Header() {
           <Link to="/" className="flex items-center">
             <img className="h-20 pr-3" src="./Logo.png" alt="Logo" />
           </Link>
-          <div className="flex  justify-between lg:order-2 gap-2">
-            <button>Theme-btn</button>
-            {/* <button>Profile-btn</button> */}
+          <div className="flex  justify-between lg:order-2 gap-2 ">
+            <Link
+            to="/dashboard"
+            className="p-2" >
+              Dashboard
+            </Link>
             <Link 
             to="#"
-            className=""
+            className=" text-text-light p-2 rounded-md bg-background-dark"
             >
             Sign-up
             </Link>

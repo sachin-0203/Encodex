@@ -8,17 +8,22 @@ import About from './components/About/About'
 import Guide from './components/Guide/Guide'
 import Contact from './components/Contact/Contact'
 import Profile from './components/Profile/Profile'
+import Dashboard from './pages/Dashboard/Dashboard'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<App />}>
-      <Route path='' element={<Home />} />
-      <Route path='/about' element={<About />} />
-      <Route path='/guide' element={<Guide />} />
-      <Route path='/contact' element={<Contact />} />
-      <Route path='/profile' element={<Profile />} />
+    <>
+      <Route path='/' element={<App />}>
       
-    </Route>
+        <Route path='' element={<Home />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/guide' element={<Guide />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/profile' element={<Profile />} />
+        
+      </Route>
+      <Route path="/dashboard" element={<Dashboard />} />
+    </>
   )
 )
 
