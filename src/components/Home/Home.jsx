@@ -24,7 +24,7 @@ function Home() {
             </div>
           </div>
           <div className="right-container">
-            <img src="right-logo.png" alt="home-image" />
+            <img src="assets/right-logo.png" alt="home-image" />
           </div>
         </div>
         <div>

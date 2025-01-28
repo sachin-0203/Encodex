@@ -7,7 +7,7 @@ function Header() {
       <nav className="bg-background-light text-text-dark border-b border-accent-light px-4 lg:px-6 py-2.5">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link to="/" className="flex items-center">
-            <img className="h-20 pr-3" src="./Logo.png" alt="Logo" />
+            <img className="h-20 pr-3" src="./assets/Logo.png" alt="Logo" />
           </Link>
           <div className="flex  justify-between lg:order-2 gap-2 ">
             <Link

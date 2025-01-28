@@ -66,7 +66,8 @@ function Dashboard() {
       <div id="main-container" className="flex flex-grow-1 ml-16  h-screen">
         <div className="w-full p-3 pt-0">
           <div className="flex justify-between border border-gray-700 mt-1 p-1">
-            <h2 className="text-xl text-accent-dark">Search Bar</h2>
+            <h2 className="text-xl text-accent-dark">
+              Search Bar</h2>
             <h2>Profile Icon</h2>
           </div>
 
