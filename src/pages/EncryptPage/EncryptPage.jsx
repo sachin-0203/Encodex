@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { RotateCw } from "lucide-react";
 import { useRef, useCallback } from "react";
 import axios from "axios";
+import { MyContext } from "../../Context/MyContext";
 
-function EncryptPage() {
+function EncryptPage() { 
+  const context = useContext(MyContext)
+  const { logMessage, logHistory } = context
+
   const [file, setFile]= useState(null);
-  const [message, setMessage]= useState("");
   const [encImage, setEncImage] = useState("");
-  const [encKey, setEncKey] = useState("")
+  const [encKey, setEncKey] = useState("");
 
   const eImageRef = useRef(null)
   const eKeyRef = useRef(null)
@@ -15,9 +18,11 @@ function EncryptPage() {
   const ResetForm = () => {
     // Clear file input
     document.querySelector("input[type='file']").value = "";
+    setFile(null)
     // Clear all the text-area, input field
     setEncImage("")
     setEncKey("")
+    logMessage('✅ Form Reset Successfully')
   };
 
   const handleEncImage =()=>{
@@ -30,12 +35,14 @@ function EncryptPage() {
     copyButtonText('copy-key-btn')
   }
   const copyEncryptionImage = useCallback(()=>{
+    if(!encImage) return logMessage('Image Field is Empty❗')
     eImageRef.current?.select()
     window.navigator.clipboard.writeText(encImage)
   }, [encImage])
 
 
   const copyEncryptionKey = useCallback(()=>{
+    if(!encKey) return logMessage('Key Field is Empty ❗')
     eKeyRef.current?.select()
     window.navigator.clipboard.writeText(encKey);
     
@@ -43,6 +50,7 @@ function EncryptPage() {
 
   const copyButtonText = (id) =>{
     const button = document.getElementById(id)
+    if(!encImage || !encKey) return 
     button.textContent = 'Copied'
 
     setTimeout(()=>{
@@ -51,14 +59,20 @@ function EncryptPage() {
   }
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-    setMessage('File Selected')
+    const Uplaoded_file = e.target.files[0]
+    if(Uplaoded_file){
+      setFile(Uplaoded_file)
+      logMessage('Image is Uploaded ✔️')
+      logHistory(`${Uplaoded_file.name}`)
+      return
+    }
+    logMessage('No Image Uplaoded❓')
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      setMessage("Please Select a Image.");
+      logMessage('Please! Select an Image ❗')
       return;
     }
     const formData = new FormData();
@@ -78,13 +92,16 @@ function EncryptPage() {
       if(result.status === 'success'){
         setEncImage(result.encrypted_content)
         setEncKey(result.encryption_key)
+        logMessage('Encryption Success ✅')
       }
-      setMessage(response.data.message || "File Uploaded Successfully.");
+      else if(result.status === 'error'){
+         return logMessage(`❌ ${result.message}`)
+      }
+
     } 
     catch (error) {
-      setMessage(
-        error.response?.data?.error || "An Error While uploading the file."
-        );  
+
+      logMessage('Error during Encryption❓') 
     }
   };
 
@@ -92,7 +109,6 @@ function EncryptPage() {
     <div>
       <div className="inline-flex justify-between ">
         <div>Upload Your Image:</div>
-        {message && <p>{message}</p> }
         <div>
           <button
             className="bg-red-500 hover:bg-red-700 rounded-sm  p-2  text-white"
@@ -123,9 +139,10 @@ function EncryptPage() {
             >
               Encrypt
             </button>
+            
         </form>
 
-        <div className=" border-2 border-black mt-2 p-2 text-center">
+        <div className="border-2 border-gray-300 mt-2 p-2 text-center">
           <div className=" h-full p-2 text-center">
             <h2 className="text-xl mb-1">Encrypted Image:</h2>
             <div className="flex">
@@ -135,14 +152,14 @@ function EncryptPage() {
                 ref={eImageRef}
                 value={encImage}
                 className="
-                  w-full h-20  border border-r-0 border-zinc-600 rounded-l-md p-2 text-justify resize-none"
+                  w-full h-20  border border-r-0 border-zinc-600 rounded-l-md p-2 text-justify resize-none dark:bg-slate-600 dark:text-text-light duration-300"
                 readOnly
               ></textarea>
 
               <button 
                 id= "copy-image-btn"
                 className="
-                bg-green-600 hover:bg-green-700 rounded-sm h-20 p-2 text-white rounded-r-md border border-l-0 border-text-dark text-justify"
+                bg-green-600 hover:bg-green-700 rounded-sm h-20 p-2 text-white rounded-r-md border border-l-0 border-text-dark text-justify "
                 onClick={handleEncImage}
               >
                 Copy
@@ -158,7 +175,7 @@ function EncryptPage() {
                 ref={eKeyRef}
                 value={encKey}
                 className="
-                  w-full h-12 border border-r-0 border-zinc-600 overflow-auto text-wrap rounded-l-md p-2 resize-none"
+                  w-full h-12 border border-r-0 border-zinc-600 overflow-auto text-wrap rounded-l-md p-2 resize-none dark:bg-slate-600 dark:text-text-light transition-all duration-300"
                 readOnly
               ></textarea>
               <button 

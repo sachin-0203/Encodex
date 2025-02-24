@@ -2,13 +2,13 @@ import React from "react";
 
 function About() {
   return (
-    <div id="about-page" className="text-center p-">
+    <div id="about-page" className="text-center p-2 dark:text-text-light dark:bg-background-dark">
       <div className="p-4 h-1/2 w-100wv">
         <div>
-          <h1 className="text-5xl font-bold capitalize text-text-dark p-12 align-middle">
+          <div className="text-5xl font-bold capitalize text-text-dark p-12 align-middle dark:text-text-light">
             about encodex 
           <h3 className="text-accent-dark text-xl mt-3">Revolutionizing Image Security</h3>
-          </h1>
+          </div>
           <p>
             Encodex is a state-of-the-art platform designed to protect your
             sensitive images with cutting-edge encryption technology. Our

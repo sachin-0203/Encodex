@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <div>
-      <div id="home-page">
+      <div id="home-page" className="dark:bg-background-dark dark:text-text-light">
         <div className=" h-100vh w-full flex flex-row justify-evenly">
           <div className="left-container py-20 text-3xl">
             <div>
@@ -164,7 +164,7 @@ function Home() {
         <div className="Heading text-3xl md:text-4xl lg:text-5xl font-bold py-8">
           Start Securing Your Data Today!
         </div>
-        <div className="Content"> Sign up in just 2 minutes!</div>
+        <div className="Content"> Sign up in just 2 seconds!</div>
         <button className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-white text-accent-dark hover:text-text-light ">Get Started</button>
       </div>
     </div>
