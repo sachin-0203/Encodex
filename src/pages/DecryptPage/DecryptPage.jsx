@@ -20,43 +20,44 @@ function DecryptPage() {
     setDecryptImageUrl(null)
   }
   
-  const decHandleSubmit =  async (e) =>{
+  const decHandleSubmit = async (e) => {
     e.preventDefault();
-    if(!decText || !decKey){
-      logMessage('The Encrypted text or The Key is missing ❗')
-      return;
+    
+    if (!decText || !decKey) {
+        logMessage('The Encrypted text or The Key is missing ❗');
+        return;
     }
-    const filename = customname || "decryptImage.png"
-    try{
-      const response = await axios.post('http://127.0.0.1:5000/decrypt' ,{ encrypted_image: decText, key: decKey, filename: filename},
-        {headers:{"Content-Type": "application/json"}}
-      );
-      // setMessage('')
-      logMessage('Image Decrypt Successfully ✅')
-      if(response.data){
-        const base64Image = response.data.decrypted_image;
 
-        const byteCharacters = atob(base64Image);
-        const byteNumbers = new Array(byteCharacters.length);
-        for(let i=0; i<byteCharacters.length; i++){
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray],{type: 'image/png'});
+    const filename = customname || "decrypt_Image.png";
+
+    try {
+        const response = await axios.post('http://127.0.0.1:5000/decrypt',
+            JSON.stringify({ encrypted_image: decText, encryption_key: decKey, filename }),
+            { headers: { "Content-Type": "application/json" } } // ✅ Fixed extra space issue
+        );
         
-        const imageUrl = URL.createObjectURL(blob);
-        setDecryptImageUrl(imageUrl);
-      }
-      else{
-        logMessage('❌ Failed to Decrypt the image ')
-      }
+        if (response.data.decrypted_image) {
+            logMessage('Image Decrypt Successfully ✅');
+            const base64Image = response.data.decrypted_image;
+
+            const byteCharacters = atob(base64Image);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: 'image/png' });
+
+            const imageUrl = URL.createObjectURL(blob);
+            setDecryptImageUrl(imageUrl);
+        } else {
+            logMessage('❌ Failed to Decrypt the image');
+        }
+    } catch (error) {
+        logMessage('Error while Decrypting the image❗');
     }
-    catch(error){
-      logMessage('Error while Decrypting the image❗')
-    };
-    
-    
-  }
+};
+
   return (
     
     <>

@@ -34,6 +34,8 @@ function EncryptPage() {
     copyEncryptionKey()
     copyButtonText('copy-key-btn')
   }
+
+  
   const copyEncryptionImage = useCallback(()=>{
     if(!encImage) return logMessage('Image Field is Empty❗')
     eImageRef.current?.select()
@@ -88,11 +90,12 @@ function EncryptPage() {
           },
         }
       );
+      console.log("Encryption REsponse: ", response);
       const result = response.data
       if(result.status === 'success'){
         setEncImage(result.encrypted_content)
         setEncKey(result.encryption_key)
-        logMessage('Encryption Success ✅')
+        logMessage(`${result.message}✅`)
       }
       else if(result.status === 'error'){
          return logMessage(`❌ ${result.message}`)
@@ -141,7 +144,6 @@ function EncryptPage() {
             </button>
             
         </form>
-
         <div className="border-2 border-gray-300 mt-2 p-2 text-center">
           <div className=" h-full p-2 text-center">
             <h2 className="text-xl mb-1">Encrypted Image:</h2>

@@ -8,32 +8,24 @@ function Home() {
         <div className=" h-100vh w-full flex flex-row justify-evenly">
           <div className="left-container py-20 text-3xl">
             <div>
-              <h1>
-                <span>SECURE</span> Your
+              <h1 className="text-5xl ml-20" >
+                Secure Your Images 
               </h1>
-              <h1>
-                <span>IMAGES</span> with
-              </h1>
-              <h1>
-                just <span>ONE CLICK</span>
-              </h1>
+              <br />
+              <h1 className="text-5xl ml-32" >Protect Your Privacy</h1>
+              <br />
+              <p className="w-auto text-sm ml-36 text-green-400">"Experience Advance Encryption at Your Fingertips"</p>
             </div>
 
-            <div>
-              <button>Let's Begin ➡️</button>
+            <div className="mt-10">
+            <Link className="hover:bg-gradient-to-r from-green-900 to-lime-900 border border-green-950 p-3 ml-52 mt-12 rounded-md bg-white text-green-900 hover:text-text-light " to="/dashboard"> Let's Begin</Link>
             </div>
           </div>
           <div className="right-container">
             <img src="assets/right-logo.png" alt="home-image" />
           </div>
         </div>
-        <div>
-          <div className="flex flex-row justify-around">
-            <h2>Secure Your images</h2>
-            <h2>Double Encrypted</h2>
-            <h2>Highly Secure</h2>
-          </div>
-        </div>
+        
       </div>
 
       <div id="about" className="py-8 md:py-16 px-4 md:px-8 my-8">
