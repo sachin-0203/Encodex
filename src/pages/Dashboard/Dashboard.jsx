@@ -74,12 +74,6 @@ function Dashboard() {
 
       <div id="main-container" className="flex flex-grow-1 ml-16  h-screen dark:bg-background-dark  dark:text-accent-light transition-all duration-500">
         <div className="w-full p-3 pt-0">
-          <div className="flex justify-between border  mt-1 p-1">
-            <h2 className="text-xl text-accent-dark">
-              Search Bar</h2>
-            <h2>Profile Icon</h2>
-          </div>
-
           <div className="border-2 h-16  w-full my-2 flex justify-between align-middle p-1">
             <div>
               <h2>Hello user,</h2>
