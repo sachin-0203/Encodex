@@ -8,6 +8,7 @@ import time
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
+import secrets
 
 app = Flask(__name__)
 CORS(app)
@@ -69,9 +70,9 @@ def aes_encrypt(image_path, recipient):
         original_image = image_file.read()
 
     encrypted_image, tag = cipher.encrypt_and_digest(original_image)
-    encrypted_data = cipher.nonce + tag + encrypted_image  # Store nonce and tag with data
+    encrypted_data = cipher.nonce + tag + encrypted_image
 
-    encrypted_filename = f"{filename_without_ext}_{int(time.time())}.enc"
+    encrypted_filename = f"{filename_without_ext}_{secrets.token_hex(4)}.enc"
     encrypted_image_path = os.path.join(ENCRYPTED_FOLDER, encrypted_filename)
     
     with open(encrypted_image_path, 'wb') as encrypted_file:
@@ -110,12 +111,13 @@ def encrypt():
             return jsonify({'status': 'error', 'message': 'Invalid image file'}), 400
         
         encrypted_image, encrypted_aes_key = aes_encrypt(file_path, recipient)
-        
+        image_name = f"{filename[:2].lower()}_enc_{secrets.token_hex(4)}.enc"
         return jsonify({
             'status': 'success',
             'message': 'File Encrypted Successfully!',
             'encrypted_content': encrypted_image,
-            'encrypted_aes_key': encrypted_aes_key
+            'encrypted_aes_key': encrypted_aes_key,
+            'image_name' : image_name,
         })
     else:
         return jsonify({'status': 'error', 'message': 'This file type is not allowed'}), 400

@@ -2,6 +2,7 @@ import React, { useContext, useState, useRef } from "react";
 import { RotateCw, DownloadIcon } from "lucide-react";
 import axios from "axios";
 import { MyContext } from "../../Context/MyContext";
+import "../../App.css"
 
 function DecryptPage() {
   const { logMessage } = useContext(MyContext);
@@ -9,35 +10,61 @@ function DecryptPage() {
   const [decKey, setDecKey] = useState("");
   const [recipient, setRecipient] = useState("");
   const [decryptImageUrl, setDecryptImageUrl] = useState(null);
+  const [imagename, setImagename] = useState("")
+
+  const btnRef = useRef(null);
+  const resetIconRef = useRef(null);
 
   const ResetForm = () => {
-    logMessage("✅ Form Reset Successfully");
+    document.querySelector("input[type='file']").value = "";
     setDecText("");
     setDecKey("");
     setRecipient("");
     setDecryptImageUrl(null);
+    resetAnimation();
+    logMessage("✅ Form Reset Successfully");
   };
+  const resetAnimation=()=>{
+    const resetIcon = resetIconRef.current;
+    if(resetIcon){
+      resetIcon.classList.add("rotate");
+
+      setTimeout(() => {
+        resetIcon.classList.remove("rotate");
+      }, 800);
+    }
+  }
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return logMessage("No file selected ❗");
-
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = () => {
       setDecText(reader.result);
       logMessage("📂 Encrypted file loaded successfully!");
     };
+    const firstTwo = file.name.slice(0, 2).toLowerCase();
+    const name = `${firstTwo}_dec_image.png`;
+    setImagename(name);
   };
 
+  const downloadAnimation= ()=>{
+    const btn = btnRef.current;
+    if (btn) {
+      btn.classList.add("bounce-arrow");
+
+      setTimeout(() => {
+        btn.classList.remove("bounce-arrow");
+      }, 400); 
+    }
+}
   const decHandleSubmit = async (e) => {
     e.preventDefault();
-
     if (!decText || !decKey || !recipient) {
       logMessage("The Encrypted text, Key, or Recipient is missing ❗");
       return;
     }
-
     const filename = "decrypt_Image.png";
     
     try {
@@ -77,12 +104,16 @@ function DecryptPage() {
             onClick={ResetForm}
             className="text-white bg-red-500 hover:bg-red-700 border border-gray-500 rounded-sm p-2"
           >
-            <RotateCw size={15} />
+            <svg ref={resetIconRef} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
           </button>
           {decryptImageUrl && (
-            <a href={decryptImageUrl} download={`${"decryptImage"}.png`}>
-              <button className="bg-green-500 hover:bg-green-700 p-2 rounded-sm text-white">
-                <DownloadIcon size={20} />
+            <a href={decryptImageUrl} download={imagename}>
+              <button ref={btnRef} className="bg-green-500 hover:bg-green-700 p-2 rounded-sm text-white" onClick={downloadAnimation} >
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="download-icon">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline class="arrow" points="7 10 12 15 17 10"/>
+                <line class="arrow" x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
               </button>
             </a>
           )}

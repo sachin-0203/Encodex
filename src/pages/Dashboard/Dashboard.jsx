@@ -121,7 +121,7 @@ function Dashboard() {
               </div>
 
               {/* Data-Container */}
-              <div id="data-container" className=" border-2 border-violet-600 p-2 pb-0">
+              <div id="data-container" className=" p-2 pb-0">
                   {activePage === 'Encrypt' && <EncryptPage />}
                   {activePage === 'Decrypt' && <DecryptPage />}
                   {activePage === 'Message' && <MessagePage />}
@@ -133,7 +133,7 @@ function Dashboard() {
               <div className="h-full ">
                 <div className="border rounded-md border-zinc-950">
                   <h2 className=" font-mono text-lg bg-violet-500 text-white rounded-se-md rounded-ss-md py-2 ">Notifications </h2>
-                  <div className="w-full max-w-md bg-violet-100 overflow-auto h-48 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-violet-500  scrollbar-track-violet-200 ">
+                  <div className="w-full max-w-md bg-violet-100 overflow-auto h-52 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-violet-500  scrollbar-track-violet-200 ">
                     {
                       messages.length > 0 ? (
                         <div className="border-2 text-sm border-l-violet-700  rounded-md">
@@ -156,7 +156,7 @@ function Dashboard() {
 
                 <div className="border rounded-md mt-2 border-zinc-800  w-full">
                   <h2 className="font-mono text-lg border bg-zinc-500 text-white p-1 rounded-ss-md rounded-se-md">History</h2>
-                  <div className="bg-zinc-200 overflow-auto h-44 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-zinc-500 scrollbar-track-slate-200">
+                  <div className="bg-zinc-200 overflow-auto h-48 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-zinc-500 scrollbar-track-slate-200">
                    {
                      history.length > 0 ? (
                       <div className="border-2 text-sm border-l-zinc-700 rounded-md">

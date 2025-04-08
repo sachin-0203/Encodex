@@ -1,0 +1,42 @@
+@keyframes arrowBounce {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(6px);
+  }
+  70% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.bounce-arrow .arrow {
+  animation: arrowBounce 0.4s ease-out;
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(1) translateZ(0);
+  }
+  30% {
+    transform: scale(1.15) translateY(-2px);
+  }
+  60% {
+    transform: scale(1.05) translateY(0);
+  }
+  100% {
+    transform: scale(1) translateZ(0);
+  }
+}
+
+.pop-effect {
+  animation: iconPop 0.3s ease;
+}
+
+.rotate{
+  transform: rotate(360deg);
+  transition: transform 0.8s ease;
+}
