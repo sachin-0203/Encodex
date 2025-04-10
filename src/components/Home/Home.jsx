@@ -18,7 +18,7 @@ function Home() {
             </div>
 
             <div className="mt-10">
-            <Link className="hover:bg-gradient-to-r from-green-900 to-lime-900 border border-green-950 p-3 ml-52 mt-12 rounded-md bg-white text-green-900 hover:text-text-light " to="/dashboard"> Let's Begin</Link>
+            <Link className="hover:bg-gradient-to-r from-green-900 to-lime-900 border border-green-950 p-3 ml-52 mt-12 rounded-md bg-white text-green-900 hover:text-text-light " to="/AuthPage"> Let's Begin</Link>
             </div>
           </div>
           <div className="right-container">

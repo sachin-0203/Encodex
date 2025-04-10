@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import { Link, NavLink } from "react-router-dom";
-import {UserRoundPlus, LayoutDashboard, House, HelpCircle, Mail, BookA, Sun, Moon } from "lucide-react"
+import {UserRoundPlus, LayoutDashboard, House, HelpCircle, Mail, BookA, Sun, Moon, LogIn } from "lucide-react"
 import { useTheme } from "../../Context/ThemeContext";
 
 
@@ -30,13 +30,14 @@ function Header() {
           </Link>
           <div className="flex justify-between order-2 gap-2">
             <Link
-            to="/dashboard"
-            className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all" >
-            { islargeScreen?  "Dashboard" : <LayoutDashboard/> }
+              to="/AuthPage?view=login"
+              className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
+            >
+            { islargeScreen?  "LogIn" : <LogIn/> }
             </Link>
             <Link 
-            to="#"
-            className=" text-text-light p-2 rounded-md bg-background-dark dark:border  dark:border-background-light duration-200 transition-all"
+              to="/AuthPage?view=signup"
+              className=" text-text-light p-2 rounded-md bg-background-dark dark:border  dark:border-background-light duration-200 transition-all"
             >
             { islargeScreen?  "Sign-up" : <UserRoundPlus/> }
             </Link>

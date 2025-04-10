@@ -4,15 +4,32 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from PIL import Image
 import base64
-import time
 from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 import secrets
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_bcrypt import Bcrypt
+from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
+
+from db import db
+from models import User
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-app.secret_key = 'supersecretkey'
+
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
+app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///encodex.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
+
 
 # Directories
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +57,78 @@ def is_valid_image(file_path):
         return True
     except Exception:
         return False
+
+    # Temporary route to see the registered user data
+@app.route("/users", methods=["GET"])
+def get_users():
+    users = User.query.all()
+    user_list = []
+    for user in users:
+        user_list.append({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        })
+    return jsonify(user_list)
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+
+
+    if not username or not email or not password:
+        return jsonify({'error': 'All fields are required'}), 400
+    
+    existing_user = User.query.filter( (User.username == username ) | (User.email == email )).first()
+    if(existing_user):
+        return jsonify({
+            'status': 'error',
+            'message': 'User Already exist'
+            }), 409
+ 
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    new_user = User(username=username, email=email, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        'status' : 'success',
+        'message': 'User registered successfully'
+    }), 201
+
+
+@app.route('/login', methods=['POST'])
+def login():
+
+    data = request.form
+    email = data.get('email')
+    password = data.get('password')
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user or not bcrypt.check_password_hash(user.password,password):
+        return jsonify({
+            'status': 'error',
+            'message': 'Invalid email or password'
+        }), 401 
+
+    access_token = create_access_token(identity=user.id)
+
+    return jsonify({
+        'status': 'success',
+        'message': 'Login successfull',
+        'access_token': access_token,
+        'username': user.username,
+    }), 200
+
+
+
+
 
 # Generate RSA keys for each recipient
 def generate_rsa_keys(recipient):
@@ -166,4 +255,7 @@ def decrypt():
         return jsonify({'error': f'Error while decrypting the image: {str(e)}'}), 500
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True, host="127.0.0.1", port=5000)
+

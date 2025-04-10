@@ -38,5 +38,5 @@
 
 .rotate{
   transform: rotate(360deg);
-  transition: transform 0.8s ease;
+  transition: transform 0.8s ease-in-out;
 }

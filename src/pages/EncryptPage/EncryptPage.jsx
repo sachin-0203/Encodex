@@ -115,7 +115,8 @@ function EncryptPage() {
       } else {
         logMessage(`❌ ${result.message}`);
       }
-    } catch (error) {
+    } 
+    catch (error) {
       logMessage("Error during Encryption❓");
     }
   };
