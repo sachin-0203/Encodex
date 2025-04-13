@@ -21,6 +21,7 @@ import {
 import { ThemeContext } from "../../Context/ThemeContext";
 import { useTheme } from "../../Context/ThemeContext";
 import { MyContext } from "../../Context/MyContext";
+import LiveClock from "../../components/LiveClock/LiveClock"
 
 function Dashboard() {
   const {messages, history, logMessage} =  useContext(MyContext);
@@ -80,10 +81,7 @@ function Dashboard() {
               <h2 className="text-xl">Welcome Back😊</h2>
             </div>
             <div className="text-right">
-              <h2>12:19:50 PM</h2>
-              <h2>
-                <span>Sun</span> 11 DEC 2024
-              </h2>
+              <LiveClock/>
             </div>
           </div>
 

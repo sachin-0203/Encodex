@@ -1,11 +1,13 @@
 import React, {useState} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function SignupForm() {
 
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
+  const navigate = useNavigate();
   
   const handleUsername= (e)=>{
     setUsername(e.target.value)
@@ -24,20 +26,22 @@ export default function SignupForm() {
       alert("User data is missing!")
       return;
     }
-    const formData = new FormData();
-    formData.append("username", username )
-    formData.append("email", useremail)
-    formData.append("password", userpassword)
+    const data = {
+      'name': username,
+      'email': useremail,
+      'password': userpassword,
+    }
 
     try{
 
-      const response = await axios.post("http://127.0.0.1:5000/register", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axios.post("http://127.0.0.1:5000/signup", data, {
+        headers: { "Content-Type": "application/json" },
       });
 
       const result = response.data 
       if(result.status === 'success'){
         alert(result.message)
+        navigate('/AuthPage?view=login')
       }
     }
     catch(error){

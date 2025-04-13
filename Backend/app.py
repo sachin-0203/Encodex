@@ -8,10 +8,19 @@ from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 import secrets
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
+
+from flask_jwt_extended import JWTManager
+from flask_jwt_extended import  (
+    create_access_token, 
+    create_refresh_token,  
+    jwt_required, 
+    get_jwt_identity
+    )
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 from db import db
 from models import User
@@ -25,6 +34,8 @@ app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///encodex.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=10)
+app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=15)
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -72,12 +83,13 @@ def get_users():
     return jsonify(user_list)
 
 
-@app.route('/register', methods=['POST'])
-def register():
+@app.route('/signup', methods=['POST'])
+def signup():
     
-    username = request.form.get('username')
-    email = request.form.get('email')
-    password = request.form.get('password')
+    data = request.get_json()
+    username = data.get('username')
+    email = data.get('email')
+    password = data.get('password')
 
 
     if not username or not email or not password:
@@ -92,7 +104,11 @@ def register():
  
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-    new_user = User(username=username, email=email, password=hashed_password)
+    new_user = User(
+        username=username, 
+        email=email, 
+        password=hashed_password
+    )
     db.session.add(new_user)
     db.session.commit()
 
@@ -105,7 +121,7 @@ def register():
 @app.route('/login', methods=['POST'])
 def login():
 
-    data = request.form
+    data = request.get_json()
     email = data.get('email')
     password = data.get('password')
 
@@ -118,16 +134,25 @@ def login():
         }), 401 
 
     access_token = create_access_token(identity=user.id)
+    refresh_token = create_refresh_token(identity=user.id)
 
     return jsonify({
         'status': 'success',
         'message': 'Login successfull',
         'access_token': access_token,
+        'refresh_token': refresh_token,
         'username': user.username,
     }), 200
 
 
-
+@app.route("/refresh", methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    current_user = get_jwt_identity()
+    access= create_access_token(identity=current_user)
+    return{
+        'acess_token': access
+    }
 
 
 # Generate RSA keys for each recipient

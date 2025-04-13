@@ -1,24 +1,34 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
 
-  const [useremail, setUseremail] = useState("")
-  const [userpassword, setUserpassword] = useState("")
+  const [useremail, setUseremail] = useState("");
+  const [userpassword, setUserpassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(localStorage.getItem('token')){
+      navigate('/dashboard')
+    }
+  },[])
 
   const handleLogin = async (e)=>{
+
     e.preventDefault();
+
     if(!useremail || !userpassword){
-      alert("Icomplete User Data")
+      alert("Icomplete User Data");
       return
     }
-    
-    const formData = new FormData();
-    formData.append('email', useremail)
-    formData.append('password', userpassword)
+    const data = {
+      'email': useremail,
+      'password': userpassword,
+    }
 
     try{
-      const response = await axios.post("http://127.0.0.1:5000/login", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axios.post("http://127.0.0.1:5000/login", data, {
+        headers: { "Content-Type": "application/json" },
       });
       
       const result = response.data
@@ -26,6 +36,8 @@ export default function LoginForm() {
         alert(result.message)
         localStorage.setItem("token", result.access_token)
         localStorage.setItem("username", result.username)
+        console.log('Refresh_token:', result.refresh_token)
+        navigate('/dashboard')
       }
     }
     catch(error){
