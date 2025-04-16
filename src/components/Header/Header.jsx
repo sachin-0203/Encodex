@@ -1,10 +1,17 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import { Link, NavLink } from "react-router-dom";
-import {UserRoundPlus, LayoutDashboard, House, HelpCircle, Mail, BookA, Sun, Moon, LogIn } from "lucide-react"
+import {UserRoundPlus, LayoutDashboard, House, HelpCircle, Mail, BookA, Sun, Moon, LogIn, LogOut } from "lucide-react"
 import { useTheme } from "../../Context/ThemeContext";
+import { useAuth } from "../../Context/AuthContext";
 
+import AuthModal from "../AuthModel/AuthModel";
 
 function Header() {
+
+  const {user, logout} = useAuth();
+  const [showModal, setShowModal] = useState(false);
+  const [authView, setAuthView] = useState("login");
+
   const {theme, ToggleTheme} = useTheme()
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
 
@@ -21,26 +28,64 @@ function Header() {
     <header className="shadow-xl sticky z-50 top-0 ">
       <nav className="bg-background-light text-text-dark   px-4 lg:px-6 py-2.5 dark:bg-background-dark dark:text-text-light duration-300 transition-all">
         <div className="flex  justify-between items-center mx-auto max-w-screen-xl">
+
+          <AuthModal
+            isOpen={showModal}
+            onClose={()=>setShowModal(false)}
+            defaultView={authView}
+          />
+
           <Link to="/" className="flex items-center">
             {
-            islargeScreen? 
-            <img className="h-20 pr-3" src="./assets/Logo.png" alt="Logo" />:
-            <img className="h-12 md:h-20 max-w-md min-w-sm" src="./assets/icon..png"/>
+              islargeScreen? 
+              <img className="h-20 pr-3" src="./assets/Logo.png" alt="Logo" /> :
+              <img className="h-12 md:h-20 max-w-md min-w-sm" src="./assets/icon..png"/>
             }
           </Link>
+          
           <div className="flex justify-between order-2 gap-2">
-            <Link
-              to="/AuthPage?view=login"
-              className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
-            >
-            { islargeScreen?  "LogIn" : <LogIn/> }
-            </Link>
-            <Link 
-              to="/AuthPage?view=signup"
-              className=" text-text-light p-2 rounded-md bg-background-dark dark:border  dark:border-background-light duration-200 transition-all"
-            >
-            { islargeScreen?  "Sign-up" : <UserRoundPlus/> }
-            </Link>
+            <div>
+
+              {user? (
+                <h1 className="text-xl mt-2" >Hello {user},</h1>
+              ):(
+                <button
+                  className=" text-text-light p-2 rounded-md bg-background-dark dark:border  dark:border-background-light duration-200 transition-all"
+                  onClick={()=>{
+                      setAuthView("signup");
+                      setShowModal(true)
+                    }}
+                >
+                  { islargeScreen?  "Sign-up" : <UserRoundPlus/> }
+                </button>
+              )}
+
+            </div>
+            <div>
+
+              {user? (
+                <button
+                onClick={logout}
+                className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
+                >
+                  {islargeScreen ? "Logout" : <LogOut />}
+                </button>
+
+                ):(
+                  
+                  <button
+                    className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
+                    onClick={()=>{
+                      setAuthView('login');
+                      setShowModal(true);
+                    }}
+                  >
+                   { islargeScreen?  "LogIn" : <LogIn/> }
+                  </button>
+              )}
+            </div>
+            
+
           </div>
 
           <div className=" justify-between items-center  lg:flex flex-wrap w-auto order-1 " >

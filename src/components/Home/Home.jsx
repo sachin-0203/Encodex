@@ -1,11 +1,31 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, {useState} from "react";
+import { Link, useNavigate } from "react-router-dom";
+import AuthModal from "../AuthModel/AuthModel";
+import { useAuth } from "../../Context/AuthContext";
 
 function Home() {
+  const {accessToken} = useAuth();
+  const [showModal, setShowModal] = useState(false);
+  const [authView, setAuthView] = useState("login");
+  const navigate = useNavigate();
+
+  const handleLetBegin= (viewElement) => {
+    if(accessToken){
+      navigate("/dashboard");
+    }else{
+      setAuthView(viewElement);
+      setShowModal(true);
+    }
+  }
   return (
     <div>
       <div id="home-page" className="dark:bg-background-dark dark:text-text-light">
-        <div className=" h-100vh w-full flex flex-row justify-evenly">
+      <AuthModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        defaultView={authView}
+      />
+        <div className="h-screen w-full flex flex-col md:flex-row justify-evenly">
           <div className="left-container py-20 text-3xl">
             <div>
               <h1 className="text-5xl ml-20" >
@@ -18,7 +38,11 @@ function Home() {
             </div>
 
             <div className="mt-10">
-            <Link className="hover:bg-gradient-to-r from-green-900 to-lime-900 border border-green-950 p-3 ml-52 mt-12 rounded-md bg-white text-green-900 hover:text-text-light " to="/AuthPage"> Let's Begin</Link>
+            <button 
+              className="hover:bg-gradient-to-r from-green-900 to-lime-900 border border-green-950 p-3 ml-52 mt-12 rounded-md bg-white text-green-900 hover:text-text-light "
+              onClick={()=>handleLetBegin("login")} >
+               Let's Begin
+              </button>
             </div>
           </div>
           <div className="right-container">
@@ -134,9 +158,10 @@ function Home() {
           </div>
         </div>
         <div>
-          <button className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-transparent text-accent-dark hover:text-text-light "> 
+          <button
+           className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-transparent text-accent-dark hover:text-text-light "> 
             <Link to="/guide">
-            Watch a Demo
+              Watch a Demo
             </Link>
           </button>
           <p>Step-by-step tutorial for encryption and decryption</p>
@@ -157,7 +182,12 @@ function Home() {
           Start Securing Your Data Today!
         </div>
         <div className="Content"> Sign up in just 2 seconds!</div>
-        <button className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-white text-accent-dark hover:text-text-light ">Get Started</button>
+        <button
+         className= "hover:bg-gradient-to-r from-blue-500 to-purple-600 border border-accent-dark p-3 m-2 rounded-md bg-white text-accent-dark hover:text-text-light "
+         onClick={()=>handleLetBegin("signup")}
+        >
+          Get Started
+        </button>
       </div>
     </div>
   )

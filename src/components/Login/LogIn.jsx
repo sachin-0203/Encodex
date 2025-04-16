@@ -1,17 +1,15 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+
+
 export default function LoginForm() {
 
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
   const navigate = useNavigate();
-
-  useEffect(()=>{
-    if(localStorage.getItem('token')){
-      navigate('/dashboard')
-    }
-  },[])
+  const {login} = useAuth();
 
   const handleLogin = async (e)=>{
 
@@ -19,35 +17,19 @@ export default function LoginForm() {
 
     if(!useremail || !userpassword){
       alert("Icomplete User Data");
-      return
-    }
-    const data = {
-      'email': useremail,
-      'password': userpassword,
+      return;
     }
 
-    try{
-      const response = await axios.post("http://127.0.0.1:5000/login", data, {
-        headers: { "Content-Type": "application/json" },
-      });
-      
-      const result = response.data
-      if(result.status === 'success'){
-        alert(result.message)
-        localStorage.setItem("token", result.access_token)
-        localStorage.setItem("username", result.username)
-        console.log('Refresh_token:', result.refresh_token)
-        navigate('/dashboard')
+      const res = await login(useremail, userpassword);
+
+      if(res.success){
+        alert(`Login Success! Hello ${res.user}`)
+        navigate("/dashboard")
       }
-    }
-    catch(error){
-      if(error.response){
-        alert(error.response.data.message)
-      }
+
       else{
-        alert("Something went wrong, Login again!")
+        alert(`Login Failed: ${res.message}`);
       }
-    }
   }
 
   return (

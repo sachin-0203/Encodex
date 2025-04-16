@@ -1,24 +1,17 @@
 import React, {useState} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 
 export default function SignupForm() {
 
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
+
+  const {signup} = useAuth();
   const navigate = useNavigate();
   
-  const handleUsername= (e)=>{
-    setUsername(e.target.value)
-  }
-  const handleUseremail= (e)=>{
-    setUseremail(e.target.value)
-  }
-  const handleUserpassword= (e) => {
-    setUserpassword(e.target.value)
-  }
-
   
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -26,31 +19,16 @@ export default function SignupForm() {
       alert("User data is missing!")
       return;
     }
-    const data = {
-      'name': username,
-      'email': useremail,
-      'password': userpassword,
+    
+    const signup_res =  await signup(username, useremail, userpassword);
+    if(signup_res.success){
+      alert(`Signup success: ${signup_res.user}, LogIn now!`);
+      setUsername("");
+      setUseremail("");
+      setUserpassword("");
     }
-
-    try{
-
-      const response = await axios.post("http://127.0.0.1:5000/signup", data, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      const result = response.data 
-      if(result.status === 'success'){
-        alert(result.message)
-        navigate('/AuthPage?view=login')
-      }
-    }
-    catch(error){
-      if(error.response){
-        alert(error.response.data.message)
-      }
-      else{
-        alert('Something went wrong. Please try again.')
-      }
+    else{
+      alert(`SignUp failed: ${signup_res.message}`);
     }
   }
 
@@ -65,26 +43,21 @@ export default function SignupForm() {
           placeholder="Username"
           className="w-full p-2 border border-gray-300 rounded-md text-sm"
           value={username}
-          onChange= {handleUsername}
+          onChange= {(e)=>{setUsername(e.target.value)}}
         />
         <input
           type="email"
           placeholder="Email"
           className="w-full p-2 border border-gray-300 rounded-md text-sm"
           value={useremail}
-          onChange= {handleUseremail}
+          onChange= {(e)=>{setUseremail(e.target.value)}}
         />
         <input
           type="password"
           placeholder="Password"
           className="w-full p-2 border border-gray-300 rounded-md text-sm"
           value={userpassword}
-          onChange= {handleUserpassword}
-        />
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="w-full p-2 border border-gray-300 rounded-md text-sm"
+          onChange= {(e)=>{setUserpassword(e.target.value)}}
         />
         <div className="flex items-center text-sm" >
           <input type="checkbox" id="terms" className="mr-2" required />

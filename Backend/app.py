@@ -15,11 +15,13 @@ from flask_jwt_extended import  (
     create_access_token, 
     create_refresh_token,  
     jwt_required, 
-    get_jwt_identity
+    get_jwt_identity,
+    set_refresh_cookies,
+    decode_token,
+    unset_jwt_cookies
     )
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
-from flask_sqlalchemy import SQLAlchemy
 import datetime
 
 from db import db
@@ -28,14 +30,23 @@ from models import User
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///encodex.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+app.config['JWT_TOKEN_LOCATION'] = ["headers", "cookies"]
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=10)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=15)
+app.config['JWT_COOKIE_SAMESITE'] = "Lax"
+app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
+app.config["JWT_REFRESH_COOKIE_PATH"] = "/refresh"
+app.config["JWT_REFRESH_COOKIE_NAME"] = "refresh_token_cookie"
+app.config['JWT_COOKIE_SECURE'] = False
+app.config['JWT_REFRESH_TOKEN_IN_COOKIE'] = True
 
 db.init_app(app)
 bcrypt = Bcrypt(app)
@@ -71,6 +82,7 @@ def is_valid_image(file_path):
 
     # Temporary route to see the registered user data
 @app.route("/users", methods=["GET"])
+@jwt_required()
 def get_users():
     users = User.query.all()
     user_list = []
@@ -81,6 +93,22 @@ def get_users():
             "email": user.email
         })
     return jsonify(user_list)
+
+# send the current_user data
+@app.route("/me", methods=["GET"])
+@jwt_required()
+def get_current_user():
+    current_user_id = (get_jwt_identity())
+    user = User.query.get((current_user_id))
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email
+    }), 200
 
 
 @app.route('/signup', methods=['POST'])
@@ -96,11 +124,12 @@ def signup():
         return jsonify({'error': 'All fields are required'}), 400
     
     existing_user = User.query.filter( (User.username == username ) | (User.email == email )).first()
+
     if(existing_user):
         return jsonify({
-            'status': 'error',
-            'message': 'User Already exist'
-            }), 409
+            "status": "register_error",
+            "message": "User Already Registered!"
+        }), 409
  
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
@@ -114,7 +143,8 @@ def signup():
 
     return jsonify({
         'status' : 'success',
-        'message': 'User registered successfully'
+        'message': 'User registered successfully',
+        'username': new_user.username,
     }), 201
 
 
@@ -125,34 +155,47 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    user = User.query.filter_by(email=email).first()
 
+    user = User.query.filter_by(email=email).first()
+    
     if not user or not bcrypt.check_password_hash(user.password,password):
         return jsonify({
             'status': 'error',
             'message': 'Invalid email or password'
         }), 401 
 
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
 
-    return jsonify({
+    response = jsonify({
         'status': 'success',
         'message': 'Login successfull',
         'access_token': access_token,
-        'refresh_token': refresh_token,
         'username': user.username,
-    }), 200
+    })
 
+    set_refresh_cookies(response, refresh_token)
+    
+    return response
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    response = jsonify({'message': "Logout Successful"})
+    unset_jwt_cookies(response)
+    print("cookies get unseted", response) 
+    return response
 
 @app.route("/refresh", methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
-    current_user = get_jwt_identity()
-    access= create_access_token(identity=current_user)
-    return{
-        'acess_token': access
-    }
+    current_user = int(get_jwt_identity())
+
+    new_access_token= create_access_token(identity=str(current_user))
+
+    return jsonify({
+        "message": "success",
+        "access_token": new_access_token
+    })
 
 
 # Generate RSA keys for each recipient

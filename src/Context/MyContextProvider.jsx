@@ -1,7 +1,7 @@
-import {React, useState} from "react";
+import {React, useContext, useState} from "react";
 import {MyContext} from "./MyContext";
 
-const MyContextProvider = ({children})=>{
+export const MyContextProvider = ({children})=>{
   const [messages, setMessage] = useState([]);
   const [history, setHistory] = useState([]);
 
@@ -20,4 +20,4 @@ const MyContextProvider = ({children})=>{
   )
 }
 
-export default MyContextProvider;
+export const useMyContext = ()=> useContext(MyContext) ;
