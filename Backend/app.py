@@ -24,6 +24,9 @@ from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
 import datetime
 
+from google.oauth2 import id_token
+from google.auth.transport import requests
+
 from db import db
 from models import User
 
@@ -196,6 +199,45 @@ def refresh():
         "message": "success",
         "access_token": new_access_token
     })
+
+@app.route('/googleLogin', methods=['POST'])
+def googleLogin():
+    token = request.json.get('token')
+    if not token:
+       return jsonify({'message': 'Token is missing'}), 400
+    
+    try:
+        idinfo = id_token.verify_oauth2_token(token , requests.Request(),"907532710684-9ehbdn45tkhmgtrcbkusljdshdq8rd8d.apps.googleusercontent.com")
+        print("id-infor", idinfo)
+        email = idinfo['email']
+        name = idinfo.get('name')
+        picture = idinfo.get('picture')       
+
+        user = User.query.filter_by(email=email).first()
+        if not user: 
+            user = User(
+                email=email,
+                username=name, 
+                password="GOOGLE_USER")
+            db.session.add(user)
+            db.session.commit()
+        
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
+
+        response = jsonify({
+            "status": "success",
+            "access_token": access_token,
+            "username": name,
+            "dp": picture
+        })
+
+        set_refresh_cookies(response, refresh_token)
+        return response
+    
+    except ValueError:
+        return jsonify({"msg": "Invalid Google Token"}), 400
+
 
 
 # Generate RSA keys for each recipient

@@ -14,6 +14,7 @@ import { ThemeProvider } from './Context/ThemeContext';
 import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import LoginForm from './components/Login/LogIn';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,12 +41,14 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <MyContextProvider>
-        <ThemeProvider>
-          < RouterProvider router={router} />
-        </ThemeProvider>
-      </MyContextProvider>
-    </AuthProvider>
+    <GoogleOAuthProvider clientId="907532710684-9ehbdn45tkhmgtrcbkusljdshdq8rd8d.apps.googleusercontent.com">
+      <AuthProvider>
+        <MyContextProvider>
+          <ThemeProvider>
+            < RouterProvider router={router} />
+          </ThemeProvider>
+        </MyContextProvider>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   </StrictMode>,
 )

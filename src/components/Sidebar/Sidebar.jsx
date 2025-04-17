@@ -8,7 +8,7 @@ const SidebarContext = createContext()
 
 export default function Sidebar({ children }) {
 
-  const {user} = useAuth();
+  const {user, profile} = useAuth();
   const [expanded, setExpanded] = useState(false);
   
   return (

@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 
 export default function SignupForm() {
 
@@ -9,7 +10,7 @@ export default function SignupForm() {
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
 
-  const {signup} = useAuth();
+  const {signup, setUser, setAccessToken} = useAuth();
   const navigate = useNavigate();
   
   
@@ -75,6 +76,13 @@ export default function SignupForm() {
           Sign Up
         </button>
       </form>
+      <div className="mt-4">
+        <GoogleLoginBtn onLogin={({token, username})=>{
+          setUser(username)
+          setAccessToken(token)
+          navigate("/")
+        }}/>
+      </div>
     </>
   );
 }

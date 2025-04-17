@@ -100,7 +100,7 @@ function Dashboard() {
             <div className="border-2 h-16  w-full my-2 flex justify-between align-middle p-1">
               <div>
                 <h2>Hello {user? user : "user"},</h2>
-                <h2 className="text-xl">Welcome Back😊</h2>
+                <h2 className="text-xl">Welcome to Encodex!</h2>
               </div>
               <div className="text-right">
                 <LiveClock/>

@@ -24,6 +24,11 @@ function Header() {
     return ()=> window.removeEventListener("resize", handleResize)
   }, [])
 
+  useEffect(()=>{
+    if(user)
+      setShowModal(false);
+  }, [user])
+
   return (
     <header className="shadow-xl sticky z-50 top-0 ">
       <nav className="bg-background-light text-text-dark   px-4 lg:px-6 py-2.5 dark:bg-background-dark dark:text-text-light duration-300 transition-all">

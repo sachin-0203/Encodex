@@ -1,7 +1,6 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
 import axios from 'axios';
 
-axios.defaults.withCredentials = true;
 
 const AuthContext = createContext({})
 
@@ -10,6 +9,8 @@ const AuthContext = createContext({})
 export const AuthProvider = ({children})=>{
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  
+  const [profile, setProfile] = useState("");
 
   useEffect(()=>{
 
@@ -58,8 +59,8 @@ export const AuthProvider = ({children})=>{
       }
       
     } catch(error){
-      console.error("Login Failed error", error);
-      return { success: false, message: "An error occured during login" };
+      console.error("Login Failed error:", error.response.data.message);
+      return { success: false, message: error.response.data.message };
     } 
   };
 
@@ -107,10 +108,14 @@ export const AuthProvider = ({children})=>{
 
   const value = {
     user,
+    setUser,
     accessToken,
+    setAccessToken,
     login,
     signup,
     logout,
+    profile,
+    setProfile
   };
 
   return (

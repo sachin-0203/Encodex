@@ -1,15 +1,15 @@
 import React, {useState, useEffect} from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
-
+import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 
 export default function LoginForm() {
 
+  const navigate = useNavigate();
+  const {login, setAccessToken, setUser, setProfile } = useAuth();
+
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
-  const navigate = useNavigate();
-  const {login} = useAuth();
 
   const handleLogin = async (e)=>{
 
@@ -24,7 +24,6 @@ export default function LoginForm() {
 
       if(res.success){
         alert(`Login Success! Hello ${res.user}`)
-        navigate("/dashboard")
       }
 
       else{
@@ -64,6 +63,19 @@ export default function LoginForm() {
           Log In
         </button>
       </form>
+      <div
+       className="mt-4">
+
+        <GoogleLoginBtn
+          onLogin={({token, username, dp})=>{
+            setUser(username)
+            setAccessToken(token)
+            setProfile(dp)
+            navigate("/")
+          }}
+          
+        />
+      </div>
     </>
   );
 }
