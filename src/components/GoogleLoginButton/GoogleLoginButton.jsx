@@ -1,5 +1,6 @@
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
+import { toast } from "sonner";
 
 const GoogleLoginBtn = ({ onLogin })=>{
 
@@ -9,14 +10,19 @@ const GoogleLoginBtn = ({ onLogin })=>{
 
     try {
       const resp = await axios.post("http://localhost:5000/googleLogin", {token : credential,}, { withCredentials : true, });
+
+      const result = resp.data;
+      if(result.status === 'success'){
+        toast.success(`Welcome ${result.username}`)
+      }
       onLogin({
-        token: resp.data.access_token,
-        username: resp.data.username,
-        dp: resp.data.dp,
+        token: result.access_token,
+        username: result.username,
+        dp: result.dp,
       });
     }
     catch(error){
-      console.error("Google Login error", error);
+      toast.error(`Google Login error, ${error}`);
     }
 
   };

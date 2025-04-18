@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
+import { toast } from "sonner";
 
 export default function SignupForm() {
 
@@ -17,19 +18,19 @@ export default function SignupForm() {
   const handleSignup = async (e) => {
     e.preventDefault();
     if(!username || !useremail || !userpassword){
-      alert("User data is missing!")
+      toast.error("User data is missing!")
       return;
     }
     
     const signup_res =  await signup(username, useremail, userpassword);
     if(signup_res.success){
-      alert(`Signup success: ${signup_res.user}, LogIn now!`);
+      toast.success(`Signup success: ${signup_res.user}, LogIn now!`);
       setUsername("");
       setUseremail("");
       setUserpassword("");
     }
     else{
-      alert(`SignUp failed: ${signup_res.message}`);
+      toast.error("SignUp failed");
     }
   }
 

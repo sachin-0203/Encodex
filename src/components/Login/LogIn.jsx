@@ -2,10 +2,11 @@ import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
+import { toast } from "sonner";
 
 export default function LoginForm() {
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const {login, setAccessToken, setUser, setProfile } = useAuth();
 
   const [useremail, setUseremail] = useState("");
@@ -16,18 +17,22 @@ export default function LoginForm() {
     e.preventDefault();
 
     if(!useremail || !userpassword){
-      alert("Icomplete User Data");
+      toast.error("Icomplete User Data");
       return;
     }
 
       const res = await login(useremail, userpassword);
 
       if(res.success){
-        alert(`Login Success! Hello ${res.user}`)
+        toast.success(`Login Success! Hello ${res.user}`)
       }
 
       else{
-        alert(`Login Failed: ${res.message}`);
+        toast(`Login Failed: ${res.message}`,{
+          cancel:{
+            label: 'Ok',
+          }
+        });
       }
   }
 
@@ -71,7 +76,6 @@ export default function LoginForm() {
             setUser(username)
             setAccessToken(token)
             setProfile(dp)
-            navigate("/")
           }}
           
         />

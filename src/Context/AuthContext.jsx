@@ -1,5 +1,6 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 
 const AuthContext = createContext({})
@@ -7,12 +8,15 @@ const AuthContext = createContext({})
 
 
 export const AuthProvider = ({children})=>{
+
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   
   const [profile, setProfile] = useState("");
 
   useEffect(()=>{
+    tryRefresh();
+  }, [])
 
   const tryRefresh = async ()=>{
     try{
@@ -28,8 +32,6 @@ export const AuthProvider = ({children})=>{
       setAccessToken(null)
     }
   };
-  tryRefresh();
-}, [])
 
   const login = async (email, password)=>{
 
@@ -84,7 +86,7 @@ export const AuthProvider = ({children})=>{
       if(error.response.data.status === 'register_error'){
         return {success: false, message: error.response.data.message};
       }
-      console.error('Signup Failed:', error)
+      console.error(`Signup Failed: ${error}`)
       return { success: false, message: "An error occured during signup" };
     }
 
@@ -92,16 +94,24 @@ export const AuthProvider = ({children})=>{
 
   const logout = async ()=>{
 
-    try{
-       const res= await axios.post("http://localhost:5000/logout", {
-        withCredentials: true,
-      });
-      alert(res.data.message)
-    } catch(err){
-      console.error("Logout error", err);
-    }
     setAccessToken(null);
     setUser(null);
+    try{
+       const res= await axios.post("http://localhost:5000/logout",{}, {
+        withCredentials: true,
+      });
+
+      if(res.data.status === 'success')
+        toast(res.data.message, {
+          cancel: {
+            label: "Ok",
+          }
+      })
+
+    } catch(err){
+      toast.error(`Logout error: ${err}`);
+    }
+    
 
   };
 

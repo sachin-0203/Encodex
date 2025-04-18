@@ -18,7 +18,7 @@ from flask_jwt_extended import  (
     get_jwt_identity,
     set_refresh_cookies,
     decode_token,
-    unset_jwt_cookies
+    unset_jwt_cookies,
     )
 from flask_bcrypt import Bcrypt
 from dotenv import load_dotenv
@@ -61,13 +61,14 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/uploads')
 ENCRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/encrypted')
 DECRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/decrypted')
-KEYS_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/keys')  # Store RSA keys
+KEYS_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/keys')  
 
 # Create directories if they don’t exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(ENCRYPTED_FOLDER, exist_ok=True)
 os.makedirs(DECRYPTED_FOLDER, exist_ok=True)
 os.makedirs(KEYS_FOLDER, exist_ok=True)
+
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'jpeg', 'png', 'gif'}
@@ -83,7 +84,7 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
-    # Temporary route to see the registered user data
+# Temporary route to see the registered user data
 @app.route("/users", methods=["GET"])
 @jwt_required()
 def get_users():
@@ -101,8 +102,8 @@ def get_users():
 @app.route("/me", methods=["GET"])
 @jwt_required()
 def get_current_user():
-    current_user_id = (get_jwt_identity())
-    user = User.query.get((current_user_id))
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(str(current_user_id))
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -183,9 +184,12 @@ def login():
 
 @app.route('/logout', methods=['POST'])
 def logout():
-    response = jsonify({'message': "Logout Successful"})
+    response = jsonify({
+        'status': 'success',
+        'message': "Logout Successful"
+    })
     unset_jwt_cookies(response)
-    print("cookies get unseted", response) 
+
     return response
 
 @app.route("/refresh", methods=['POST'])
@@ -208,7 +212,7 @@ def googleLogin():
     
     try:
         idinfo = id_token.verify_oauth2_token(token , requests.Request(),"907532710684-9ehbdn45tkhmgtrcbkusljdshdq8rd8d.apps.googleusercontent.com")
-        print("id-infor", idinfo)
+        print("id-infor", idinfo) 
         email = idinfo['email']
         name = idinfo.get('name')
         picture = idinfo.get('picture')       
