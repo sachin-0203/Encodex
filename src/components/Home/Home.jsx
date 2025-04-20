@@ -1,13 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "../AuthModel/AuthModel";
 import { useAuth } from "../../Context/AuthContext";
+import { use } from "react";
 
 function Home() {
   const {accessToken} = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [authView, setAuthView] = useState("login");
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(accessToken){
+      setShowModal(false)
+    }
+  },[accessToken])
 
   const handleLetBegin= (viewElement) => {
     if(accessToken){
@@ -16,6 +23,7 @@ function Home() {
       setAuthView(viewElement);
       setShowModal(true);
     }
+
   }
   return (
     <div>

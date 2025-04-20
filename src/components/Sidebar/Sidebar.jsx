@@ -58,7 +58,7 @@ export default function Sidebar({ children }) {
   )
 }
 
-export function SidebarItem({ icon, text, active, alert, path, onClick}) {
+export function SidebarItem({ icon, text, active, alert, path, onClick, count}) {
   const { expanded } = useContext(SidebarContext)
   
   return (
@@ -90,6 +90,13 @@ export function SidebarItem({ icon, text, active, alert, path, onClick}) {
             expanded ? "" : "top-2"
           }`}
         />
+      )}
+      {count>0 && (
+        <div
+          className={`absolute right-1 w-5 h-5 rounded-xl text-sm text-center bg-background-dark hover:bg-accent-dark  ${
+            expanded ? "" : "top-0 right-0 "
+          }`}
+        >{count}</div>
       )}
 
       { !expanded && (

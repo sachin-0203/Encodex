@@ -92,7 +92,7 @@ def get_users():
     user_list = []
     for user in users:
         user_list.append({
-            "id": user.id,
+            "id": user.id, 
             "username": user.username,
             "email": user.email
         })
@@ -212,7 +212,6 @@ def googleLogin():
     
     try:
         idinfo = id_token.verify_oauth2_token(token , requests.Request(),"907532710684-9ehbdn45tkhmgtrcbkusljdshdq8rd8d.apps.googleusercontent.com")
-        print("id-infor", idinfo) 
         email = idinfo['email']
         name = idinfo.get('name')
         picture = idinfo.get('picture')       
