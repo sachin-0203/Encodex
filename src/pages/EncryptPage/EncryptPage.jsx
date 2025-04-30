@@ -137,31 +137,48 @@ function EncryptPage() {
 
   return (
     <div>
-      <div className="inline-flex justify-between">
+      <div className="flex justify-between">
+
         <div>Upload Your Image:</div>
-        <button  className="bg-red-500 hover:bg-red-700 rounded-sm p-2 text-white" onClick={ResetForm}>
+
+        <button  className="bg-destructive hover:bg-destructive/50 rounded-sm p-2 text-destructive-foreground" onClick={ResetForm}>
+
           <svg ref={resetIconRef} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+
         </button>
+
       </div>
       <form id="encrypt-form" method="post" onSubmit={handleSubmit} encType="multipart/form-data">
-        <input className="w-full cursor-pointer border border-gray-500 p-2 rounded-md" type="file" accept="image/*" onChange={handleFileChange} />
-        <input
-          className="w-full border border-gray-500 p-2 rounded-md mt-2"
-          type="text"
-          placeholder="Enter Recipient (Email/Username)"
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-        />
-        <button className="text-text-light bg-accent-dark hover:bg-purple-700 border border-gray-500 rounded-sm w-full mt-2 p-2" type="submit">
+
+        <input className="w-full cursor-pointer border border-ring p-1 rounded-md" type="file" accept="image/*" onChange={handleFileChange} />
+
+        <div className="relative">
+          <input
+            id="recipient"
+            className="peer w-full border border-ring/50 p-2 rounded-md  my-2 outline-none focus:border-border bg-background"
+            type="text"
+            placeholder=" "
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+          />
+          <label htmlFor="recipient" 
+            className={`absolute left-2 px-1 top-5 text-gray-500 bg-background text-sm transition-all  peer-focus:top-0.5 peer-focus:text-sm peer-focus:text-ring ${recipient? 'top-[2px]':''} `}
+          >
+            Enter Recipient (Email/Username)
+          </label>
+        </div>
+
+        <button className="text-white bg-primary hover:bg-primary/60 border rounded-sm w-full p-2 " type="submit">
           Encrypt
         </button>
-      </form>
-      <div className="border-2 border-gray-300 mt-2 p-2 text-center">
-        <h2 className="text-xl mb-1">Encrypted Image:</h2>
-        <div className="flex">
-          <textarea id="encrypted-image" placeholder="Your Encrypted Image" ref={eImageRef} value={encImage} className="w-full h-16 border border-r-0 border-zinc-600 rounded-l-md p-2 resize-none dark:bg-slate-600 dark:text-text-light" readOnly></textarea>
 
-          <button id="copy-image-btn" ref={btnRef} className="bg-green-600 hover:bg-green-700 rounded-sm h-16 p-2 text-white rounded-r-md" onClick={handleEncImage}
+      </form>
+      <div className="border border-gray-300 rounded-md my-2 p-2 text-center">
+        <h2 className="text-xl mb-1">Encrypted Image:</h2>
+        <div className="flex relative">
+          <textarea id="encrypted-image" placeholder="Your Encrypted Image" ref={eImageRef} value={encImage} className="w-full h-20 bg-background text-foreground border rounded-md p-2 pr-12 resize-none outline-none scrollbar-none " readOnly></textarea>
+
+          <button id="copy-image-btn" ref={btnRef} className={`absolute  top-1 right-1   rounded-sm h-[72px] p-2 text-white ${encImage? 'bg-green-600 hover:bg-green-700':'bg-green-700/20'} `} onClick={handleEncImage}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"    fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="download-icon">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -169,13 +186,14 @@ function EncryptPage() {
               <line className="arrow" x1="12" x2="12" y1="15" y2="3"/>
               </svg>
           </button>
+          
         </div>
         
-        <h2 className="text-xl mt-3 mb-2">Key:</h2>
-        <div className="flex">
-          <textarea id="encrypted-key" placeholder="Your Encrypted Key" ref={eKeyRef} value={encKey} className="w-full h-12 border border-r-0 border-zinc-600 rounded-l-md p-2 resize-none dark:bg-slate-600 dark:text-text-light" readOnly></textarea>
+        <h2 className="text-xl mt-2 mb-1">Key:</h2>
+        <div className="flex relative">
+          <textarea id="encrypted-key" placeholder="Your Encrypted Key" ref={eKeyRef} value={encKey} className="w-full h-16 border rounded-md p-2 pr-12 resize-none bg-background text-foreground outline-none scrollbar-none" readOnly></textarea>
 
-          <button id="copy-key-btn" className="bg-green-600 hover:bg-green-700 rounded-sm h-12 p-2 text-white rounded-r-md" onClick={handleEncKey}>
+          <button id="copy-key-btn" className={`absolute top-1 right-1 rounded-sm h-[57px] p-2 text-white ${encKey? 'bg-green-600 hover:bg-green-700':'bg-green-700/20'} `} onClick={handleEncKey}>
             {copied? (
               <svg  xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
               ):(

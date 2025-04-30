@@ -24,6 +24,16 @@ function Header() {
     return ()=> window.removeEventListener("resize", handleResize)
   }, [])
 
+  const handleBegin = (owner)=>{
+    if(owner === user){
+      logout()
+    }
+    else{
+      setAuthView('login');
+      setShowModal(true);
+    }
+  }
+
   useEffect(()=>{
     if(user)
       setShowModal(false);
@@ -31,7 +41,9 @@ function Header() {
 
   return (
     <header className="shadow-xl sticky z-50 top-0 ">
-      <nav className="bg-background-light text-text-dark   px-4 lg:px-6 py-2.5 dark:bg-background-dark dark:text-text-light duration-300 transition-all">
+      <nav 
+        className="bg-background text-foreground  px-4 lg:px-6 py-2.5 duration-400 transition-all"
+      >
         <div className="flex  justify-between items-center mx-auto max-w-screen-xl">
 
           <AuthModal
@@ -48,49 +60,21 @@ function Header() {
             }
           </Link>
           
-          <div className="flex justify-between order-2 gap-2">
-            <div>
-
-              {user? (
-                <h1 className="text-xl mt-2" >Hello {user},</h1>
-              ):(
-                <button
-                  className=" text-text-light p-2 rounded-md bg-background-dark dark:border  dark:border-background-light duration-200 transition-all"
-                  onClick={()=>{
-                      setAuthView("signup");
-                      setShowModal(true)
-                    }}
-                >
-                  { islargeScreen?  "Sign-up" : <UserRoundPlus/> }
-                </button>
-              )}
-
-            </div>
-            <div>
-
-              {user? (
-                <button
-                onClick={logout}
-                className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
-                >
-                  {islargeScreen ? "Logout" : <LogOut />}
-                </button>
-
+          <div className="order-2">
+            <button
+              className={`p-2 text-center bg-signup shadow-inner text-white ${islargeScreen? 'rounded-md': 'rounded-3xl size-9 p-1'} `}
+              onClick={()=>{
+                  handleBegin(user || " ")
+              }}
+            >
+              {user?
+                (
+                  islargeScreen?  user : "S"
                 ):(
-                  
-                  <button
-                    className="p-2 dark:border dark:border-background-light rounded-md duration-200 transition-all"
-                    onClick={()=>{
-                      setAuthView('login');
-                      setShowModal(true);
-                    }}
-                  >
-                   { islargeScreen?  "LogIn" : <LogIn/> }
-                  </button>
-              )}
-            </div>
-            
-
+                  islargeScreen?  "SignUp / LogIn " : <UserRoundPlus size={20}/>
+                ) 
+              }
+            </button>
           </div>
 
           <div className=" justify-between items-center  lg:flex flex-wrap w-auto order-1 " >
@@ -98,38 +82,78 @@ function Header() {
               <li>
                 <NavLink
                  to="/"
-                 className={({isActive})=>`block pb-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary dark:text-accent-dark border-b border-primary": "text-text-dark"} hover:text-primary dark:hover:text-accent-dark lg:hover:bg-transparent lg:border-0 hover: text-primary lg:p-0 dark:text-text-light duration-200 transition-all `}
+                 className={
+                  ({ isActive }) => `
+                    block pb-2 px-3
+                    ${isActive 
+                      ? "text-primary border-b border-ring" 
+                      : "text-foreground"
+                    }
+                    hover:text-primary 
+                    lg:p-0
+                    transition-all duration-200
+                  `}
                  >
-                  { islargeScreen?  "Home" : <House/> }
+                  { islargeScreen?  "Home" : <House size={20}/> }
                  </NavLink>
               </li>
               <li>
                 <NavLink
                  to="/about"
-                 className={({isActive})=>`block pb-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary dark:text-accent-dark border-b border-primary": "text-text-dark"} hover:text-primary dark:hover:text-accent-dark lg:hover:bg-transparent lg:border-0 hover: text-primary lg:p-0 dark:text-text-light duration-200 transition-all`}
-                 >
-                  { islargeScreen?  "About" : <BookA/>}
-                 </NavLink>
+                 className={
+                  ({ isActive }) => `
+                    block pb-2 px-1
+                    ${isActive 
+                      ? "text-primary border-b border-ring" 
+                      : "text-foreground"
+                    }
+                    hover:text-primary 
+                    lg:p-0
+                    transition-all duration-200
+                  `}
+                >
+                  { islargeScreen?  "About" : <BookA size={20}/>}
+                </NavLink>
               </li>
               <li>
                 <NavLink 
                 to="/guide"
-                className={({isActive})=>`block pb-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary dark:text-accent-dark border-b border-primary": "text-text-dark"}  hover:text-primary dark:text-text-white dark:hover:text-accent-dark lg:hover:bg-transparent lg:border-0 hover: text-primary lg:p-0 dark:text-text-light duration-200 transition-all`}
+                className={
+                  ({ isActive }) => `
+                    block pb-2 px-3
+                    ${isActive 
+                      ? "text-primary border-b border-ring" 
+                      : "text-foreground"
+                    }
+                    hover:text-primary 
+                    lg:p-0
+                    transition-all duration-200
+                  `}
                 >
-                  { islargeScreen?  "Guide" : <HelpCircle/> }
+                  { islargeScreen?  "Guide" : <HelpCircle size={20}/> }
                 </NavLink>
               </li>
               <li>
                 <NavLink
                 to="/contact"
-                className={({isActive})=>`block pb-2 pr-4 pl-3 duration-200 ${isActive ? "text-primary dark:text-accent-dark border-b border-primary": "text-text-dark"}  hover:text-primary dark:hover:text-accent-dark lg:hover:bg-transparent lg:border-0 hover: text-primary lg:p-0 dark:text-text-light duration-200 transition-all`}
+                className={
+                  ({ isActive }) => `
+                    block pb-2 px-3
+                    ${isActive 
+                      ? "text-primary border-b border-ring" 
+                      : "text-foreground"
+                    }
+                    hover:text-primary 
+                    lg:p-0
+                    transition-all duration-200
+                  `}
                 >
-                  { islargeScreen?  "Contact" : <Mail/> }
+                  { islargeScreen?  "Contact" : <Mail size={20}/> }
                 </NavLink>
               </li>
               <li>
                 <button onClick={ToggleTheme}>
-                  {theme === 'light'? <Sun/> : <Moon/>}
+                  {theme === 'light'? <Sun size={20}/> : <Moon size={20}/>}
                 </button>
               </li>
               

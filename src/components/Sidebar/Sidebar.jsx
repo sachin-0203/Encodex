@@ -12,8 +12,8 @@ export default function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(false);
   
   return (
-    <aside className="h-screen fixed">
-      <nav className="h-full inline-flex flex-col bg-white border-r shadow-sm transition-all duration-500 dark:bg-sky-900 dark:text-text-light">
+    <aside className="h-screen fixed z-50">
+      <nav className="h-full inline-flex flex-col border-r shadow-sm transition-all duration-500 bg-sidebarC  text-sidebarT  ">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
             src="./assets/Logo.png"
@@ -24,7 +24,7 @@ export default function Sidebar({ children }) {
           />
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg text-text-light bg-background-dark hover:bg-accent-dark"
+            className="p-1.5 rounded-lg border text-lime-500 hover:bg-ring"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
@@ -48,7 +48,7 @@ export default function Sidebar({ children }) {
           >
             <div className="leading-4">
               <h4 className="font-semibold">{user}</h4>
-              <span className="text-xs text-lime-500">Active</span>
+              <span className="text-xs text-accent">Active</span>
             </div>
             <MoreVertical size={20} />
           </div>
@@ -66,11 +66,11 @@ export function SidebarItem({ icon, text, active, alert, path, onClick, count}) 
       className={`
         relative flex items-center py-2 px-3 my-1
         font-medium rounded-md cursor-pointer
-        transition-colors group  dark:text-text-light
+        transition-colors group text-sidebarT
         ${
           active
             ? "bg-gray-600 text-text-light"
-            : "hover:bg-indigo-100 text-gray-600 dark:hover:bg-background-dark"
+            : " hover:text-foreground hover:bg-background"
         }
     `}
     >
@@ -93,7 +93,7 @@ export function SidebarItem({ icon, text, active, alert, path, onClick, count}) 
       )}
       {count>0 && (
         <div
-          className={`absolute right-1 w-5 h-5 rounded-xl text-sm text-center bg-background-dark hover:bg-accent-dark  ${
+          className={`absolute right-1.5 size-5 rounded-xl text-sm text-center bg-accent text-sidebarT  ${
             expanded ? "" : "top-0 right-0 "
           }`}
         >{count}</div>
@@ -103,7 +103,7 @@ export function SidebarItem({ icon, text, active, alert, path, onClick, count}) 
         <div
           className={`
           absolute left-full rounded-md px-2 py-1 ml-6
-          bg-background-light text-text-dark text-sm
+          bg-sidebarC text-sidebarT  text-sm
           invisible opacity-20 -translate-x-3 transition-all
           group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
           

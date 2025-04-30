@@ -15,6 +15,7 @@ import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import LoginForm from './components/Login/LogIn';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Setting } from './pages/Setting/Setting';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,7 +29,7 @@ const router = createBrowserRouter(
         <Route path='/profile' element={<Profile />} />
         
       </Route>
-      <Route path="/login" element={<LoginForm />} />
+      <Route path='/Setting' element={<Setting />} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />

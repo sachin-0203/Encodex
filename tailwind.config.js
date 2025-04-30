@@ -39,9 +39,9 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
+  			success: {
+  				DEFAULT: 'hsl(var(--success))',
+  				foreground: 'hsl(var(--success-foreground))'
   			},
   			secondary: {
   				DEFAULT: 'hsl(var(--secondary))',
@@ -64,15 +64,34 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+				signup: 'hsl(var(--signup))',
+				sidebarC: 'hsl(var(--sidebarC))',
+				sidebarT: 'hsl(var(--sidebarT))',
+				back: 'hsl(var(--back))',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
   	}
   },
-  plugins: [require('tailwind-scrollbar'), require("tailwindcss-animate")],
+  plugins: [
+		require('tailwind-scrollbar'), 
+		require("tailwindcss-animate"),
+		function({addUtilities}){
+			addUtilities({
+				'.hide-scrollbar': {
+					'&::-webkit-scrollbar':{
+						display: 'none',
+					},
+
+					'scrollbar-width': 'none',
+					'-ms-overflow-style': 'none',
+				},
+			})
+		},
+	],
 }
 

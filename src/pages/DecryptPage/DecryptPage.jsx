@@ -98,11 +98,11 @@ function DecryptPage() {
 
   return (
     <>
-      <div className="border-2 text-center p-4">
+      <div className="text-center p-4">
         <div className="flex justify-between mb-2">
           <button
             onClick={ResetForm}
-            className="text-white bg-red-500 hover:bg-red-700 border border-gray-500 rounded-sm p-2"
+            className="text-white bg-destructive hover:bg-destructive/50 rounded-sm p-2"
           >
             <svg ref={resetIconRef} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
           </button>
@@ -124,7 +124,7 @@ function DecryptPage() {
             <input
               type="file"
               accept=".enc"
-              className="w-full border border-gray-500 p-2 rounded-md"
+              className={`w-full border border-ring p-2 rounded-md ${imagename? 'border-input':''} `}
               onChange={handleFileUpload}
             />
           </div>
@@ -133,7 +133,7 @@ function DecryptPage() {
             <input
               value={recipient}
               onChange={(e) => setRecipient(e.target.value)}
-              className="w-full border border-gray-500 p-2 rounded-md"
+              className={`w-full p-2 rounded-md outline-none border bg-background text-foreground `}
               type="text"
               placeholder="Enter Recipient (Email/Username)"
             />
@@ -144,10 +144,10 @@ function DecryptPage() {
               value={decKey}
               onChange={(e) => setDecKey(e.target.value)}
               placeholder="Decryption Key here"
-              className="w-full h-16 border border-zinc-600 resize-none rounded-md p-2"
+              className="w-full h-16 border resize-none rounded-md p-2 outline-none text-foreground bg-background"
             ></textarea>
           </div>
-          <button type="submit" className="bg-blue-500 hover:bg-blue-700 border border-gray-500 rounded-sm w-full p-2">
+          <button type="submit" className="bg-primary hover:bg-primary/60 border rounded-sm w-full p-2 text-white">
             Decrypt
           </button>
         </form>
