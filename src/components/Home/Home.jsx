@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "../AuthModel/AuthModel";
 import { useAuth } from "../../Context/AuthContext";
 import { use } from "react";
+import { MoveUp } from "lucide-react";
 
 function Home() {
   const {accessToken} = useAuth();
   const [showModal, setShowModal] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [authView, setAuthView] = useState("login");
   const navigate = useNavigate();
 
@@ -15,6 +17,20 @@ function Home() {
       setShowModal(false)
     }
   },[accessToken])
+
+  useEffect(()=>{
+    const handleScroll = ()=>{
+      if(window.scrollY > 100){
+      setVisible(true)
+      }
+      else{
+        setVisible(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    return ()=> window.removeEventListener('scroll', handleScroll);
+  }, [])
 
   const handleLetBegin= (viewElement) => {
     if(accessToken){
@@ -25,9 +41,21 @@ function Home() {
     }
 
   }
+
+ 
+
+
+	const scrollToTop = ()=>{
+		console.log("Button Clicked")
+		window.scrollTo({
+			top:0,
+			behavior: 'smooth',
+		});
+	};
+
   return (
     <div>
-      <div id="home-page" className=" bg-background text-foreground  dark:bg-background-dark dark:text-text-light">
+      <div id="home-page" className="relative bg-background text-foreground  dark:bg-background-dark dark:text-text-light">
       <AuthModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
@@ -47,7 +75,7 @@ function Home() {
 
             <div className="mt-10">
             <button 
-              className="p-3 ml-52 mt-12 rounded-md  text-foreground border border-ring hover:bg-cyan-900 hover:text-white  "
+              className="p-3 ml-52 mt-12 rounded-full  text-foreground border border-ring hover:bg-cyan-900 hover:text-white  "
               onClick={()=>handleLetBegin("login")} >
                Let's Begin
               </button>
@@ -57,6 +85,12 @@ function Home() {
             <img src="assets/right-logo.png" alt="home-image" />
           </div>
         </div>
+				
+				<button id="moveTop" onClick={scrollToTop} 
+          className={`fixed bottom-[1rem] right-[1rem] bg-primary/90 text-primary-foreground p-2 rounded-full h-16 border hover:bg-primary transition-opacity duration-400 ${visible? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+        >
+					<MoveUp size={20} />
+				</button>
         
       </div>
 
