@@ -45,6 +45,7 @@
 
     --radius: 0.5rem;
     --back: 210, 20%, 92%;
+    --circle : 14, 65%, 85%;
   }
   .dark {
     --background: 207 36% 10%;      /* Gunmetal */
@@ -77,6 +78,7 @@
 
     --radius: 0.5rem;
     --back: 220, 29%, 17%;
+    --circle : 187, 65%, 43%;
   }
 }
 
@@ -90,4 +92,30 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Webkit (Chrome, Edge, Safari) */
+::-webkit-scrollbar {
+  width: 8px; /* width of entire scrollbar */
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #e5e7eb; /* Tailwind gray-200 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #515151; /* Tailwind green-500 */
+  border-radius: 4px;         /* round edges */
+  border: none;               /* ensure no gap */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #043242; /* Tailwind green-600 */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #083649 #00000004;
 }

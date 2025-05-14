@@ -84,8 +84,7 @@ function EncryptPage() {
     const uploadedFile = e.target.files[0];
     if (uploadedFile) {
       setFile(uploadedFile);
-      logMessage("Image is Uploaded ✔️");
-      logHistory(`${uploadedFile.name}`);
+      logMessage("Image is Uploaded ");
     } else {
       logMessage("No Image Uploaded❓");
     }
@@ -112,6 +111,8 @@ function EncryptPage() {
         setEncKey(result.encrypted_aes_key);
         setImagename(result.image_name);
         logMessage(`${result.message}✅`);
+        logHistory(`key: 🔑`)
+        logHistory(`File:  ${result.image_name}`)
       } else {
         logMessage(`❌ ${result.message}`);
       }
@@ -123,7 +124,7 @@ function EncryptPage() {
   const handleDownload = () => {
     if (!encImage) return logMessage("No Encrypted Data❗");
   
-    const blob = new Blob([encImage], { type: "text/plain" }); // Create a text file
+    const blob = new Blob([encImage], { type: "text/plain" }); 
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

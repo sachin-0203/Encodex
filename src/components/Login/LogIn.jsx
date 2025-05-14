@@ -86,7 +86,7 @@ export default function LoginForm() {
         </button>
       </form>
 
-      <div className="mt-4">
+      <div className="mt-4 border rounded-sm">
         <GoogleLoginBtn
           onLogin={({ token, username, dp }) => {
             setUser(username);

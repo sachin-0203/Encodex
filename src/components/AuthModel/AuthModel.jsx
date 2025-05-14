@@ -27,7 +27,7 @@ export default function AuthModal({ isOpen, onClose, defaultView = "login" }) {
         <div className="flex justify-between mb-6">
           <button
             onClick={() => setView("login")}
-            className={`w-1/2 py-2 font-semibold rounded-l-md ${
+            className={`w-1/2 py-2 font-semibold rounded-l-md border ${
               view === "login"
                 ? "bg-accent-dark text-white"
                 : "bg-gray-100 text-text-dark"
@@ -37,7 +37,7 @@ export default function AuthModal({ isOpen, onClose, defaultView = "login" }) {
           </button>
           <button
             onClick={() => setView("signup")}
-            className={`w-1/2 py-2 font-semibold rounded-r-md ${
+            className={`w-1/2 py-2 font-semibold rounded-r-md border ${
               view === "signup"
                 ? "bg-accent-dark text-white"
                 : "bg-gray-100 text-text-dark"

@@ -30,7 +30,7 @@ import { motion, AnimatePresence, transform } from "framer-motion";
 
 function Dashboard() {
   const {logout, accessToken, user} = useAuth();
-  const {messages, history, logMessage} =  useMyContext();
+  const {messages, history} =  useMyContext();
   const {theme,ToggleTheme } = useTheme();
 
   const [showSkeleton, setShowSkeleton] = useState(false);
@@ -167,11 +167,11 @@ function Dashboard() {
               text={ theme== "dark" ? "Dark" : "Light"}
             />
 
-            <SidebarItem
+            {/* <SidebarItem
               icon={<Settings size={20} />}
               text="Setting"
               path="/setting"
-            />
+            /> */}
 
             <SidebarItem
               onClick={logout}
@@ -227,6 +227,7 @@ function Dashboard() {
                         className={`box-border z-10 m-1
                            p-4 rounded-lg cursor-pointer text-center hover:bg-success/10 w-[30%] text-sm md:text-lg transition-all
                            ${activePage === 'Message'? 'text-white':''}
+                           hidden
                         `}
                       >
                         Message
@@ -263,16 +264,16 @@ function Dashboard() {
                   <div className="hidden lg:block w-[30%] text-center">
                     <div className="h-full ">
                       <div className="border rounded-md border-zinc-950">
-                        <h2 className=" font-mono text-lg bg-violet-500 text-white rounded-se-md rounded-ss-md py-2 ">Notifications </h2>
-                        <div className="w-full max-w-md bg-violet-100 overflow-auto h-52 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-violet-500  scrollbar-track-violet-200  ">
+                        <h2 className=" font-mono text-lg bg-[hsl(205,73%,34%)] text-white rounded-se-md rounded-ss-md py-2 ">Notifications </h2>
+                        <div className="w-full max-w-md bg-sky-100  overflow-auto h-52 rounded-es-md rounded-ee-md   ">
                           {
                             messages.length > 0 ? (
-                              <div className="border-2 text-sm border-l-violet-700  rounded-md">
+                              <div className="border-2 text-sm border-l  rounded-md">
                                 {
                                   messages.map((msg,index) =>{
                                     return (
                                       <p key={index}
-                                        className="text-sm  text-gray-800 border-b border-violet-700 py-1 last:border-b-2"
+                                        className="text-sm  text-gray-800 border-b border-sky-400 py-1 last:border-b-2"
                                       >
                                         {msg}
                                       </p>
@@ -287,7 +288,7 @@ function Dashboard() {
 
                       <div className="border rounded-md mt-2 border-zinc-800  w-full">
                         <h2 className="font-mono text-lg border bg-zinc-500 text-white p-1 rounded-ss-md rounded-se-md">History</h2>
-                        <div className="bg-zinc-200 overflow-auto h-48 rounded-es-md rounded-ee-md  scrollbar-thin  scrollbar-thumb-zinc-500 scrollbar-track-slate-200">
+                        <div className="bg-zinc-200 overflow-y-auto h-48 rounded-es-md rounded-ee-md ">
                         {
                           history.length > 0 ? (
                             <div className="border-2 text-sm border-l-zinc-700 rounded-md">

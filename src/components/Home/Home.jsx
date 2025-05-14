@@ -2,8 +2,10 @@ import React, {useCallback, useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthModal from "../AuthModel/AuthModel";
 import { useAuth } from "../../Context/AuthContext";
-import { use } from "react";
 import { MoveUp } from "lucide-react";
+import icons from '../../utils/icons.js'
+import { Card } from "../Card/Card";
+import { TestimonialsSilder } from "../Card/TestimonialsSilder";
 
 function Home() {
   const {accessToken} = useAuth();
@@ -42,11 +44,7 @@ function Home() {
 
   }
 
- 
-
-
-	const scrollToTop = ()=>{
-		console.log("Button Clicked")
+  const scrollToTop = ()=>{
 		window.scrollTo({
 			top:0,
 			behavior: 'smooth',
@@ -55,27 +53,23 @@ function Home() {
 
   return (
     <div>
-      <div id="home-page" className="relative bg-background text-foreground  dark:bg-background-dark dark:text-text-light">
+      <div id="hero-section" className="relative bg-background text-foreground  dark:bg-background-dark dark:text-text-light">
       <AuthModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         defaultView={authView}
       />
         <div className="h-screen w-full flex flex-col md:flex-row justify-evenly font-mono ">
-          <div className="left-container py-20 text-3xl text-primary">
-            <div>
-              <h1 className="text-[4rem]" >
-                Secure Your Images 
+          <div className="z-10 left-container py-20 text-3xl text-primary text-center flex flex-col gap-20">
+              <h1 className="text-[5rem] mt-16" >
+                Secure Your Images,
               </h1>
-              <br />
-              <h1 className="text-[4rem] text-primary" >Protect Your Privacy</h1>
-              <br />
-              <p className=" text-lg text-wrap text-secondary ml-20 ">"Experience Advance Encryption at Your Fingertips"</p>
-            </div>
+              <h1 className="text-[5rem] text-primary" >Protect Your Privacy</h1>
+              <p className=" text-xl text-wrap text-primary  ">"Experience Advance Encryption at Your Fingertips"</p>
 
-            <div className="mt-10">
+            <div className="mt-1">
             <button 
-              className="p-3 ml-52 mt-12 rounded-full  text-foreground border border-ring hover:bg-cyan-900 hover:text-white  "
+              className=" rounded-full  text-foreground border border-ring hover:bg-cyan-900 hover:text-white h-16 w-56 text-[2rem]  "
               onClick={()=>handleLetBegin("login")} >
                Let's Begin
               </button>
@@ -87,80 +81,55 @@ function Home() {
         </div>
 				
 				<button id="moveTop" onClick={scrollToTop} 
-          className={`fixed bottom-[1rem] right-[1rem] bg-primary/90 text-primary-foreground p-2 rounded-full h-16 border hover:bg-primary transition-opacity duration-400 ${visible? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+          className={`fixed bottom-[1rem] right-[1rem] bg-primary/90 text-white p-2 rounded-full h-16 border hover:bg-primary transition-opacity duration-400 ${visible? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         >
 					<MoveUp size={20} />
 				</button>
+        <div className="absolute z-0 top-[90%] left-[47%] translate-x-[-120%] translate-y-[-50%] flex items-center justify-center size-80 rounded-full bg-circle blur-[120px] " />
+        <div className="absolute z-0 top-[90%] left-[47%] translate-x-[-120%] translate-y-[-50%] flex items-center justify-center size-60 rounded-full bg-black-500 blur-[100px]"/>
+
         
       </div>
-
-      <div id="about" className="py-8 md:py-16 px-4 md:px-8 my-8">
-        <div className="text-center">
-          <h1 className="text-4xl md:tex[4rem] lg:text-6xl font-bold py-8 text-foreground">
+      
+      <div id="about" className=" py-8 md:py-16 px-4 md:px-8 my-8">
+        <div>
+          <h1 
+            className=" text-4xl md:tex[4rem] lg:text-6xl font-bold py-8 text-foreground text-center">
             Features
           </h1>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex  flex-wrap gap-1 justify-center">
 
-            <div 
-              className="container-items border bg-card text-card-foreground  rounded-lg w-1/4 p-4 m-4"
-            >
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div 
-              className="container-items border bg-card text-card-foreground rounded-lg w-1/4 p-4 m-4 "
-            >
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div 
-              className="container-items border bg-card text-card-foreground
-              rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border bg-card text-card-foreground rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border bg-card text-card-foreground rounded-lg  w-1/4 p-4 m-4 ">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border bg-card text-card-foreground rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
+            <Card
+              icon={icons.icon1} 
+              title="hybrid Encryption" 
+              text="Ensures maximum security by encrypting the image with AES and securing the key with RSA, combining speed with strong protection."  
+            />
+            <Card
+              icon={icons.icon2} 
+              title="smart key guard" 
+              text="Each image is encrypted with a unique key, and keys are individually encrypted and stored safely to prevent unauthorized access."  
+            />
+            <Card
+              icon={icons.icon3} 
+              title="secure login" 
+              text="Google login integration ensures that only verified users can access encryption and decryption functionalities."  
+            />
+            <Card
+              icon={icons.icon4} 
+              title="End-to-End Image Privacy" 
+              text="Original images are never stored on the server. Encrypted data is handled temporarily and removed after processing."  
+            />
+            <Card
+              icon={icons.icon5} 
+              title="Instant Lock & Unlock" 
+              text="Simple upload-and-click interface for encrypting or decrypting images—no technical expertise required."  
+            />
+            <Card
+              icon={icons.icon6} 
+              title="Smooth UX Everywhere" 
+              text="Designed with a responsive interface using React and TailwindCSS, making it accessible on both desktop and mobile devices."  
+            />
+            
           </div>
         </div>
       </div>
@@ -172,66 +141,88 @@ function Home() {
         >
           Guide
         </div>
+
         <div 
-        className="flex flex-wrap gap-4 justify-center text-secondary-foreground bg-secondary">
+          className="flex flex-wrap gap-4 justify-center text-secondary-foreground bg-secondary rounded-sm">
+
           <div className="container-items w-1/6 p-4 m-2">
-            <h1>icon</h1>
-            <h1>Step - 1</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
+              1
+            </h1>
+            <h1 className="my-2 capitalize font-bold text-lg">
+              upload image
+            </h1>
+            <p className="text-md">
+              Select an image from your device that you want to encrypt.
+            </p>
+          </div>
+
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
+              2
+            </h1>
+            <h1 className="my-2 capitalize font-bold text-lg">
+              Encrypt & Secure
+            </h1>
+            <p className="text-md">
+              Hit the "Encrypt" button to protect your image with robust AES encryption.
+            </p>
+          </div>
+
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
+              3
+            </h1>
+            <h1 className="my-2 capitalize font-bold text-lg">
+              Save Your Key
+              </h1>
+            <p className="text-md">
+              Save the generated encryption key & Store it securely on your device.
+            </p>
+          </div>
+
+          <div className="container-items w-1/6 p-4 m-2">
+            <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
+              4
+            </h1>
+            <h1 className="my-2 capitalize font-bold text-lg">
+              Share Safely
+            </h1>
+            <p className="text-md">
+              Send your encrypted image confidently, knowing it's unreadable without the correct key.
             </p>
           </div>
           <div className="container-items w-1/6 p-4 m-2">
-            <h1>icon</h1>
-            <h1>Step - 1</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
-            </p>
-          </div>
-          <div className="container-items w-1/6 p-4 m-2">
-            <h1>icon</h1>
-            <h1>Step - 1</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
-            </p>
-          </div>
-          <div className="container-items w-1/6 p-4 m-2">
-            <h1>icon</h1>
-            <h1>Step - 1</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
-            </p>
-          </div>
-          <div className="container-items w-1/6 p-4 m-2">
-            <h1>icon</h1>
-            <h1>Step - 1</h1>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quibusdam, aspernatur!
+            <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
+              5
+            </h1>
+            <h1 className="my-2 capitalize font-bold text-lg">
+              Decrypt Anytime
+            </h1>
+            <p className="text-md">
+              upload the encrypted file 
+              & your saved key to restore the original image instantly.
             </p>
           </div>
         </div>
+
         <div>
           <button
            className= "hover:bg-secondary border p-3 m-2 rounded-md bg-transparent text-foreground hover:text-text-light "> 
             <Link to="/guide">
-              Watch a Demo
+              Detailed Guidance
             </Link>
           </button>
           <p className="text-ring" >Step-by-step tutorial for encryption and decryption</p>
         </div>
+
       </div>
 
-      <div id="testimonials" className="py-4 px-4 md:px-8 mb-8 text-center">
-        <div className="text-3xl md:text-4xl lg:tex[4rem] font-bold py-8 text-foreground " >
+      <div id="testimonials" className="py-4 px-4 md:px-8 mb-8 ">
+        <div className="text-3xl md:text-4xl lg:tex[4rem] font-bold py-8 text-foreground text-center" >
           Where Encodex Shines
         </div>
-        <div className=" flex gap-1 p-4 m-2 text-input overflow-auto">
-          <div className="card h-[20rem] w-[25rem] bg-destructive/10 text-card-foreground">Card</div>
-          <div className="card h-[20rem] w-[25rem] bg-destructive/10 text-card-foreground">Card</div>
-          <div className="card h-[20rem] w-[25rem] bg-destructive/10 text-card-foreground">Card</div>
-          <div className="card h-[20rem] w-[25rem] bg-destructive/10 text-card-foreground">Card</div>
-          <div className="card h-[20rem] w-[25rem] bg-destructive/10 text-card-foreground">Card</div>
-        </div>
+          <TestimonialsSilder />
       </div>
       
       <div id="signUp-page" className=" py-4 px-4 md:px-8 mb-8 text-center text-text-light bg-text-dark">

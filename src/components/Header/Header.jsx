@@ -42,9 +42,9 @@ function Header() {
   return (
     <header className="shadow-xl sticky z-50 top-0 ">
       <nav 
-        className="bg-background text-foreground  px-4 lg:px-6 py-2.5 duration-400 transition-all"
+        className="bg-background text-foreground  px-4 lg:px-6 py-2.5 duration-400 transition-all "
       >
-        <div className="flex  justify-between items-center mx-auto max-w-screen-xl">
+        <div className="flex  justify-between items-center mx-auto max-w-screen-xl align-middle h-[4rem]">
 
           <AuthModal
             isOpen={showModal}
@@ -55,14 +55,17 @@ function Header() {
           <Link to="/" className="flex items-center">
             {
               islargeScreen? 
-              <img className="h-20 pr-3" src="./assets/Logo.png" alt="Logo" /> :
-              <img className="h-12 md:h-20 max-w-md min-w-sm" src="./assets/icon..png"/>
+              (
+                <h2 className="text-3xl uppercase font-bold  " >Encodex</h2>
+              ) :
+              (<img className="h-12 md:h-20 max-w-md min-w-sm" src="./assets/icon..png"/>)
             }
           </Link>
-          
+          <div className="flex align-middle justify-end gap-5">
+            
           <div className="order-2">
             <button
-              className={`p-2 text-center bg-signup shadow-inner text-white ${islargeScreen? 'rounded-md': 'rounded-3xl size-9 p-1'} `}
+              className={`p-2 text-center bg-signup shadow-inner text-white ${islargeScreen? 'rounded-md': 'rounded-3xl size-9 p-1 mt-[1.27rem]'} `}
               onClick={()=>{
                   handleBegin(user || " ")
               }}
@@ -75,10 +78,11 @@ function Header() {
                 ) 
               }
             </button>
+            
           </div>
 
-          <div className=" justify-between items-center  lg:flex flex-wrap w-auto order-1 " >
-            <ul className="flex  mt-4 font-medium sm:flex-row sm:space-x-8 lg:mt-0 ">
+          <div className=" mt-2.5 lg:flex flex-wrap w-auto order-1 " >
+            <ul className="flex  mt-5 font-medium sm:flex-row sm:space-x-8 lg:mt-0 ">
               <li>
                 <NavLink
                  to="/"
@@ -97,7 +101,7 @@ function Header() {
                   { islargeScreen?  "Home" : <House size={20}/> }
                  </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                  to="/about"
                  className={
@@ -114,7 +118,7 @@ function Header() {
                 >
                   { islargeScreen?  "About" : <BookA size={20}/>}
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink 
                 to="/guide"
@@ -133,7 +137,7 @@ function Header() {
                   { islargeScreen?  "Guide" : <HelpCircle size={20}/> }
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink
                 to="/contact"
                 className={
@@ -150,7 +154,7 @@ function Header() {
                 >
                   { islargeScreen?  "Contact" : <Mail size={20}/> }
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <button onClick={ToggleTheme}>
                   {theme === 'light'? <Sun size={20}/> : <Moon size={20}/>}
@@ -158,6 +162,8 @@ function Header() {
               </li>
               
             </ul>
+          </div>
+          
           </div>
         </div>
       </nav>

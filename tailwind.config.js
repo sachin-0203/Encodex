@@ -69,12 +69,16 @@ export default {
 				sidebarC: 'hsl(var(--sidebarC))',
 				sidebarT: 'hsl(var(--sidebarT))',
 				back: 'hsl(var(--back))',
+				circle : 'hsl(var(--circle))',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
+			boxShadow: {
+				'custom-dark': '0 4px 6px rgba(0, 0, 0, 0.5)',
+			}
   	}
   },
   plugins: [

@@ -76,6 +76,7 @@ function DecryptPage() {
 
       if (response.data.decrypted_image) {
         logMessage("Image Decrypted Successfully ✅");
+        logHistory('File: Decrypted_image.dec.jpg')
         const base64Image = response.data.decrypted_image;
 
         const byteCharacters = atob(base64Image);

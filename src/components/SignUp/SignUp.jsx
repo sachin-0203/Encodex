@@ -82,7 +82,10 @@ export default function SignupForm() {
           <input type="checkbox" id="terms" className="mr-2" required />
           <label htmlFor="terms" className="text-text-dark" >
             I agree to the{" "}
-            <a href="#" className="text-accent-dark underline">
+            <a 
+              href="../src/pages/Term&Condition/Term&Condition.html" className="text-accent-dark underline"
+              target="_blank"
+            >
               Terms & Conditions
             </a>
           </label>
@@ -94,7 +97,7 @@ export default function SignupForm() {
           Sign Up
         </button>
       </form>
-      <div className="mt-4">
+      <div className="mt-3 border rounded-sm">
         <GoogleLoginBtn onLogin={({token, username})=>{
           setUser(username)
           setAccessToken(token)
