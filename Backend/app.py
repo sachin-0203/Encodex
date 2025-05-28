@@ -94,7 +94,7 @@ def get_users():
         user_list.append({
             "id": user.id, 
             "username": user.username,
-            "email": user.email
+            "email": user.email,
         })
     return jsonify(user_list)
 
@@ -171,11 +171,13 @@ def login():
     access_token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))
 
+
     response = jsonify({
         'status': 'success',
         'message': 'Login successfull',
         'access_token': access_token,
         'username': user.username,
+        "email": user.email,
     })
 
     set_refresh_cookies(response, refresh_token)
@@ -242,14 +244,45 @@ def googleLogin():
         return jsonify({"msg": "Invalid Google Token"}), 400
 
 
+@app.route("/upload", methods=['POST'])
+@jwt_required()
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part in request'}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if file and allowed_file(file.filename):
+        
+        user_id = get_jwt_identity()
+        user_upload_folder = os.path.join(UPLOAD_FOLDER, str(user_id))
+        os.makedirs(user_upload_folder, exist_ok=True)
+
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(user_upload_folder, filename)
+        file.save(file_path)
+
+        with open(file_path,'rb') as f:
+            file_data = f.read()
+            encoded_file = base64.b64encode(file_data).decode('utf-8')
+
+        return jsonify({
+            'status': 'success',
+            'filename': filename,
+            'file_base64': encoded_file,
+        }), 200
+    else:
+        return jsonify({'error': 'File type not allowed'}), 400
 
 # Generate RSA keys for each recipient
-def generate_rsa_keys(recipient):
-    recipient_folder = os.path.join(KEYS_FOLDER, recipient)
-    os.makedirs(recipient_folder, exist_ok=True)
+def generate_rsa_keys(recipient, user_id):
+    user_key_folder = os.path.join(KEYS_FOLDER, str(user_id))
+    os.makedirs(user_key_folder, exist_ok=True)
     
-    private_key_path = os.path.join(recipient_folder, "private.pem")
-    public_key_path = os.path.join(recipient_folder, "public.pem")
+    private_key_path = os.path.join(user_key_folder, f"{recipient}_pvt.pem")
+    public_key_path = os.path.join(user_key_folder, f"{recipient}_pub.pem")
     
     if not os.path.exists(private_key_path) or not os.path.exists(public_key_path):
         key = RSA.generate(2048)
@@ -259,8 +292,9 @@ def generate_rsa_keys(recipient):
             pub_file.write(key.publickey().export_key())
 
 # AES Encryption Function
-def aes_encrypt(image_path, recipient):
-    generate_rsa_keys(recipient)  # Ensure recipient's keys exist
+def aes_encrypt(image_path, recipient, user_id, filename):
+
+    generate_rsa_keys(recipient, user_id)  # Ensure user's keys exist
     
     original_imagename = os.path.basename(image_path)
     filename_without_ext, ext = os.path.splitext(original_imagename)
@@ -275,13 +309,17 @@ def aes_encrypt(image_path, recipient):
     encrypted_data = cipher.nonce + tag + encrypted_image
 
     encrypted_filename = f"{filename_without_ext}_{secrets.token_hex(4)}.enc"
-    encrypted_image_path = os.path.join(ENCRYPTED_FOLDER, encrypted_filename)
+
+    user_enc_folder = os.path.join(ENCRYPTED_FOLDER, str(user_id))
+    os.makedirs(user_enc_folder, exist_ok=True)
+
+    encrypted_image_path = os.path.join(user_enc_folder, encrypted_filename)
     
     with open(encrypted_image_path, 'wb') as encrypted_file:
         encrypted_file.write(encrypted_data)
     
     # Load recipient's public key to encrypt AES key
-    public_key_path = os.path.join(KEYS_FOLDER, recipient, "public.pem")
+    public_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_pub.pem")
     with open(public_key_path, 'rb') as pub_file:
         recipient_public_key = RSA.import_key(pub_file.read())
     rsa_cipher = PKCS1_OAEP.new(recipient_public_key)
@@ -290,9 +328,10 @@ def aes_encrypt(image_path, recipient):
     encrypted_aes_key_b64 = base64.b64encode(encrypted_aes_key).decode()
     encrypted_image_b64 = base64.b64encode(encrypted_data).decode()
     
-    return encrypted_image_b64, encrypted_aes_key_b64
+    return encrypted_image_b64, encrypted_aes_key_b64, encrypted_filename
 
 @app.route('/encrypt', methods=['POST'])
+@jwt_required()
 def encrypt():
     if 'image' not in request.files or 'recipient' not in request.form:
         return jsonify({'error': 'Missing file or recipient'}), 400
@@ -312,8 +351,10 @@ def encrypt():
             os.remove(file_path)
             return jsonify({'status': 'error', 'message': 'Invalid image file'}), 400
         
-        encrypted_image, encrypted_aes_key = aes_encrypt(file_path, recipient)
-        image_name = f"{filename[:2].lower()}_enc_{secrets.token_hex(4)}.enc"
+        user_id = get_jwt_identity()
+        encrypted_image, encrypted_aes_key, image_name = aes_encrypt(file_path, recipient, user_id, filename)
+        os.remove(file_path)
+
         return jsonify({
             'status': 'success',
             'message': 'File Encrypted Successfully!',
@@ -325,12 +366,12 @@ def encrypt():
         return jsonify({'status': 'error', 'message': 'This file type is not allowed'}), 400
 
 # AES + RSA Decryption Function
-def aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient):
+def aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient, user_id):
     encrypted_image = base64.b64decode(encrypted_image_b64)
     encrypted_aes_key = base64.b64decode(encrypted_aes_key_b64)
     
-    # Load recipient's private key
-    private_key_path = os.path.join(KEYS_FOLDER, recipient, "private.pem")
+    # Load user's private key
+    private_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_pvt.pem")
     with open(private_key_path, 'rb') as priv_file:
         recipient_private_key = RSA.import_key(priv_file.read())
     rsa_cipher = PKCS1_OAEP.new(recipient_private_key)
@@ -343,26 +384,38 @@ def aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient):
     return base64.b64encode(decrypted_image).decode()
 
 @app.route('/decrypt', methods=['POST'])
+@jwt_required()
 def decrypt():
     try:
         data = request.json
         encrypted_image_b64 = data.get('encrypted_image')
         encrypted_aes_key_b64 = data.get('encryption_key')
         recipient = data.get('recipient')
+        decfilename = data.get('filename')
         
         if not encrypted_image_b64 or not encrypted_aes_key_b64 or not recipient:
             return jsonify({'error': 'Missing decryption data'}), 400
         
-        decrypted_image_b64 = aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient)
+        user_id = get_jwt_identity()
+        decrypted_image_b64 = aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient, user_id)
 
         # Decode Base64 before writing to a file
-        decrypted_filename = f"decrypted_{recipient}.png"
-        decrypted_path = os.path.join(DECRYPTED_FOLDER, decrypted_filename)
+        
+        decrypted_filename = decfilename
+
+        user_dec_folder = os.path.join(DECRYPTED_FOLDER, str(user_id))
+        os.makedirs(user_dec_folder, exist_ok=True)
+
+        decrypted_path = os.path.join(user_dec_folder, decrypted_filename)
 
         with open(decrypted_path, "wb") as f:
             f.write(base64.b64decode(decrypted_image_b64))
         
-        return jsonify({'status': 'success', 'decrypted_image': decrypted_image_b64})
+        return jsonify({
+            'status': 'success', 
+            'decrypted_image': decrypted_image_b64,
+            'filename' : decfilename,
+        })
     
     except Exception as e:
         return jsonify({'error': f'Error while decrypting the image: {str(e)}'}), 500
