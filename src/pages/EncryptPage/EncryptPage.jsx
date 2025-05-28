@@ -3,12 +3,14 @@ import { RotateCw } from "lucide-react";
 import axios from "axios";
 import { MyContext } from "../../Context/MyContext";
 import "../../App.css";
+import { useAuth } from "@/Context/AuthContext";
 
 
 
 function EncryptPage() {
   const context = useContext(MyContext);
   const { logMessage, logHistory } = context;
+  const {accessToken} = useAuth()
 
   const [file, setFile] = useState(null);
   const [recipient, setRecipient] = useState("");
@@ -80,15 +82,37 @@ function EncryptPage() {
     }
   }
 
-  const handleFileChange = (e) => {
-    const uploadedFile = e.target.files[0];
-    if (uploadedFile) {
-      setFile(uploadedFile);
-      logMessage("Image is Uploaded ");
+  const handleFileChange = async (e) => {
+  const file = e.target.files[0];
+  if (!file){
+    logMessage('Upload a file');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const res = await axios.post('http://127.0.0.1:5000/upload', formData, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    const result =  res.data;
+    if (result.status === 'success') {
+      logMessage('File Upload')
+      setFile(file)
+      logHistory(`File uploaded: ${result.filename}`);
+
     } else {
-      logMessage("No Image Uploaded❓");
+      logMessage('Upload failed');
     }
-  };
+  } catch (err) {
+    logMessage('Error uploading file');
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -101,7 +125,10 @@ function EncryptPage() {
 
     try {
       const response = await axios.post("http://127.0.0.1:5000/encrypt", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { 
+          'Authorization': `Bearer ${accessToken}`,
+          "Content-Type": "multipart/form-data"
+        },
       });
 
       const result = response.data;
@@ -165,7 +192,7 @@ function EncryptPage() {
           <label htmlFor="recipient" 
             className={`absolute left-2 px-1 top-5 text-gray-500 bg-background text-sm transition-all  peer-focus:top-0.5 peer-focus:text-sm peer-focus:text-ring ${recipient? 'top-[2px]':''} `}
           >
-            Enter Recipient (Email/Username)
+            Enter Recipient (Username)
           </label>
         </div>
 

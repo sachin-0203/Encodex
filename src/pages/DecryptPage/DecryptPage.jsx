@@ -3,9 +3,11 @@ import { RotateCw, DownloadIcon } from "lucide-react";
 import axios from "axios";
 import { MyContext } from "../../Context/MyContext";
 import "../../App.css"
+import { useAuth } from "@/Context/AuthContext";
 
 function DecryptPage() {
-  const { logMessage } = useContext(MyContext);
+  const { logMessage, logHistory } = useContext(MyContext);
+  const {accessToken} = useAuth();
   const [decText, setDecText] = useState("");
   const [decKey, setDecKey] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -44,8 +46,8 @@ function DecryptPage() {
       setDecText(reader.result);
       logMessage("📂 Encrypted file loaded successfully!");
     };
-    const firstTwo = file.name.slice(0, 2).toLowerCase();
-    const name = `${firstTwo}_dec_image.png`;
+    const nameWithoutExtension = file.name.replace(/\.enc$/, '');
+    const name = `${nameWithoutExtension}_dec.png`;
     setImagename(name);
   };
 
@@ -65,19 +67,22 @@ function DecryptPage() {
       logMessage("The Encrypted text, Key, or Recipient is missing ❗");
       return;
     }
-    const filename = "decrypt_Image.png";
+    const filename = imagename;
     
     try {
       const response = await axios.post(
         "http://127.0.0.1:5000/decrypt",
-        JSON.stringify({ encrypted_image: decText, encryption_key: decKey, recipient, filename }),
-        { headers: { "Content-Type": "application/json" } }
+        JSON.stringify({ encrypted_image: decText, encryption_key: decKey,recipient, filename }),
+        { headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          "Content-Type": "application/json" 
+        }}
       );
 
       if (response.data.decrypted_image) {
-        logMessage("Image Decrypted Successfully ✅");
-        logHistory('File: Decrypted_image.dec.jpg')
+        
         const base64Image = response.data.decrypted_image;
+        const filename = response.data.filename
 
         const byteCharacters = atob(base64Image);
         const byteNumbers = new Array(byteCharacters.length);
@@ -89,6 +94,8 @@ function DecryptPage() {
 
         const imageUrl = URL.createObjectURL(blob);
         setDecryptImageUrl(imageUrl);
+        logMessage("Image Decrypted Successfully ✅");
+        logHistory(`File: ${filename}`);
       } else {
         logMessage("❌ Failed to Decrypt the image");
       }
@@ -112,8 +119,8 @@ function DecryptPage() {
               <button ref={btnRef} className="bg-green-500 hover:bg-green-700 p-2 rounded-sm text-white" onClick={downloadAnimation} >
                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="download-icon">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline class="arrow" points="7 10 12 15 17 10"/>
-                <line class="arrow" x1="12" x2="12" y1="15" y2="3"/>
+                <polyline class="arrow"  points="7 10 12 15 17 10"/>
+                <line class="arrow"  x1="12" x2="12" y1="15" y2="3"/>
                 </svg>
               </button>
             </a>
@@ -136,7 +143,7 @@ function DecryptPage() {
               onChange={(e) => setRecipient(e.target.value)}
               className={`w-full p-2 rounded-md outline-none border bg-background text-foreground `}
               type="text"
-              placeholder="Enter Recipient (Email/Username)"
+              placeholder="Enter Recipient (Username)"
             />
           </div>
           <div className="mb-3">
