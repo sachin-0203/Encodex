@@ -1,10 +1,12 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import { Link, NavLink } from "react-router-dom";
-import {UserRoundPlus, LayoutDashboard, House, HelpCircle, Mail, BookA, Sun, Moon, LogIn, LogOut } from "lucide-react"
+import {UserRoundPlus, House, HelpCircle, Mail, BookA, Sun, Moon, LogOut } from "lucide-react"
 import { useTheme } from "../../Context/ThemeContext";
 import { useAuth } from "../../Context/AuthContext";
 
 import AuthModal from "../AuthModel/AuthModel";
+import { useNavigate } from "react-router-dom";
+import ProfileMenu from "../Profile/ProfileMenu";
 
 function Header() {
 
@@ -14,6 +16,7 @@ function Header() {
 
   const {theme, ToggleTheme} = useTheme()
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
+  const navigate = useNavigate();
 
   useEffect(()=>{
 
@@ -25,10 +28,7 @@ function Header() {
   }, [])
 
   const handleBegin = (owner)=>{
-    if(owner === user){
-      logout()
-    }
-    else{
+    if(owner != user){
       setAuthView('login');
       setShowModal(true);
     }
@@ -63,18 +63,20 @@ function Header() {
           </Link>
           <div className="flex align-middle justify-end gap-5">
             
-          <div className="order-2">
+          <div className="order-2 flex gap-1">
             <button
-              className={`p-2 text-center bg-signup shadow-inner text-white ${islargeScreen? 'rounded-md': 'rounded-3xl size-9 p-1 mt-[1.27rem]'} `}
+              className={`rounded-full h-10 text-center bg-signup shadow-inner text-white
+                 ${user? '':' rounded-md p-2 '}
+                 ${islargeScreen? '': ' mt-[1.4rem]'}  `}
               onClick={()=>{
                   handleBegin(user || " ")
               }}
             >
               {user?
                 (
-                  islargeScreen?  user : "S"
+                    <ProfileMenu onLogout={logout} />
                 ):(
-                  islargeScreen?  "SignUp / LogIn " : <UserRoundPlus size={20}/>
+                    islargeScreen?  "SignUp / LogIn " : <UserRoundPlus size={20}/>
                 ) 
               }
             </button>
@@ -101,24 +103,6 @@ function Header() {
                   { islargeScreen?  "Home" : <House size={20}/> }
                  </NavLink>
               </li>
-              {/* <li>
-                <NavLink
-                 to="/about"
-                 className={
-                  ({ isActive }) => `
-                    block pb-2 px-1
-                    ${isActive 
-                      ? "text-primary border-b border-ring" 
-                      : "text-foreground"
-                    }
-                    hover:text-primary 
-                    lg:p-0
-                    transition-all duration-200
-                  `}
-                >
-                  { islargeScreen?  "About" : <BookA size={20}/>}
-                </NavLink>
-              </li> */}
               <li>
                 <NavLink 
                 to="/guide"
@@ -137,24 +121,6 @@ function Header() {
                   { islargeScreen?  "Guide" : <HelpCircle size={20}/> }
                 </NavLink>
               </li>
-              {/* <li>
-                <NavLink
-                to="/contact"
-                className={
-                  ({ isActive }) => `
-                    block pb-2 px-3
-                    ${isActive 
-                      ? "text-primary border-b border-ring" 
-                      : "text-foreground"
-                    }
-                    hover:text-primary 
-                    lg:p-0
-                    transition-all duration-200
-                  `}
-                >
-                  { islargeScreen?  "Contact" : <Mail size={20}/> }
-                </NavLink>
-              </li> */}
               <li>
                 <button onClick={ToggleTheme}>
                   {theme === 'light'? <Sun size={20}/> : <Moon size={20}/>}

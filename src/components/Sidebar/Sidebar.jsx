@@ -1,6 +1,6 @@
-import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
+import { ChevronLast, ChevronFirst, UserCircle, MoreHorizontalIcon, ChevronRight } from "lucide-react"
 import { useContext, createContext, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 import { useAuth } from "../../Context/AuthContext"
 
@@ -8,8 +8,9 @@ const SidebarContext = createContext()
 
 export default function Sidebar({ children }) {
 
-  const {user, profile} = useAuth();
+  const {user, profile, Logout} = useAuth();
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
   
   return (
     <aside className="h-screen fixed z-50">
@@ -34,23 +35,22 @@ export default function Sidebar({ children }) {
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3">
-          <img
-            src="./assets/icon..png"
-            alt="fav_icon" 
-            className="w-10 h-10 rounded-md"
-          />
+        <div className="border-t flex p-3" >
+          <div onClick={()=>navigate('/profile')}>
+            <UserCircle className="hover:ring rounded-full cursor-pointer mt-2" size={35} />
+          </div>
           <div
             className={`
               flex justify-between items-center
-              overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
+              overflow-hidden transition-all  ${expanded ? "w-52 ml-3" : "w-0 hidden"}
           `}
           >
-            <div className="leading-4">
+            <div className="leading-4 p-1">
               <h4 className="font-semibold">{user}</h4>
               <span className="text-xs text-accent">Active</span>
             </div>
-            <MoreVertical size={20} />
+            <ChevronRight className="hover:ring mr-1 rounded-full cursor-pointer" onClick={()=>navigate('/profile')}  size={25} />
+           
           </div>
         </div>
       </nav>

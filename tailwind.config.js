@@ -14,9 +14,14 @@ export default {
 					'100%': {backgroundPosition: '100% 0' }
 					}
 				},
+				fadeIn: {
+					'0%' : { opacity : 0 },
+					'100%' : {opacity: 1},
+				},
 			},
 			animation:{
-				shimmer: 'shimmer 1.5s linear infinite'
+				shimmer: 'shimmer 1.5s linear infinite',
+				fadeIn : 'fadeIn 0.3s ease-out forwards'
 			},
   		colors: {
   			background: 'hsl(var(--background))',

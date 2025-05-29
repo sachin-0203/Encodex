@@ -9,7 +9,9 @@ const AuthContext = createContext({})
 
 export const AuthProvider = ({children})=>{
 
+  const [userId, setUserId] = useState(null);
   const [user, setUser] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   
   const [profile, setProfile] = useState("");
@@ -27,7 +29,9 @@ export const AuthProvider = ({children})=>{
       const userRes = await axios.get("http://localhost:5000/me",{
         headers: { Authorization: `Bearer ${token}` }
       })
+      setUserId(userRes.data.id);
       setUser(userRes.data.username);
+      setUserEmail(userRes.data.email)
     } catch(err){
       setAccessToken(null)
     }
@@ -48,11 +52,15 @@ export const AuthProvider = ({children})=>{
       const result = response.data;
       if(result.status === 'success'){
         
+        console.log(result)
         const token = result.access_token;
         const userData = result.username;
+        const email = result.email;
 
         setAccessToken(token);
         setUser(userData);
+        setUserEmail(userData);
+
 
         return { success: true, user: userData };
       }
@@ -117,6 +125,7 @@ export const AuthProvider = ({children})=>{
 
 
   const value = {
+    userId,
     user,
     setUser,
     accessToken,
@@ -125,7 +134,8 @@ export const AuthProvider = ({children})=>{
     signup,
     logout,
     profile,
-    setProfile
+    setProfile,
+    userEmail
   };
 
   return (

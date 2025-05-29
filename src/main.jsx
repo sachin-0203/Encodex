@@ -26,13 +26,22 @@ const router = createBrowserRouter(
         <Route path='/about' element={<About />} />
         <Route path='/guide' element={<Guide />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/profile' element={<Profile />} />
+        <Route path='/profile' element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+          } />
         
       </Route>
-      <Route path='/Setting' element={<Setting />} />
+      <Route path='/Setting' element={
+        <ProtectedRoute>
+          <Setting />
+        </ProtectedRoute>
+        } />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <Dashboard />
+
         </ProtectedRoute>
       }/>
 

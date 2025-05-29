@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import os
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -8,6 +8,7 @@ from Crypto.Cipher import AES, PKCS1_OAEP
 from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 import secrets
+import json
 
 
 from flask_jwt_extended import JWTManager
@@ -32,7 +33,7 @@ from models import User
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.')
 CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
@@ -62,16 +63,24 @@ UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/uploads')
 ENCRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/encrypted')
 DECRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/decrypted')
 KEYS_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/keys')  
+META_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/metadata')  
 
 # Create directories if they don’t exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(ENCRYPTED_FOLDER, exist_ok=True)
 os.makedirs(DECRYPTED_FOLDER, exist_ok=True)
 os.makedirs(KEYS_FOLDER, exist_ok=True)
+os.makedirs(META_FOLDER, exist_ok=True)
 
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'jpeg', 'png', 'gif'}
+VALID_FOLDERS = {
+    'uploads': UPLOAD_FOLDER,
+    'encrypted': ENCRYPTED_FOLDER,
+    'decrypted': DECRYPTED_FOLDER
+}
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -276,6 +285,30 @@ def upload_file():
     else:
         return jsonify({'error': 'File type not allowed'}), 400
 
+def save_encryption_metadata(user_id, encrypted_filename, original_filename, recipient_name):
+    metadata = {
+        "user_id": user_id,
+        "original_filename": original_filename,
+        "encrypted_filename": encrypted_filename,
+        "recipient_name": recipient_name,
+        "rcpt_pubkey_name": f"{recipient_name}_aeskey.txt",
+        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
+
+    }
+    
+    user_meta_folder = os.path.join(META_FOLDER, str(user_id))
+    os.makedirs(user_meta_folder, exist_ok=True)
+
+    metadata_filename = f"{encrypted_filename}.meta.json"
+    metadata_path = os.path.join(user_meta_folder, metadata_filename)
+
+    try:
+        with open(metadata_path, 'w') as f:
+            json.dump(metadata, f, indent=2)
+    except Exception as e:
+        print(f"[ERROR] Failed to write metadata: {e}")
+        raise
+
 # Generate RSA keys for each recipient
 def generate_rsa_keys(recipient, user_id):
     user_key_folder = os.path.join(KEYS_FOLDER, str(user_id))
@@ -327,6 +360,10 @@ def aes_encrypt(image_path, recipient, user_id, filename):
     
     encrypted_aes_key_b64 = base64.b64encode(encrypted_aes_key).decode()
     encrypted_image_b64 = base64.b64encode(encrypted_data).decode()
+
+    encrypted_aes_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_aeskey.txt")
+    with open(encrypted_aes_key_path, 'w') as f:
+        f.write(encrypted_aes_key_b64)
     
     return encrypted_image_b64, encrypted_aes_key_b64, encrypted_filename
 
@@ -352,7 +389,16 @@ def encrypt():
             return jsonify({'status': 'error', 'message': 'Invalid image file'}), 400
         
         user_id = get_jwt_identity()
-        encrypted_image, encrypted_aes_key, image_name = aes_encrypt(file_path, recipient, user_id, filename)
+        encrypted_image, encrypted_aes_key, encrypted_filename = aes_encrypt(file_path, recipient, user_id, filename)
+
+        
+        # Save metadata JSON after encryption
+        try:
+            save_encryption_metadata(user_id, encrypted_filename, filename, recipient)
+
+        except Exception as e:
+            print(f"[WARNING] Metadata not saved: {e}") 
+
         os.remove(file_path)
 
         return jsonify({
@@ -360,10 +406,63 @@ def encrypt():
             'message': 'File Encrypted Successfully!',
             'encrypted_content': encrypted_image,
             'encrypted_aes_key': encrypted_aes_key,
-            'image_name' : image_name,
+            'image_name' : encrypted_filename,
         })
     else:
         return jsonify({'status': 'error', 'message': 'This file type is not allowed'}), 400
+    
+@app.route('/encrypted/metadata', methods=['GET'])
+@jwt_required()
+def get_encryption_metadata():
+    user_id = get_jwt_identity()
+    user_meta_folder = os.path.join(META_FOLDER, str(user_id))
+    
+    if not os.path.exists(user_meta_folder):
+        return jsonify({'metadata': []})  # No files for this user yet
+
+    metadata_files = [f for f in os.listdir(user_meta_folder) if f.endswith('.meta.json')]
+    
+    all_metadata = []
+    for meta_file in metadata_files:
+        meta_path = os.path.join(user_meta_folder, meta_file)
+        try:
+            with open(meta_path, 'r') as f:
+                metadata = json.load(f)
+            all_metadata.append(metadata)
+        except Exception as e:
+            # Log error or skip invalid metadata files
+            continue
+    
+    return jsonify(all_metadata)
+
+@app.route('/keys', methods=['GET'])
+@jwt_required()
+def get_user_encrypted_aes_keys():
+    user_id = get_jwt_identity()
+
+    user_keys_folder = os.path.join(KEYS_FOLDER, str(user_id))
+
+    if not os.path.exists(user_keys_folder):
+        return jsonify([])
+
+    aes_key_files = [f for f in os.listdir(user_keys_folder) if f.endswith('_aeskey.txt')]
+    return jsonify(aes_key_files)
+
+@app.route('/key-content/<key_name>', methods=['GET'])
+@jwt_required()
+def get_key_content(key_name):
+    user_id = get_jwt_identity()
+    user_key_folder = os.path.join(KEYS_FOLDER, str(user_id))
+    key_path = os.path.join(user_key_folder, key_name)
+
+    if not os.path.exists(key_path):
+        return jsonify({'error': 'Key not found'}), 404
+
+    with open(key_path, 'r') as f:
+        content = f.read()
+
+    return jsonify({'content': content})
+
 
 # AES + RSA Decryption Function
 def aes_rsa_decrypt(encrypted_image_b64, encrypted_aes_key_b64, recipient, user_id):
@@ -419,6 +518,71 @@ def decrypt():
     
     except Exception as e:
         return jsonify({'error': f'Error while decrypting the image: {str(e)}'}), 500
+
+
+# to get the abs path for a specific user's fol
+def get_user_folder_path(base_folder_name, user_id):
+    base_dir = os.path.dirname(__file__)
+    return os.path.join(base_dir, base_folder_name, str(user_id))
+
+@app.route('/images/<folder_name>/<user_id>')
+def get_images(folder_name, user_id):
+    print(f"Received request for folder_name: {folder_name}, user_id: {user_id}")
+    print(f"Allowed folders: {VALID_FOLDERS}")  
+
+    if folder_name not in VALID_FOLDERS:
+        return jsonify({"error": "Invalid base folder name"}), 400
+    
+    user_specific_folder_path = get_user_folder_path(folder_name, user_id)
+    if not os.path.isdir(user_specific_folder_path):
+        return jsonify([])
+    
+    try:
+        image_files = [f for f in os.listdir(user_specific_folder_path) if os.path.isfile(os.path.join(user_specific_folder_path, f))]
+        image_files = [f for f in image_files if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif' , '.enc'))]
+
+        # Construct full URLs for the frontend. Adjust port if your Flask app runs on something other than 5000
+        # The URL now includes the user_id for serving individual images
+        image_urls = [f'http://localhost:5000/image/{folder_name}/{user_id}/{img_name}' for img_name in image_files]
+        return jsonify(image_urls)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/image/<folder_name>/<user_id>/<filename>')
+def serve_image(folder_name, user_id, filename):
+    # Basic security check for valid base folder names
+    if folder_name not in VALID_FOLDERS:
+        return jsonify({"error": "Invalid base folder"}), 400
+
+    try:
+        # Use send_from_directory to safely serve files from the user's specific subfolder
+        return send_from_directory(get_user_folder_path(folder_name, user_id), filename, as_attachment=True)
+    except FileNotFoundError:
+        return jsonify({"error": "Image not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/image-counts', methods=['GET'])
+@jwt_required()
+def get_image_counts():
+    user_id = get_jwt_identity()
+
+    def count_files_in_folder(folder_path):
+        if os.path.exists(folder_path):
+            return len([f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))])
+        return 0
+
+    upload_count = count_files_in_folder(os.path.join(UPLOAD_FOLDER, str(user_id)))
+    encrypted_count = count_files_in_folder(os.path.join(ENCRYPTED_FOLDER, str(user_id)))
+    decrypted_count = count_files_in_folder(os.path.join(DECRYPTED_FOLDER, str(user_id)))
+
+    return jsonify({
+        'uploads': upload_count,
+        'encrypted': encrypted_count,
+        'decrypted': decrypted_count
+    })
+
 
 if __name__ == "__main__":
     with app.app_context():

@@ -75,9 +75,9 @@ function Home() {
               </button>
             </div>
           </div>
-          <div className="right-container">
+          {/* <div className="right-container">
             <img src="assets/right-logo.png" alt="home-image" />
-          </div>
+          </div> */}
         </div>
 				
 				<button id="moveTop" onClick={scrollToTop} 
@@ -85,7 +85,7 @@ function Home() {
         >
 					<MoveUp size={20} />
 				</button>
-        <div className="absolute z-0 top-[90%] left-[47%] translate-x-[-120%] translate-y-[-50%] flex items-center justify-center size-80 rounded-full bg-circle blur-[120px] " />
+        <div className="absolute z-0 top-[90%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center justify-center size-80 rounded-full bg-circle blur-[120px] " />
         <div className="absolute z-0 top-[90%] left-[47%] translate-x-[-120%] translate-y-[-50%] flex items-center justify-center size-60 rounded-full bg-black-500 blur-[100px]"/>
 
         

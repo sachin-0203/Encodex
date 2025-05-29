@@ -167,11 +167,11 @@ function Dashboard() {
               text={ theme== "dark" ? "Dark" : "Light"}
             />
 
-            {/* <SidebarItem
+            <SidebarItem
               icon={<Settings size={20} />}
               text="Setting"
               path="/setting"
-            /> */}
+            />
 
             <SidebarItem
               onClick={logout}
@@ -263,12 +263,12 @@ function Dashboard() {
                   {/* Notification , History */}
                   <div className="hidden lg:block w-[30%] text-center">
                     <div className="h-full ">
-                      <div className="border rounded-md border-zinc-950">
-                        <h2 className=" font-mono text-lg bg-[hsl(205,73%,34%)] text-white rounded-se-md rounded-ss-md py-2 ">Notifications </h2>
-                        <div className="w-full max-w-md bg-sky-100  overflow-auto h-52 rounded-es-md rounded-ee-md   ">
+                      <div className="mb-4 border border-sky-700 rounded-md rounded-b-sm">
+                        <h2 className=" font-mono text-lg bg-[hsl(205,73%,34%)] text-white rounded-t-md py-2 ">Notifications </h2>
+                        <div className="w-full max-w-md bg-sky-100  overflow-auto h-52 rounded-b-sm ">
                           {
                             messages.length > 0 ? (
-                              <div className="border-2 text-sm border-l  rounded-md">
+                              <div className="text-sm">
                                 {
                                   messages.map((msg,index) =>{
                                     return (
@@ -286,9 +286,9 @@ function Dashboard() {
                         </div>
                       </div>
 
-                      <div className="border rounded-md mt-2 border-zinc-800  w-full">
-                        <h2 className="font-mono text-lg border bg-zinc-500 text-white p-1 rounded-ss-md rounded-se-md">History</h2>
-                        <div className="bg-zinc-200 overflow-y-auto h-48 rounded-es-md rounded-ee-md ">
+                      <div className="border border-gray-800 rounded-md mt-2 0  w-full">
+                        <h2 className="font-mono text-lg bg-zinc-500 text-white p-1 rounded-t-md">History</h2>
+                        <div className="bg-zinc-200 overflow-y-auto h-48 rounded-b-md ">
                         {
                           history.length > 0 ? (
                             <div className="border-2 text-sm border-l-zinc-700 rounded-md">
