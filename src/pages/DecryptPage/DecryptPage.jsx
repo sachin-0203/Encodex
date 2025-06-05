@@ -52,6 +52,7 @@ function DecryptPage() {
   };
 
   const downloadAnimation= ()=>{
+    if(!decryptImageUrl) return;
     const btn = btnRef.current;
     if (btn) {
       btn.classList.add("bounce-arrow");
@@ -112,19 +113,49 @@ function DecryptPage() {
             onClick={ResetForm}
             className="text-white bg-destructive hover:bg-destructive/50 rounded-sm p-2"
           >
-            <svg ref={resetIconRef} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            <svg 
+              ref={resetIconRef}
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-rotate-cw-icon lucide-rotate-cw"
+            >
+              <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+              <path d="M21 3v5h-5"/>
+            </svg>
           </button>
-          {decryptImageUrl && (
+          <div className="flex align-middle gap-1">
+            <div className={` pt-2 ${decryptImageUrl? "text-green-300": "text-gray-700"}`} >{decryptImageUrl? "Download- ": "No decrypted image"}
+              
+            </div>
             <a href={decryptImageUrl} download={imagename}>
-              <button ref={btnRef} className="bg-green-500 hover:bg-green-700 p-2 rounded-sm text-white" onClick={downloadAnimation} >
-                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24"    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="download-icon">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline class="arrow"  points="7 10 12 15 17 10"/>
-                <line class="arrow"  x1="12" x2="12" y1="15" y2="3"/>
+              <button ref={btnRef} className={`  p-2 rounded-sm text-white ${decryptImageUrl? "bg-green-600 hover:bg-green-700": "bg-green-600/20"} `} onClick={downloadAnimation} >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="25" 
+                  height="25" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="download-icon"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline className="arrow" points="7 10 12 15 17 10"/>
+                  <line className="arrow" x1="12" x2="12" y1="15" y2="3"/>
                 </svg>
               </button>
             </a>
-          )}
+            
+          </div>
         </div>
         <form id="decrypt-form" method="post" onSubmit={decHandleSubmit}>
           <div className="mb-3">

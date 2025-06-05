@@ -93,7 +93,7 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
-# Temporary route to see the registered user data
+# Temporary route:  to see the registered user data
 @app.route("/users", methods=["GET"])
 @jwt_required()
 def get_users():
@@ -107,12 +107,13 @@ def get_users():
         })
     return jsonify(user_list)
 
-# send the current_user data
+# route: get current user data
 @app.route("/me", methods=["GET"])
 @jwt_required()
 def get_current_user():
     current_user_id = int(get_jwt_identity())
-    user = User.query.get(str(current_user_id))
+    user = db.session.get(User, current_user_id)
+
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -124,6 +125,8 @@ def get_current_user():
     }), 200
 
 
+
+# route: Sign-Up
 @app.route('/signup', methods=['POST'])
 def signup():
     
@@ -160,7 +163,7 @@ def signup():
         'username': new_user.username,
     }), 201
 
-
+# route: LogIn
 @app.route('/login', methods=['POST'])
 def login():
 
@@ -193,6 +196,7 @@ def login():
     
     return response
 
+# route: LogOut
 @app.route('/logout', methods=['POST'])
 def logout():
     response = jsonify({
@@ -203,6 +207,7 @@ def logout():
 
     return response
 
+# route: Refresh
 @app.route("/refresh", methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
@@ -215,6 +220,7 @@ def refresh():
         "access_token": new_access_token
     })
 
+# route: Google-Login
 @app.route('/googleLogin', methods=['POST'])
 def googleLogin():
     token = request.json.get('token')
@@ -253,6 +259,7 @@ def googleLogin():
         return jsonify({"msg": "Invalid Google Token"}), 400
 
 
+# route: Upload
 @app.route("/upload", methods=['POST'])
 @jwt_required()
 def upload_file():
@@ -284,6 +291,7 @@ def upload_file():
         }), 200
     else:
         return jsonify({'error': 'File type not allowed'}), 400
+
 
 def save_encryption_metadata(user_id, encrypted_filename, original_filename, recipient_name):
     metadata = {
@@ -337,20 +345,10 @@ def aes_encrypt(image_path, recipient, user_id, filename):
     
     with open(image_path, 'rb') as image_file:
         original_image = image_file.read()
-
+ 
     encrypted_image, tag = cipher.encrypt_and_digest(original_image)
-    encrypted_data = cipher.nonce + tag + encrypted_image
+    encrypted_data = cipher.nonce + tag + encrypted_image   
 
-    encrypted_filename = f"{filename_without_ext}_{secrets.token_hex(4)}.enc"
-
-    user_enc_folder = os.path.join(ENCRYPTED_FOLDER, str(user_id))
-    os.makedirs(user_enc_folder, exist_ok=True)
-
-    encrypted_image_path = os.path.join(user_enc_folder, encrypted_filename)
-    
-    with open(encrypted_image_path, 'wb') as encrypted_file:
-        encrypted_file.write(encrypted_data)
-    
     # Load recipient's public key to encrypt AES key
     public_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_pub.pem")
     with open(public_key_path, 'rb') as pub_file:
@@ -361,12 +359,20 @@ def aes_encrypt(image_path, recipient, user_id, filename):
     encrypted_aes_key_b64 = base64.b64encode(encrypted_aes_key).decode()
     encrypted_image_b64 = base64.b64encode(encrypted_data).decode()
 
+    encrypted_filename = f"{filename_without_ext}_{secrets.token_hex(4)}.enc"
+    user_enc_folder = os.path.join(ENCRYPTED_FOLDER, str(user_id))
+    os.makedirs(user_enc_folder, exist_ok=True)
+    encrypted_image_path = os.path.join(user_enc_folder, encrypted_filename)
+    with open(encrypted_image_path, 'w') as encrypted_file:
+        encrypted_file.write(encrypted_image_b64)
+
     encrypted_aes_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_aeskey.txt")
     with open(encrypted_aes_key_path, 'w') as f:
         f.write(encrypted_aes_key_b64)
     
     return encrypted_image_b64, encrypted_aes_key_b64, encrypted_filename
 
+# route: Encrypt
 @app.route('/encrypt', methods=['POST'])
 @jwt_required()
 def encrypt():
@@ -491,7 +497,7 @@ def decrypt():
         encrypted_aes_key_b64 = data.get('encryption_key')
         recipient = data.get('recipient')
         decfilename = data.get('filename')
-        
+         
         if not encrypted_image_b64 or not encrypted_aes_key_b64 or not recipient:
             return jsonify({'error': 'Missing decryption data'}), 400
         
@@ -501,7 +507,7 @@ def decrypt():
         # Decode Base64 before writing to a file
         
         decrypted_filename = decfilename
-
+ 
         user_dec_folder = os.path.join(DECRYPTED_FOLDER, str(user_id))
         os.makedirs(user_dec_folder, exist_ok=True)
 
@@ -520,15 +526,13 @@ def decrypt():
         return jsonify({'error': f'Error while decrypting the image: {str(e)}'}), 500
 
 
-# to get the abs path for a specific user's fol
+# GET -> abs path of user selected folder
 def get_user_folder_path(base_folder_name, user_id):
     base_dir = os.path.dirname(__file__)
     return os.path.join(base_dir, base_folder_name, str(user_id))
 
 @app.route('/images/<folder_name>/<user_id>')
-def get_images(folder_name, user_id):
-    print(f"Received request for folder_name: {folder_name}, user_id: {user_id}")
-    print(f"Allowed folders: {VALID_FOLDERS}")  
+def get_images(folder_name, user_id):   
 
     if folder_name not in VALID_FOLDERS:
         return jsonify({"error": "Invalid base folder name"}), 400
@@ -541,7 +545,7 @@ def get_images(folder_name, user_id):
         image_files = [f for f in os.listdir(user_specific_folder_path) if os.path.isfile(os.path.join(user_specific_folder_path, f))]
         image_files = [f for f in image_files if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif' , '.enc'))]
 
-        # Construct full URLs for the frontend. Adjust port if your Flask app runs on something other than 5000
+        # Construct full URLs for the frontend.
         # The URL now includes the user_id for serving individual images
         image_urls = [f'http://localhost:5000/image/{folder_name}/{user_id}/{img_name}' for img_name in image_files]
         return jsonify(image_urls)
@@ -584,6 +588,82 @@ def get_image_counts():
     })
 
 
+# -----------------------------------------------DELETION SECTION
+
+# Del -> Key
+@app.route('/api/delete-key', methods = ['POST'])
+@jwt_required()
+def deletion_key():
+    data = request.get_json()
+    key = data.get('key')
+    user_id = get_jwt_identity()
+    reci = key.split('_',1)[0] 
+    
+    if not key or not user_id:
+        return jsonify({'success': False , "error": 'Missing key or user_Id'}), 400
+    
+    key_folder = os.path.join(KEYS_FOLDER, str(user_id))
+    
+    aes_key_path = os.path.join(key_folder, key)
+    pub_key_path = os.path.join(key_folder, f"{reci}_pub.pem")
+    pvt_key_path = os.path.join(key_folder, f"{reci}_pvt.pem")
+
+    try:
+        if os.path.exists(aes_key_path):
+            os.remove(aes_key_path)
+            os.remove(pub_key_path)
+            os.remove(pvt_key_path)
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'File not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# Del -> Metadata
+@app.route('/delete-metadata', methods = ['POST'])
+@jwt_required()
+def delete_metadata():
+    data = request.get_json()
+    filename = data.get('metadataName')
+    user_id = get_jwt_identity()
+
+    user_meta_folder = os.path.join(META_FOLDER, str(user_id))
+    metadata_filename = f"{filename}.meta.json"
+    file_path = os.path.join(META_FOLDER, str(user_id), metadata_filename)
+       
+
+    metadata_files = [f for f in os.listdir(user_meta_folder) if f.endswith('.meta.json')]
+    if metadata_filename in metadata_files:
+        os.remove(file_path)
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False , 'error': 'Metadata not found'}), 404
+
+# Del ->  Images : upload, encrypted, decrypted
+@app.route('/delete/<folder_name>/<image_name>', methods=['DELETE'])
+@jwt_required()
+def delete_images(folder_name, image_name):
+    user_id = get_jwt_identity()
+    user_specific_folder_path = get_user_folder_path(folder_name, str(user_id))
+
+    if not os.path.isdir(user_specific_folder_path):
+        return jsonify({"error": "Folder is not present"}), 404
+
+    user_specific_image_path = os.path.join(user_specific_folder_path, image_name)
+
+    try:
+        image_files = [f for f in os.listdir(user_specific_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.enc'))]
+        
+        if image_name in image_files:
+            os.remove(user_specific_image_path)
+            return jsonify({'success': True}), 200
+        else:
+            return jsonify({'error': "Image not found"}), 404
+    except FileNotFoundError:
+        return jsonify({"error": "File does not exist"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

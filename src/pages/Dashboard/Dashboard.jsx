@@ -124,7 +124,7 @@ function Dashboard() {
 
         ):(
 
-          <div className={`text-foreground bg-background transition-opacity duration-[1200ms] ease-linear ${showDashBoard? "opacity-100" : "opacity-0" } rounded-lg `} >
+          <div className={`text-foreground bg-background transition-opacity duration-1000 ease-linear ${showDashBoard? "opacity-100" : "opacity-0" } rounded-lg `} >
 
             <Sidebar >
 

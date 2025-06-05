@@ -75,6 +75,7 @@ export default {
 				sidebarT: 'hsl(var(--sidebarT))',
 				back: 'hsl(var(--back))',
 				circle : 'hsl(var(--circle))',
+				progress : 'hsl(var(--progress))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

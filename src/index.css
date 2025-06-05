@@ -46,6 +46,7 @@
     --radius: 0.5rem;
     --back: 210, 20%, 92%;
     --circle : 14, 65%, 85%;
+    --progress: 187, 50%, 91%
   }
   .dark {
     --background: 207 36% 10%;      /* Gunmetal */
@@ -79,6 +80,7 @@
     --radius: 0.5rem;
     --back: 220, 29%, 17%;
     --circle : 187, 65%, 43%;
+    --progress: 207 36% 15%;
   }
 }
 

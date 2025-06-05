@@ -3,7 +3,7 @@ import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
-import {  FileKey2 } from "lucide-react";
+import { toast } from "sonner";
 
 function Profile() {
   const {user, userEmail, userId, accessToken} = useAuth();
@@ -45,6 +45,33 @@ function Profile() {
     }, []);
 
 
+    const handleDelete = async (key, idx, userId) => {
+      try {
+        const response = await axios.post('http://localhost:5000/api/delete-key', 
+        {
+          key,
+          user_id: userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        if (response.data.success) {
+          toast.success("Success: Key deleted");
+          setKeys((prevKeys) => prevKeys.filter((_, i) => i !== idx));
+        } else {
+          toast.error(`Failed: ${response.data.error || 'Unknown error'}`);
+        }
+
+      } catch (err) {
+        toast.error("Error deleting key");
+        console.error(err);
+      }
+    };
+
+
    const handleButtonClick = (folder) => {
         setSelectedFolder(folder);
         setActiveButton(folder);
@@ -76,10 +103,12 @@ function Profile() {
 
       const keyContent = res.data.content;
       await navigator.clipboard.writeText(keyContent);
-      alert(`Key content copied to clipboard!`);
+      toast.success(`Key copied!`);
     } catch (err) {
+      toast(`Failed to Copy Key`, {
+        cancel: { label: "Ok" },
+      });
       console.error("Failed to copy key:", err);
-      alert("Failed to copy key content.");
     }
   };
 
@@ -137,7 +166,7 @@ function Profile() {
         <div className="flex flex-grow gap-2 md:flex-row flex-col ">
 
           {/* right-col-1 */}
-          <div className=" min-h-[16rem] border rounded-md basis-1/2 mb-4">
+          <div className=" min-h-[16rem] border rounded-sm basis-1/2 mb-2">
           <div className="flex flex-col h-full"  >
             <header className="px-5">
               <div className="my-4 text-lg" >Overall Progress</div>
@@ -150,7 +179,7 @@ function Profile() {
                       <span>Uploaded Images</span>
                       <span>{uplPercent.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden mt-1">
+                    <div className="w-full h-1 bg-progress  rounded-full overflow-hidden mt-1">
                       <div className="h-full bg-primary" style={{width: `${uplPercent}%`}}></div>
                     </div>
                   </div>
@@ -162,7 +191,7 @@ function Profile() {
                       <span>Encrypted Images</span>
                       <span>{encPercent.toFixed(0)}% </span>
                     </div>
-                    <div className="w-full h-1 bg-signup rounded-full overflow-hidden mt-1">
+                    <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
                       <div className="h-full bg-primary" style={{width: `${encPercent}%`}}></div>
                     </div>
                   </div>
@@ -174,7 +203,7 @@ function Profile() {
                       <span>Decrypted Images</span>
                       <span>{decPercent.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden mt-1">
+                    <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
                       <div className="h-full bg-primary" style={{width: `${decPercent}%`}}></div>
                     </div>
                   </div>
@@ -189,7 +218,8 @@ function Profile() {
         </div>
 
         {/* Lower Col */}
-        <div className="border my-2 rounded-t-lg">
+        <div className="border rounded-t-lg">
+
           <header 
             className="flex justify-evenly w-full min-w-fit min-h-[2rem] border-b rounded-t-lg px-2 py-2 sm:px-5"
           >
@@ -247,37 +277,60 @@ function Profile() {
 
           </header>
 
-          <div>
+          <div className="min-h-[13rem]">
             
-            <h2 className="text-center">
-              Image of user:{userId} from: {selectedFolder || "None Selected"}
-            </h2>
             { activeButton === 'keys'? (
+              // keys
               <div className="  text-center">
                 {keys.length > 0 ? (
-                  <ul className=" list-disc list-inside text-sm flex gap-2 py-2 px-1 justify-center ">
+                  <ul className=" list-disc list-inside text-sm flex gap-2 py-2 px-1 justify-center my-2 transition-opacity opacity-0 duration-500 ease-out animate-fadeIn ">
                     {keys.map((key, idx) => (
-                      <li key={idx} className="flex flex-col items-center justify-center border w-44 py-2 rounded ">
+                      <li key={idx} className="flex flex-col items-center justify-center border border-ring w-48 py-2 rounded bg-card text-card-foreground ">
                         
-                        <div className="w-40 h-32 flex items-center justify-center bg-gray-100 text-gray-600 rounded border mx-auto ">
-                          <FileKey2 className="w-10 h-10 " />
-                          <span>Key</span>
+                        <div className="w-32 h-20">
+                          <img src="src/assets/key.jpg" className="rounded-md" alt="" />
                         </div>
-                          <div className="break-all">{key}</div>
-                          <button
-                            onClick={() => handleCopyKeyContent(key)}
-                            className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
-                          >
-                            Copy Key
-                          </button>
+                          <div className="break-all my-3">{key}</div>
+                          <div className="flex gap-2 " >
+
+                            <button
+                              onClick={() => handleCopyKeyContent(key)}
+                              className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
+                              >
+                              Copy Key
+                            </button>
+                            <span className="text-white bg-red-600 hover:bg-red-700 rounded px-2 py-1 "
+                              onClick={()=> handleDelete(key, idx, userId)}
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="lucide lucide-trash2-icon lucide-trash-2"
+                              >
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                              </svg>
+                            </span>
+                          </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className=" text-gray-500">No public keys found.</p>
+                  <p className=" text-gray-500 pt-16 ">No public keys.</p>
                 )}
               </div>
               ) : (
+                // images
               <div className="">
                 <ImageGallery
                   folderName={selectedFolder}
