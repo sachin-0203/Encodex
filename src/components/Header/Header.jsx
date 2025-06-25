@@ -10,7 +10,7 @@ import ProfileMenu from "../Profile/ProfileMenu";
 
 function Header() {
 
-  const {user, logout} = useAuth();
+  const {user, logout, profileSrc} = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [authView, setAuthView] = useState("login");
 
@@ -65,8 +65,8 @@ function Header() {
             
           <div className="order-2 flex gap-1">
             <button
-              className={`rounded-full h-10 text-center bg-signup shadow-inner text-white
-                 ${user? '':' rounded-md p-2 '}
+              className={`rounded-full h-10 text-center  shadow-inner text-white
+                 ${user? '':'bg-signup rounded-md p-2 '}
                  ${islargeScreen? '': ' mt-[1.4rem]'}  `}
               onClick={()=>{
                   handleBegin(user || " ")

@@ -8,13 +8,13 @@ const SidebarContext = createContext()
 
 export default function Sidebar({ children }) {
 
-  const {user, profile, Logout} = useAuth();
+  const {user, profileSrc, Logout} = useAuth();
   const [expanded, setExpanded] = useState(false);
   const navigate = useNavigate();
   
   return (
     <aside className="h-screen fixed z-50">
-      <nav className="h-full inline-flex flex-col border-r shadow-sm transition-all duration-500 bg-sidebarC  text-sidebarT  ">
+      <nav className="h-full inline-flex flex-col border-r border-gray-600 shadow-sm transition-all duration-500 bg-sidebarC  text-sidebarT  ">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
             src="./assets/Logo.png"
@@ -25,7 +25,7 @@ export default function Sidebar({ children }) {
           />
           <button
             onClick={() => setExpanded((curr) => !curr)}
-            className="p-1.5 rounded-lg border text-lime-500 hover:bg-ring"
+            className="p-1.5 rounded-md  text-lime-500 hover:bg-ring"
           >
             {expanded ? <ChevronFirst /> : <ChevronLast />}
           </button>
@@ -35,9 +35,9 @@ export default function Sidebar({ children }) {
           <ul className="flex-1 px-3">{children}</ul>
         </SidebarContext.Provider>
 
-        <div className="border-t flex p-3" >
+        <div className="border-t border-gray-600 flex p-3" >
           <div onClick={()=>navigate('/profile')}>
-            <UserCircle className="hover:ring rounded-full cursor-pointer mt-2" size={35} />
+            <img className=" size-11  rounded-full p-0.5 border border-ring hover:bg-ring"  src={profileSrc} alt="profile" />
           </div>
           <div
             className={`

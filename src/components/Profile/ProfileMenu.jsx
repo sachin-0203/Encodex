@@ -7,7 +7,7 @@ function ProfileMenu({ onLogout }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef();
   const navigate = useNavigate();
-  const {user} = useAuth();
+  const {user, profileSrc} = useAuth();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -25,18 +25,16 @@ function ProfileMenu({ onLogout }) {
         onClick={() => setOpen(!open)}
         className="p-2 rounded-full"
       >
-        <div>
-          <img className=" size-6  rounded-full"  src="src/assets/male1.jpg" alt="profile" />
-        </div>
+          <img className=" size-7 border shadow-md rounded-full"  src={profileSrc} alt="profile" />
       </div>
       {open && (
         <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-signup shadow-lg transition-opacity opacity-0 duration-500 ease-out animate-fadeIn ">
-          <div className="py-5 px-3">
-            <div className="text-center">
+          <div className="p-3">
+            <div className="p-3  text-center bg-gray-800 rounded-md">
               <div>
-                <img className="mb-2 size-12 mx-auto rounded-full"  src="src/assets/male1.jpg" alt="profile" />
+                <img className="mb-2 size-12 mx-auto rounded-full"  src={profileSrc} alt="profile" />
               </div>
-              <div>Hi,{" "}{ user}</div>
+              <div>{ user}</div>
             </div>
             <div className="mt-5">
               <div  

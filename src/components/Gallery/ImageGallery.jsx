@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Lock } from 'lucide-react';
 import { toast } from 'sonner';
+import axios from 'axios';
+import { useAuth } from '@/Context/AuthContext';
 
 const ImageGallery = ({ folderName, userId }) => {
     const [imageUrls, setImageUrls] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const {accessToken} = useAuth();
 
-    const handleDelete = (url, idx)=>{
-    toast.warning(`${url} with index ${idx} is deleted`)
+    const handleDelete = async (foldername, filename, index)=>{
+        try{
+            const response = await axios.delete(`http://localhost:5000/delete/${foldername}/${filename}`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+
+            if(response.data.success){
+                toast.warning(`Delete: ${filename}`);
+                setImageUrls((prevImgUrl) => prevImgUrl.filter((_,i)=> i !== index ))
+            }
+            else{
+                toast.error('Image is not deleted');
+            }
+        }
+        catch(error){
+            toast.error('Error while deleting the Image');
+            console.error("error:", error);
+        }
     }
     
     useEffect(() => {
@@ -117,7 +137,7 @@ const ImageGallery = ({ folderName, userId }) => {
                                 >
                                  Download
                             </a>
-                            <div className="text-white cursor-pointer bg-red-500 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(url, index)}>
+                            <div className="text-white cursor-pointer bg-red-500 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="17"

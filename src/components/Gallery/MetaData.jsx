@@ -36,7 +36,7 @@ const MetadataActivity = ({userId , accessToken}) => {
         },
       );
       if(response.data.success){
-        toast.success('success: Metadata deleted');
+        toast.warning('Deleted: Metadata');
         setMetadata((prevMetadata) => prevMetadata.filter((_,i)=> i !== idx ))
       }
     }
@@ -87,7 +87,7 @@ const MetadataActivity = ({userId , accessToken}) => {
                 </li>
               ))
             ) : (
-              <li>No metadata found for this user.</li>
+              <li className='text-gray-500' >No metadata found for this user.</li>
             )}
           </ul>
         </div>

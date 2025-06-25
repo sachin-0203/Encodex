@@ -4,7 +4,7 @@ import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 import { toast } from "sonner";
 
 export default function LoginForm() {
-  const { login, setAccessToken, setUser, setProfile } = useAuth();
+  const { login, setAccessToken, setUser } = useAuth();
 
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
@@ -91,7 +91,6 @@ export default function LoginForm() {
           onLogin={({ token, username, dp }) => {
             setUser(username);
             setAccessToken(token);
-            setProfile(dp);
           }}
         />
       </div>

@@ -159,7 +159,7 @@ function Dashboard() {
               count={history.length}
             />
 
-            <hr className="my-3" />
+            <hr className="my-3 border border-gray-600" />
 
             <SidebarItem
               onClick={ToggleTheme}

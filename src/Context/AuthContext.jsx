@@ -13,8 +13,8 @@ export const AuthProvider = ({children})=>{
   const [user, setUser] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
-  
-  const [profile, setProfile] = useState("");
+
+  const [profileSrc, setProfileSrc] = useState("assets/user.jpg");
 
   useEffect(()=>{
     tryRefresh();
@@ -32,6 +32,7 @@ export const AuthProvider = ({children})=>{
       setUserId(userRes.data.id);
       setUser(userRes.data.username);
       setUserEmail(userRes.data.email)
+      setProfileSrc(userRes.data.profile)
     } catch(err){
       setAccessToken(null)
     }
@@ -133,8 +134,8 @@ export const AuthProvider = ({children})=>{
     login,
     signup,
     logout,
-    profile,
-    setProfile,
+    profileSrc,
+    setProfileSrc,
     userEmail
   };
 

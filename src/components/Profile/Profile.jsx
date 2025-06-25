@@ -4,9 +4,10 @@ import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
+import { Pencil } from "lucide-react";
 
 function Profile() {
-  const {user, userEmail, userId, accessToken} = useAuth();
+  const {user, userEmail, userId, accessToken, profileSrc, setProfileSrc} = useAuth();
 
   const [counts, setCounts] = useState({
     uploads: 0,
@@ -21,7 +22,6 @@ function Profile() {
   const encPercent = (encImg/totalImage) * 100;
   const decPercent = (decImg/totalImage) * 100;
 
-  const [images, setImages] = useState([]);
   const [keys, setKeys] = useState([]);
   const [selectedFolder, setSelectedFolder] = useState('');
   const [activeButton, setActiveButton] = useState('upload');
@@ -39,48 +39,48 @@ function Profile() {
       catch (error) {
         console.error("Failed to fetch image counts", error);
       }
-     };
+    };
 
-      fetchImageCounts();
-    }, []);
+    fetchImageCounts();
+
+  }, []);
 
 
-    const handleDelete = async (key, idx, userId) => {
-      try {
-        const response = await axios.post('http://localhost:5000/api/delete-key', 
-        {
-          key,
-          user_id: userId,
+  const handleDelete = async (key, idx, userId) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/delete-key', 
+      {
+        key,
+        user_id: userId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+      });
 
-        if (response.data.success) {
-          toast.success("Success: Key deleted");
-          setKeys((prevKeys) => prevKeys.filter((_, i) => i !== idx));
-        } else {
-          toast.error(`Failed: ${response.data.error || 'Unknown error'}`);
-        }
-
-      } catch (err) {
-        toast.error("Error deleting key");
-        console.error(err);
+      if (response.data.success) {
+        toast.warning("Deleted: Key ");
+        setKeys((prevKeys) => prevKeys.filter((_, i) => i !== idx));
+      } else {
+        toast.error(`Failed: ${response.data.error || 'Unknown error'}`);
       }
-    };
 
+    } catch (err) {
+      toast.error("Error deleting key");
+      console.error(err);
+    }
+  };
 
-   const handleButtonClick = (folder) => {
-        setSelectedFolder(folder);
-        setActiveButton(folder);
-        if(folder === 'keys'){
-          fetchKeys();
-        }
-    };
+  const handleButtonClick = (folder) => {
+      setSelectedFolder(folder);
+      setActiveButton(folder);
+      if(folder === 'keys'){
+        fetchKeys();
+      }
+  };
 
-    const fetchKeys = async () => {
+  const fetchKeys = async () => {
     try {
       const res = await axios.get(`http://localhost:5000/keys`, {
         headers: {
@@ -112,6 +112,39 @@ function Profile() {
     }
   };
 
+  const handleProfileChange = async(event) => {
+
+    const file = event.target.files[0];
+    const formData = new FormData();
+
+    formData.append('profile_pic', file);
+
+    try{
+      
+      const response  = await axios.post('http://localhost:5000/upload_profile_pic',  formData
+      , {
+        headers : {
+          Authorization : `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      const res = response.data;
+      if(res.status){
+        
+        setProfileSrc(res.image_url);
+        toast.success(res.message);
+
+      }
+      else{
+        console.log("profile change error", res.image_url)
+        console.error(res.message)
+      }
+    }
+    catch(error){
+      console.error('Upload Failed', error);
+      toast.error("Something went wrong. Please try again.");
+    }
+  };
   
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
 
@@ -122,41 +155,62 @@ function Profile() {
       }
       window.addEventListener("resize", handleResize)
       return ()=> window.removeEventListener("resize", handleResize)
-    }, [])
+  }, [])
 
   return (
     <div className="Relative flex w-full flex-col sm:flex-row transition-all duration-500 gap-2 p-2">
 
       {/* Main- Left -section */}
-      <div className="border sm:h-[screen] min-w-[14rem] p-2 rounded-md ">
+      <div className="  border sm:h-[screen] min-w-[14rem] p-2 rounded-md ">
+
         {/* Left section: image */}
-       <div className="sticky top-0 flex flex-row sm:flex-col gap-2 ">
+        <div className="sticky top-24 flex flex-row sm:flex-col gap-2 ">
         
-        <div className=" basis-1/3 sm:w-100% w-50%  ">
-          <div className="border mt-2.5 sm:mt-0"> 
-            <div className="text-center">Profile</div>
-          </div>
-          <div>
-            <img src="src/assets/male1.jpg" alt="Profile_Pic" className="p-4 mx-auto   min-h-20 min-w-20 object-cover rounded-full" />
-          </div>
-        </div>
-        {/* right section: user-info */}
-        <div className="basis-2/3 sm:w-full min-w-28">
-          <div className="border my-2 h-12 flex items-center overflow-hidden text-ellipsis whitespace-nowrap p-2">
-            {user}
+          <div className=" basis-1/3 sm:w-100% w-50%  ">
+            <div className="border mt-2.5 sm:mt-0"> 
+              <div className="text-center">Profile</div>
             </div>
-          
-          <div className="border my-2 h-12 flex items-center p-2">
-            @Corpse
+            
+            <div className="relative group w-fit mx-auto my-4  ">
+              <img 
+                src={profileSrc} 
+                alt="Profile Pic" 
+                className={`h-32 w-32 rounded-full object-cover border-2 border-gray-300 shadow-md `}
+              />
+              
+              {/* Hover overlay with pencil icon */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                <label htmlFor="profile_pic" className="cursor-pointer">
+                  <Pencil size={20} className="text-white" />
+                </label>
+                <input 
+                  id="profile_pic" 
+                  type="file" 
+                  accept="image/*"
+                  className="hidden" 
+                  onChange={handleProfileChange} 
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="border my-2 py-2 break-words overflow-hidden text-sm ">
-            {userEmail}
-          </div>
+          {/* right section: user-info */}
+          <div className="basis-2/3 sm:w-full min-w-28">
           
+            <div className="border my-2 h-12 flex items-center overflow-hidden text-ellipsis whitespace-nowrap p-2">
+              {user}
+            </div>
+            
+            <div className="border my-2 h-12 flex items-center p-2">
+              @Corpse
+            </div>
+
+            <div className="border my-2 py-2 break-words overflow-hidden text-sm ">
+              {userEmail}
+            </div>
+            
+          </div>
         </div>
-
-       </div>
       </div>
 
       {/* Main- Right Section */}

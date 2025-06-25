@@ -33,7 +33,7 @@ from models import User
 
 load_dotenv()
 
-app = Flask(__name__, static_folder='.')
+app = Flask(__name__, static_folder='static')
 CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
@@ -64,6 +64,7 @@ ENCRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/encrypted')
 DECRYPTED_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/decrypted')
 KEYS_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/keys')  
 META_FOLDER = os.path.join(PROJECT_ROOT, 'Backend/metadata')  
+PROFILE_FOLDER = os.path.join(app.root_path, 'static', 'profile-pic')
 
 # Create directories if they don’t exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -71,6 +72,7 @@ os.makedirs(ENCRYPTED_FOLDER, exist_ok=True)
 os.makedirs(DECRYPTED_FOLDER, exist_ok=True)
 os.makedirs(KEYS_FOLDER, exist_ok=True)
 os.makedirs(META_FOLDER, exist_ok=True)
+os.makedirs(PROFILE_FOLDER, exist_ok=True)
 
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -78,7 +80,8 @@ app.config['ALLOWED_EXTENSIONS'] = {'jpg', 'jpeg', 'png', 'gif'}
 VALID_FOLDERS = {
     'uploads': UPLOAD_FOLDER,
     'encrypted': ENCRYPTED_FOLDER,
-    'decrypted': DECRYPTED_FOLDER
+    'decrypted': DECRYPTED_FOLDER,
+    'profile': PROFILE_FOLDER
 }
 
 
@@ -104,6 +107,7 @@ def get_users():
             "id": user.id, 
             "username": user.username,
             "email": user.email,
+            "profile": user.profile_pic,
         })
     return jsonify(user_list)
 
@@ -121,7 +125,8 @@ def get_current_user():
     return jsonify({
         "id": user.id,
         "username": user.username,
-        "email": user.email
+        "email": user.email,
+        "profile": user.profile_pic,
     }), 200
 
 
@@ -663,7 +668,44 @@ def delete_images(folder_name, image_name):
         return jsonify({"error": "File does not exist"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# route: upload profile_pic and save
+@app.route('/upload_profile_pic', methods=['POST'])
+@jwt_required()
+def upload_profile_pic():
+    if 'profile_pic' not in request.files:
+        return jsonify({'message': 'No image part in request'})
+
+    profile_pic = request.files['profile_pic']
+    user_id = get_jwt_identity()
     
+    profile_folder = os.path.join(PROFILE_FOLDER, str(user_id))
+    os.makedirs(profile_folder, exist_ok=True)
+
+    pic_name = secure_filename(profile_pic.filename)
+    pic_path = os.path.join(profile_folder, pic_name)
+
+    profile_pic.save(pic_path)
+    
+    image_url = f"http://localhost:5000/static/profile-pic/{user_id}/{pic_name}"
+
+    user = User.query.get(user_id)
+
+    if user:
+        user.profile_pic = image_url
+        db.session.commit()
+        return jsonify({
+            'status': True,
+            'message': 'Profile Updated',
+            'image_url': image_url
+        }), 200
+    
+    else:
+        return jsonify({
+            'message': 'User not found'
+        }), 404
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

@@ -23,6 +23,8 @@ const GoogleLoginBtn = ({ onLogin })=>{
     }
     catch(error){
       toast.error(`Google Login error, ${error}`);
+      console.error(`Google Login error, ${error}`);
+      
     }
 
   };
