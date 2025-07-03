@@ -121,3 +121,7 @@
   scrollbar-width: thin;
   scrollbar-color: #083649 #00000004;
 }
+
+.hover-user-icon:hover .user-circle {
+  fill: white;
+}

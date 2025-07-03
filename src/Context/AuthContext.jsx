@@ -10,9 +10,11 @@ const AuthContext = createContext({})
 export const AuthProvider = ({children})=>{
 
   const [userId, setUserId] = useState(null);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState('');
   const [userEmail, setUserEmail] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+
+  const username = user ?  "@" + user.replace(/\s+/g,'').toLowerCase() : " ";
 
   const [profileSrc, setProfileSrc] = useState("assets/user.jpg");
 
@@ -136,7 +138,8 @@ export const AuthProvider = ({children})=>{
     logout,
     profileSrc,
     setProfileSrc,
-    userEmail
+    userEmail,
+    username
   };
 
   return (

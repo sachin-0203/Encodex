@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from "react";
+import { useNavigate ,Link } from "react-router-dom";
 import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
-import { Pencil } from "lucide-react";
+import { UserPen } from "lucide-react";
+
 
 function Profile() {
-  const {user, userEmail, userId, accessToken, profileSrc, setProfileSrc} = useAuth();
+  const {user, userEmail, userId, accessToken, profileSrc, username} = useAuth();
 
+  const navigate = useNavigate()
   const [counts, setCounts] = useState({
     uploads: 0,
     encrypted: 0,
@@ -112,40 +115,7 @@ function Profile() {
     }
   };
 
-  const handleProfileChange = async(event) => {
 
-    const file = event.target.files[0];
-    const formData = new FormData();
-
-    formData.append('profile_pic', file);
-
-    try{
-      
-      const response  = await axios.post('http://localhost:5000/upload_profile_pic',  formData
-      , {
-        headers : {
-          Authorization : `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      const res = response.data;
-      if(res.status){
-        
-        setProfileSrc(res.image_url);
-        toast.success(res.message);
-
-      }
-      else{
-        console.log("profile change error", res.image_url)
-        console.error(res.message)
-      }
-    }
-    catch(error){
-      console.error('Upload Failed', error);
-      toast.error("Something went wrong. Please try again.");
-    }
-  };
-  
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
 
   useEffect(()=>{
@@ -167,6 +137,7 @@ function Profile() {
         <div className="sticky top-24 flex flex-row sm:flex-col gap-2 ">
         
           <div className=" basis-1/3 sm:w-100% w-50%  ">
+          
             <div className="border mt-2.5 sm:mt-0"> 
               <div className="text-center">Profile</div>
             </div>
@@ -177,36 +148,36 @@ function Profile() {
                 alt="Profile Pic" 
                 className={`h-32 w-32 rounded-full object-cover border-2 border-gray-300 shadow-md `}
               />
-              
-              {/* Hover overlay with pencil icon */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                <label htmlFor="profile_pic" className="cursor-pointer">
-                  <Pencil size={20} className="text-white" />
-                </label>
-                <input 
-                  id="profile_pic" 
-                  type="file" 
-                  accept="image/*"
-                  className="hidden" 
-                  onChange={handleProfileChange} 
-                />
-              </div>
             </div>
+
           </div>
 
           {/* right section: user-info */}
-          <div className="basis-2/3 sm:w-full min-w-28">
+          <div className="basis-2/3  lg:max-w-56 sm:w-full min-w-28">
           
             <div className="border my-2 h-12 flex items-center overflow-hidden text-ellipsis whitespace-nowrap p-2">
               {user}
             </div>
             
             <div className="border my-2 h-12 flex items-center p-2">
-              @Corpse
+              {username}
             </div>
 
-            <div className="border my-2 py-2 break-words overflow-hidden text-sm ">
+            <div className="border my-2 py-2 break-words overflow-hidden px-2 box-border ">
               {userEmail}
+            </div>
+
+            <div className="border my-2 h-12 flex items-center p-2">
+              role
+            </div>
+
+            <div >
+              <Link to="/Setting" className="group border flex  justify-right gap-3 p-2 " >
+                
+                <UserPen  />
+                <h2 className="group-hover:text-gray-600">Edit Profile</h2>
+                
+              </Link>
             </div>
             
           </div>
@@ -219,8 +190,9 @@ function Profile() {
         {/* Upper Col */}
         <div className="flex flex-grow gap-2 md:flex-row flex-col ">
 
-          {/* right-col-1 */}
-          <div className=" min-h-[16rem] border rounded-sm basis-1/2 mb-2">
+          {/* right-col-1 : Progress */}
+          <div id="Overall Progress" className=" min-h-[16rem] border rounded-sm basis-[65%] mb-2">
+
           <div className="flex flex-col h-full"  >
             <header className="px-5">
               <div className="my-4 text-lg" >Overall Progress</div>
@@ -266,12 +238,15 @@ function Profile() {
               </div>
             </div>
           </div>
+
           </div>
-          {/* right-col-2 */}
+
+          {/* right-col-2 : Metadata */}
            <MetadataActivity userId = {userId} accessToken={accessToken} />
+
         </div>
 
-        {/* Lower Col */}
+        {/* Lower Col: Image section */}
         <div className="border rounded-t-lg">
 
           <header 

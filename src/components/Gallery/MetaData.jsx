@@ -46,7 +46,7 @@ const MetadataActivity = ({userId , accessToken}) => {
     }
   }
   return (
-    <div className="h-[17rem] sm:h-[17rem] border rounded-sm basis-1/2 mb-2">
+    <div className="min-h-[17rem] sm:h-[16rem] border rounded-sm basis-1/2 mb-2">
       <div className="flex flex-col h-full">
         <header className="px-5 py-4">
           <div className="text-lg font-bold ">Image MetaData</div>

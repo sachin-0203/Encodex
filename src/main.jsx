@@ -13,7 +13,6 @@ import { MyContextProvider } from './Context/MyContextProvider';
 import { ThemeProvider } from './Context/ThemeContext';
 import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import LoginForm from './components/Login/LogIn';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Setting } from './pages/Setting/Setting';
 
@@ -26,24 +25,31 @@ const router = createBrowserRouter(
         <Route path='/about' element={<About />} />
         <Route path='/guide' element={<Guide />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/profile' element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-          } />
-        
+        <Route path='/profile' 
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } 
+        />
       </Route>
-      <Route path='/Setting' element={
-        <ProtectedRoute>
-          <Setting />
-        </ProtectedRoute>
-        } />
-      <Route path="/dashboard" element={
-        <ProtectedRoute>
-          <Dashboard />
 
-        </ProtectedRoute>
-      }/>
+      <Route path='/Setting' 
+        element={
+          <ProtectedRoute>
+            <Setting />
+          </ProtectedRoute>
+        } 
+      />
+      
+      <Route path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+
+          </ProtectedRoute>
+        }
+      />
 
     </>
   )

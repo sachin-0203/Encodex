@@ -670,6 +670,9 @@ def delete_images(folder_name, image_name):
         return jsonify({"error": str(e)}), 500
 
 
+
+# ------------------------UPDATE SECTION-------------
+
 # route: upload profile_pic and save
 @app.route('/upload_profile_pic', methods=['POST'])
 @jwt_required()
@@ -705,6 +708,38 @@ def upload_profile_pic():
         return jsonify({
             'message': 'User not found'
         }), 404
+
+# route: update user information
+@app.route('/update_user_info', methods=['POST'])
+@jwt_required()
+def update_user_info():
+
+    data = request.get_json()
+    print('[DATA]:', data)  
+    email = data.get('email')
+    new_username = data.get('name')
+    userid = data.get('id')
+    role = data.get('role')
+
+    currUserId = int(get_jwt_identity())
+    if currUserId != userid :
+        return jsonify({'message': 'User not found'})
+    
+    existing_user = User.query.filter((User.id == userid) | (User.email == email)).first()
+
+    if existing_user:
+        existing_user.username = new_username
+        db.session.commit()
+        return jsonify({
+            'status' : 'success',
+            'username' : new_username,
+            'role': role
+        }), 200
+    return jsonify({
+        'message': 'user not update'
+    }), 404
+
+    
 
 if __name__ == "__main__":
     with app.app_context():
