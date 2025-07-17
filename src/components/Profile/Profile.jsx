@@ -9,7 +9,7 @@ import { UserPen } from "lucide-react";
 
 
 function Profile() {
-  const {user, userEmail, userId, accessToken, profileSrc, username} = useAuth();
+  const {user, userEmail, userId, accessToken, profileSrc, username, role} = useAuth();
 
   const navigate = useNavigate()
   const [counts, setCounts] = useState({
@@ -168,7 +168,7 @@ function Profile() {
             </div>
 
             <div className="border my-2 h-12 flex items-center p-2">
-              role
+              {role || "{Enter your role}"}
             </div>
 
             <div >

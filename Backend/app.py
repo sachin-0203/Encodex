@@ -108,6 +108,7 @@ def get_users():
             "username": user.username,
             "email": user.email,
             "profile": user.profile_pic,
+            "role": user.role,
         })
     return jsonify(user_list)
 
@@ -127,6 +128,7 @@ def get_current_user():
         "username": user.username,
         "email": user.email,
         "profile": user.profile_pic,
+        "role": user.role,
     }), 200
 
 
@@ -729,6 +731,7 @@ def update_user_info():
 
     if existing_user:
         existing_user.username = new_username
+        existing_user.role = role
         db.session.commit()
         return jsonify({
             'status' : 'success',

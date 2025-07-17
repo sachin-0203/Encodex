@@ -46,22 +46,26 @@ const MetadataActivity = ({userId , accessToken}) => {
     }
   }
   return (
-    <div className="min-h-[17rem] sm:h-[16rem] border rounded-sm basis-1/2 mb-2">
+    <div className="min-h-[17rem] sm:h-[16rem]  border rounded-sm basis-1/2 mb-2">
       <div className="flex flex-col h-full">
         <header className="px-5 py-4">
           <div className="text-lg font-bold ">Image MetaData</div>
         </header>
 
-        <div className="px-6 py-3 flex-1 overflow-auto">
+        <div className="px-6 py-3 flex-1 overflow-auto max-h-[13rem] ">
           <ul className="space-y-2 text-sm ">
             {metadata.length > 0 ? (
               metadata.map((item, idx) => (
                 <li key={idx}>
-                  <strong>User ID:</strong> {item.user_id} |{' '}
-                  <strong>Recipient:</strong> {item.recipient_name} |{' '}
-                  <strong>Original:</strong> {item.original_filename} |{' '}
-                  <strong>Encrypted:</strong> {item.encrypted_filename} |{' '}
-                  <strong>Public Key:</strong> {item.rcpt_pubkey_name}
+                  <strong>Data:</strong> {idx+1}
+                  <br />
+                  <div className='ml-5 mt-1'>
+                    <div><strong>Recipient:</strong> {item.recipient_name}</div>
+                    <div><strong>Original:</strong> {item.original_filename} </div>
+                    <div><strong>Encrypted:</strong> {item.encrypted_filename} </div>
+                    <div><strong>Public Key:</strong> {item.rcpt_pubkey_name}  </div>
+                  </div>
+                  
                   <span>
                     
                     <svg onClick={()=>handleDelete(idx,item.encrypted_filename)}
@@ -74,7 +78,7 @@ const MetadataActivity = ({userId , accessToken}) => {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="lucide lucide-trash2-icon lucide-trash-2 text-red-400 hover:text-red-500"
+                      className="lucide lucide-trash2-icon lucide-trash-2 text-red-400 hover:text-red-500 cursor-pointer ml-5"
                     >
                       <path d="M3 6h18" />
                       <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />

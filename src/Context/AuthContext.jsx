@@ -11,6 +11,7 @@ export const AuthProvider = ({children})=>{
 
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState('');
+  const [role, setRole] = useState('');
   const [userEmail, setUserEmail] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
 
@@ -35,6 +36,7 @@ export const AuthProvider = ({children})=>{
       setUser(userRes.data.username);
       setUserEmail(userRes.data.email)
       setProfileSrc(userRes.data.profile)
+      setRole(userRes.data.role)
     } catch(err){
       setAccessToken(null)
     }
@@ -139,7 +141,9 @@ export const AuthProvider = ({children})=>{
     profileSrc,
     setProfileSrc,
     userEmail,
-    username
+    username,
+    role,
+    setRole
   };
 
   return (

@@ -5,18 +5,18 @@ import { toast, Toaster } from "sonner";
 
 export const Setting = () => {
 
-  const {userId, user, setUser, userEmail, profileSrc, accessToken, setProfileSrc, username } = useAuth();
+  const {userId, user, setUser, userEmail, profileSrc, accessToken, setProfileSrc, username, role, setRole } = useAuth();
 
   const [users, setUsers] = useState({
     name: user || " ",
-    role: "student",
+    role: role || " " ,
   })
 
   useEffect(() => {
     if (user) {
       setUsers({
         name: user,
-        role: users.role, 
+        role: role, 
       });
     }
   }, [user]);
@@ -55,7 +55,7 @@ export const Setting = () => {
     }
   };
 
-  const handleChanges = async (userid, name, role) => {
+  const handleChanges = async (userid, new_name, new_role) => {
 
     if (!users.name.trim()) {
       toast.warning("Name cannot be empty.");
@@ -63,15 +63,15 @@ export const Setting = () => {
   }
 
 
-    if(user === users.name){
-      toast.warning("Enter new name")
+    if(user === users.name && new_role === role){
+      toast.warning("Enter new name or role")
       return ;
     }
 
     try{
 
       const response = await axios.post("http://localhost:5000/update_user_info", 
-        { 'id': userid, 'name': name, 'role': role, 'email': userEmail },
+        { 'id': userid, 'name': new_name, 'role': new_role, 'email': userEmail },
         {
           headers : {
           Authorization : `Bearer ${accessToken}`,
@@ -84,9 +84,7 @@ export const Setting = () => {
       if(result.status === 'success'){
         toast.success("sucess: Update Changes")
         setUser(result.username)
-        setUsers({
-          'role' : result.role
-        })
+        setRole(result.role)
       }
       else(
         toast.error(result.message)
@@ -188,7 +186,7 @@ export const Setting = () => {
                     <input
                       id="purpose"
                       type="text"
-                      value={users.role}
+                      value={users.role || " "}
                       onChange={(e)=>{setUsers(prev =>({
                         ...prev,
                         role : e.target.value,
