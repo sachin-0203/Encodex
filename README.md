@@ -16,3 +16,50 @@ Encodex is a full-stack image encryption and decryption platform designed to saf
 
 🌐 Frontend + Backend — React.js for frontend, Flask (Python) for backend.
 
+## Project Structure
+encodex/
+├── backend/
+│   ├── app.py
+│   ├── auth/ (login, signup, JWT logic)
+│   ├── encryption/ (AES/Fernet logic)
+│   ├── static/ (uploaded/encrypted/decrypted images)
+│   └── keyfile/ (stores keys per user)
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── context/ (auth + token storage)
+│   │   └── App.jsx
+│   └── public/
+└── README.md
+
+
+# Tech Stack
+| Frontend     | Backend            | Security                  | Storage                         |
+| ------------ | ------------------ | ------------------------- | ------------------------------- |
+| React.js     | Flask              | Fernet (cryptography)     | Filesystem (user-based folders) |
+| Tailwind CSS | Python             | AES + RSA (PyCryptodome)  | JWT for Auth                    |
+| React Router | Flask-JWT-Extended | HttpOnly Cookies          | Local File Access               |
+
+## 📌 How to Run Locally
+  ### 1. Clone the Repository
+  git clone https://github.com/your-username/encodex.git
+  cd encodex
+      
+ ### 2. Backend Setup
+  cd backend
+  python -m venv venv
+  source venv/bin/activate  # for Linux/macOS
+  venv\Scripts\activate     # for Windows
+
+  pip install -r requirements.txt
+  python app.py
+  
+### 3. Frontend Setup
+  cd frontend
+  npm install
+  npm run dev
+  App runs on:
+
+#### Frontend → http://localhost:5173
+#### Backend → http://localhost:5000
