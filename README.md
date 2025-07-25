@@ -16,23 +16,6 @@ Encodex is a full-stack image encryption and decryption platform designed to saf
 
 🌐 Frontend + Backend — React.js for frontend, Flask (Python) for backend.
 
-## Project Structure
-encodex/
-├── backend/
-│   ├── app.py
-│   ├── auth/ (login, signup, JWT logic)
-│   ├── encryption/ (AES/Fernet logic)
-│   ├── static/ (uploaded/encrypted/decrypted images)
-│   └── keyfile/ (stores keys per user)
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── context/ (auth + token storage)
-│   │   └── App.jsx
-│   └── public/
-└── README.md
-
 
 # Tech Stack
 | Frontend     | Backend            | Security                  | Storage                         |
