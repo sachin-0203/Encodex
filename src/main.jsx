@@ -8,6 +8,8 @@ import About from './components/About/About'
 import Guide from './components/Guide/Guide'
 import Contact from './components/Contact/Contact'
 import Profile from './components/Profile/Profile'
+import { EncodexPlus } from './components/Subscripation/Plus';
+import { Checkout } from './components/Subscripation/Checkout';
 import Dashboard from './pages/Dashboard/Dashboard'
 import { MyContextProvider } from './Context/MyContextProvider';
 import { ThemeProvider } from './Context/ThemeContext';
@@ -15,6 +17,9 @@ import { AuthProvider } from './Context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Setting } from './pages/Setting/Setting';
+import TermsAndConditions from './pages/Term&Condition/Terms&Conditions';
+import PrivacyPolicy from './pages/Term&Condition/PrivacyPolicy';
+import CancellationRefundPolicy from './pages/Term&Condition/Refund';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +37,12 @@ const router = createBrowserRouter(
             </ProtectedRoute>
           } 
         />
+        <Route path='/terms-and-conditions' element={<TermsAndConditions />} />
+        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+        <Route path='/refund-and-cancellation' element={<CancellationRefundPolicy />} />
+        <Route path='/plus' element={<EncodexPlus />} />
+        <Route path='checkout' element={<Checkout />} />
+
       </Route>
 
       <Route path='/Setting' 

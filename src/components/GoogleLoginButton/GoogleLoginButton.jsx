@@ -22,7 +22,7 @@ const GoogleLoginBtn = ({ onLogin })=>{
       });
     }
     catch(error){
-      toast.error(`Google Login error, ${error}`);
+      toast.error(`Google Login error, User not found`);
       console.error(`Google Login error, ${error}`);
       
     }

@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { useNavigate ,Link } from "react-router-dom";
+import { useNavigate , Link, NavLink} from "react-router-dom";
 import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
-import { UserPen } from "lucide-react";
+import { UserPen, Plus } from "lucide-react";
 
 
 function Profile() {
@@ -131,7 +131,7 @@ function Profile() {
     <div className="Relative flex w-full flex-col sm:flex-row transition-all duration-500 gap-2 p-2">
 
       {/* Main- Left -section */}
-      <div className="  border sm:h-[screen] min-w-[14rem] p-2 rounded-md ">
+      <div className="shadow-xl  sm:h-[screen] min-w-[14rem] p-2 rounded-md ">
 
         {/* Left section: image */}
         <div className="sticky top-24 flex flex-row sm:flex-col gap-2 ">
@@ -168,7 +168,7 @@ function Profile() {
             </div>
 
             <div className="border my-2 h-12 flex items-center p-2">
-              {role || "{Enter your role}"}
+              {role || "{your role}"}
             </div>
 
             <div >
@@ -179,13 +179,58 @@ function Profile() {
                 
               </Link>
             </div>
-            
           </div>
         </div>
       </div>
 
+      
+
       {/* Main- Right Section */}
-      <div className="basis-4/5 min-h-[85vh] min-w-[14rem] ">
+      <div className=" basis-4/5 min-h-[85vh] min-w-[14rem] ">
+
+        {/* plus section */}
+        <div className="border mb-2 h-12 rounded-sm">
+          <NavLink to={'/plus'} className="px-5 py-2 flex justify-between">
+
+            {/* left */}
+            <div className="text-lg uppercase ">
+              Encode<span className="text-red-500">x</span>
+            </div>
+
+            {/* right */}
+            <div>
+              <Link className="group  flex gap-3 px-2 py-1 bg-secondary rounded-full text-white" onClick={()=> navigate('/Plus')}>
+                <div>
+                  <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className={`
+                    inline-block fill-none
+                    group-hover:fill-current group-[.text-primary]:fill-current
+                  `}
+                >
+                  <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+                  <path d="M20 3v4" />
+                  <path d="M22 5h-4" />
+                  <path d="M4 17v2" />
+                  <path d="M5 18H3" />
+                  </svg>
+
+                </div>
+                <div>
+                  Get Plus
+                </div>
+              </Link>
+            </div>
+          </NavLink>
+        </div>
 
         {/* Upper Col */}
         <div className="flex flex-grow gap-2 md:flex-row flex-col ">
@@ -193,51 +238,51 @@ function Profile() {
           {/* right-col-1 : Progress */}
           <div id="Overall Progress" className=" min-h-[16rem] border rounded-sm basis-[65%] mb-2">
 
-          <div className="flex flex-col h-full"  >
-            <header className="px-5">
-              <div className="my-4 text-lg" >Overall Progress</div>
-            </header>
-            <div className="px-6 py-10 pt-3 flex-1 h-full overflow-hidden overflow-x-auto no-scrollbar">
-              <div className="flex h-full flex-col justify-between items-center space-y-7 ">
-                <div className="flex gap-4 w-full font-dmSans ">
-                  <div className="w-full flex flex-col">
-                    <div className="flex justify-between items-center">
-                      <span>Uploaded Images</span>
-                      <span>{uplPercent.toFixed(0)}%</span>
+            <div className="flex flex-col h-full"  >
+              <header className="px-5">
+                <div className="my-4 text-lg" >Overall Progress</div>
+              </header>
+              <div className="px-6 py-10 pt-3 flex-1 h-full overflow-hidden overflow-x-auto no-scrollbar">
+                <div className="flex h-full flex-col justify-between items-center space-y-7 ">
+                  <div className="flex gap-4 w-full font-dmSans ">
+                    <div className="w-full flex flex-col">
+                      <div className="flex justify-between items-center">
+                        <span>Uploaded Images</span>
+                        <span>{uplPercent.toFixed(0)}%</span>
+                      </div>
+                      <div className="w-full h-1 bg-progress  rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-primary" style={{width: `${uplPercent}%`}}></div>
+                      </div>
                     </div>
-                    <div className="w-full h-1 bg-progress  rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-primary" style={{width: `${uplPercent}%`}}></div>
-                    </div>
+                    <div className="flex justify-end items-center">{uplImg}/{totalImage} </div>
                   </div>
-                  <div className="flex justify-end items-center">{uplImg}/{totalImage} </div>
-                </div>
-                <div className="flex gap-4 w-full font-dmSans ">
-                  <div className="w-full flex flex-col">
-                    <div className="flex justify-between items-center">
-                      <span>Encrypted Images</span>
-                      <span>{encPercent.toFixed(0)}% </span>
+                  <div className="flex gap-4 w-full font-dmSans ">
+                    <div className="w-full flex flex-col">
+                      <div className="flex justify-between items-center">
+                        <span>Encrypted Images</span>
+                        <span>{encPercent.toFixed(0)}% </span>
+                      </div>
+                      <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-primary" style={{width: `${encPercent}%`}}></div>
+                      </div>
                     </div>
-                    <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-primary" style={{width: `${encPercent}%`}}></div>
-                    </div>
+                    <div className="flex justify-end items-center">{encImg}/{totalImage}</div>
                   </div>
-                  <div className="flex justify-end items-center">{encImg}/{totalImage}</div>
-                </div>
-                <div className="flex gap-4 w-full font-dmSans ">
-                  <div className="w-full flex flex-col">
-                    <div className="flex justify-between items-center">
-                      <span>Decrypted Images</span>
-                      <span>{decPercent.toFixed(0)}%</span>
+                  <div className="flex gap-4 w-full font-dmSans ">
+                    <div className="w-full flex flex-col">
+                      <div className="flex justify-between items-center">
+                        <span>Decrypted Images</span>
+                        <span>{decPercent.toFixed(0)}%</span>
+                      </div>
+                      <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
+                        <div className="h-full bg-primary" style={{width: `${decPercent}%`}}></div>
+                      </div>
                     </div>
-                    <div className="w-full h-1 bg-progress rounded-full overflow-hidden mt-1">
-                      <div className="h-full bg-primary" style={{width: `${decPercent}%`}}></div>
-                    </div>
+                    <div className="flex justify-end items-center">{decImg}/{totalImage} </div>
                   </div>
-                  <div className="flex justify-end items-center">{decImg}/{totalImage} </div>
                 </div>
               </div>
             </div>
-          </div>
 
           </div>
 
@@ -259,7 +304,7 @@ function Profile() {
                 className={`text-sm sm:text-base px-1 py-1 sm:px-2 whitespace-nowrap flex-1 relative outline-none ${activeButton === 'uploads'? 'text-primary':''} `}
               >
                 <span >
-                  {islargeScreen? "Uploaded Images":"Upl Imgs"}
+                  {islargeScreen? "Uploaded Images":"Upload"}
                 </span>
                 <div 
                   className={`absolute -bottom-2 left-0 w-full h-0.5 bg-primary transition-opacity duration-300  
@@ -271,7 +316,7 @@ function Profile() {
                 className={`text-sm sm:text-base px-1 py-1 sm:px-2 whitespace-nowrap flex-1 relative outline-none ${activeButton === 'encrypted'? 'text-primary':''} `}
               >
                 <span >
-                  {islargeScreen? "Encrypted Images":"Enc Imgs"}
+                  {islargeScreen? "Encrypted Images":"Encrypt"}
                 </span>
                 <div 
                   className={`absolute -bottom-2 left-0 w-full h-0.5 bg-primary transition-opacity duration-300
@@ -284,7 +329,7 @@ function Profile() {
                 className={`text-sm sm:text-base px-1 py-1 sm:px-2 whitespace-nowrap flex-1 relative outline-none ${activeButton === 'decrypted'? 'text-primary':''} `}
               >
                 <span >
-                  {islargeScreen? "Decrypted Images":"Dec Imgs"}
+                  {islargeScreen? "Decrypted Images":"Decrypt"}
                 </span>
                 <div 
                   className={`absolute -bottom-2 left-0 w-full h-0.5 bg-primary transition-opacity duration-300  
@@ -312,7 +357,7 @@ function Profile() {
               // keys
               <div className="  text-center">
                 {keys.length > 0 ? (
-                  <ul className=" list-disc list-inside text-sm flex gap-2 py-2 px-1 justify-center my-2 transition-opacity opacity-0 duration-500 ease-out animate-fadeIn ">
+                  <ul className=" list-disc list-inside text-sm flex flex-wrap gap-2 py-2 px-1 justify-center my-2 transition-opacity opacity-0 duration-500 ease-out animate-fadeIn ">
                     {keys.map((key, idx) => (
                       <li key={idx} className="flex flex-col items-center justify-center border border-ring w-48 py-2 rounded bg-card text-card-foreground ">
                         

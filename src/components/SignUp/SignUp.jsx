@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 export default function SignupForm() {
 
@@ -82,12 +83,12 @@ export default function SignupForm() {
           <input type="checkbox" id="terms" className="mr-2" required />
           <label htmlFor="terms" className="text-text-dark" >
             I agree to the{" "}
-            <a 
-              href="../src/pages/Term&Condition/Term&Condition.html" className="text-accent-dark underline"
+            <Link 
+              to="/terms-and-conditions" className="text-accent-dark underline"
               target="_blank"
             >
               Terms & Conditions
-            </a>
+            </Link>
           </label>
         </div>
         <button

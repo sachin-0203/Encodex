@@ -42,6 +42,7 @@ export default function LoginForm() {
             className="peer w-full bg-transparent p-2 border border-gray-400 rounded-md text-base placeholder-transparent focus:border-border outline-none"
             value={useremail}
             onChange={(e) => setUseremail(e.target.value)}
+            
           />
           <label
             htmlFor="email"
@@ -61,6 +62,7 @@ export default function LoginForm() {
             className="peer w-full p-2 border border-gray-400 focus:border-border rounded-md text-sm outline-none"
             value={userpassword}
             onChange={(e) => setUserpassword(e.target.value)}
+            autoComplete="new_password"
           />
           <label
             htmlFor="password"

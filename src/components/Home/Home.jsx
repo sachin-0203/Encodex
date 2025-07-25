@@ -9,8 +9,8 @@ import { TestimonialsSilder } from "../Card/TestimonialsSilder";
 
 function Home() {
   const {accessToken} = useAuth();
-  const [showModal, setShowModal] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [authView, setAuthView] = useState("login");
   const navigate = useNavigate();
 

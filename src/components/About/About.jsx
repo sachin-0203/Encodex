@@ -1,108 +1,61 @@
 import React from "react";
 
-function About() {
+const About = () => {
   return (
-    <div id="about-page" className="text-center p-2 dark:text-text-light dark:bg-background-dark">
-      <div className="p-4 h-1/2 w-100wv">
-        <div>
-          <div className="text-5xl font-bold capitalize text-text-dark p-12 align-middle dark:text-text-light">
-            about encodex 
-          <h3 className="text-accent-dark text-xl mt-3">Revolutionizing Image Security</h3>
-          </div>
-          <p>
-            Encodex is a state-of-the-art platform designed to protect your
-            sensitive images with cutting-edge encryption technology. Our
-            mission is to ensure privacy and security in a world where data
-            breaches are increasingly common
-          </p>
-        </div>
-        
-      </div>
-      <div className="p-5 m-5 flex gap-4">
-        <div className=" w-1/2">
-        <h1 className="text-5xl font-bold capitalize text-text-dark p-2">why encodex?</h1>
-        <p>
-            In a world of increasing data breaches and privacy concerns,
-            protecting visual data has become crucial. Encodex was created to
-            empower users with the ability to safeguard their images securely
-            and effortlessly.
-          </p>
-        </div>
-        <div className="w-1/2">
-          
-          <div>
-            <ul>
-              <li>Protect sensitive personal and professional image data.</li>
-              <li>
-                Combat the growing threats of unauthorized access and
-                cyberattacks.
-              </li>
-              <li>Provide a seamless encryption and decryption experience.</li>
+    <div id="about-page" className="px-4 py-12 max-w-7xl mx-auto text-center">
+      
+      {/* Hero Section */}
+      <section id="hero-section" className="mb-16">
+        <h1 className="text-4xl md:text-6xl font-bold capitalize mb-4 text-primary">About Encodex</h1>
+        <h3 className="text-lg md:text-2xl mb-6">Revolutionizing Image Security</h3>
+        <p className="max-w-3xl mx-auto text-sm md:text-base">
+          Encodex is a state-of-the-art platform designed to protect your sensitive images with cutting-edge encryption technology.
+          Our mission is to ensure privacy and security in a world where data breaches are increasingly common.
+        </p>
+      </section>
+
+      {/* Why Encodex Section */}
+      <section className="mb-20">
+        <h2 className="text-3xl md:text-5xl font-bold capitalize mb-6">Why Encodex?</h2>
+        <div className="flex flex-col md:flex-row justify-center gap-8">
+          <div className="md:w-1/2 text-left">
+            <p className="text-sm md:text-base mb-4">
+              In a world of increasing data breaches and privacy concerns,
+              protecting visual data has become crucial. Encodex empowers users to
+              safeguard their images securely and effortlessly.
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-sm md:text-base">
+              <li>Protect sensitive personal and professional image data</li>
+              <li>Combat unauthorized access and cyber threats</li>
+              <li>Seamless encryption and decryption experience</li>
             </ul>
           </div>
         </div>
-      </div>
-      <div>
-        <div className="text-5xl font-bold capitalize text-text-dark p-4">core features</div>
-          <div className="flex">
-            <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
+      </section>
+
+      {/* Core Features Section */}
+      <section>
+        <h2 className="text-3xl md:text-5xl font-bold capitalize mb-10">Core Features</h2>
+        <div className="flex flex-wrap justify-center gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-card text-card-foreground rounded-xl w-full sm:w-[45%] md:w-[30%] p-6 text-left hover:shadow-lg transition"
+            >
+              <div className="mb-3 text-primary text-2xl">📌 Icon</div>
+              <h3 className="text-lg font-semibold mb-2">Feature Title</h3>
+              <p className="text-sm">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Debitis
+                repellat error veritatis ullam facere quibusdam.
               </p>
             </div>
-            <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4 ">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border border-accent-dark rounded-lg  w-1/4 p-4 m-4 ">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-            <div className="container-items border border-accent-dark rounded-lg w-1/4 p-4 m-4">
-              <h1>icon</h1>
-              <h1>Title</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
-                repellat error veritatis ullam facere quibusdam qui voluptate
-                vitae fugiat exercitationem?
-              </p>
-            </div>
-          </div>
-      </div>
+          ))}
+        </div>
+      </section>
+
     </div>
   );
-}
+};
 
 export default About;
+

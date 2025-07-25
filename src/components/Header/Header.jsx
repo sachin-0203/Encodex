@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect, useState} from "react";
 import { Link, NavLink } from "react-router-dom";
-import {UserRoundPlus, House, HelpCircle, Mail, BookA, Sun, Moon, LogOut } from "lucide-react"
+import {UserRoundPlus, House, HelpCircle, Mail, BookA, Sun, Moon, LogOut, Plus, Sparkle, Sparkles } from "lucide-react"
 import { useTheme } from "../../Context/ThemeContext";
 import { useAuth } from "../../Context/AuthContext";
 
@@ -87,6 +87,47 @@ function Header() {
             <ul className="flex  mt-5 font-medium sm:flex-row sm:space-x-8 lg:mt-0 ">
               <li>
                 <NavLink
+                 to="/plus"
+                 className={
+                  ({ isActive }) => ` group
+                    block pb-2 px-3
+                    ${isActive 
+                      ? "text-primary border-b border-ring" 
+                      : "text-foreground"
+                    }
+                    hover:text-primary
+                    lg:p-0
+                    transition-all duration-200
+                  `}
+                 >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={`
+                      inline-block pr-1.5 fill-none
+                      group-hover:fill-current group-[.text-primary]:fill-current
+                      transition-colors duration-200
+                    `}
+                  >
+                    <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+                    <path d="M20 3v4" />
+                    <path d="M22 5h-4" />
+                    <path d="M4 17v2" />
+                    <path d="M5 18H3" />
+                  </svg>
+
+                  { islargeScreen?  "Plus" : "" } 
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
                  to="/"
                  className={
                   ({ isActive }) => `
@@ -122,8 +163,18 @@ function Header() {
                 </NavLink>
               </li>
               <li>
-                <button onClick={ToggleTheme}>
-                  {theme === 'light'? <Sun size={20}/> : <Moon size={20}/>}
+                <button 
+                  onClick={ToggleTheme}
+                  
+                  >
+                  {theme === 'light'? (
+                    <Sun size={20}/> 
+                    
+
+                    ):(
+                    <Moon size={20} />
+                    )
+                  }
                 </button>
               </li>
               
