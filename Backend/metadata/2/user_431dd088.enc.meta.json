@@ -1,0 +1,8 @@
+{
+  "user_id": "2",
+  "original_filename": "user.jpg",
+  "encrypted_filename": "user_431dd088.enc",
+  "recipient_name": "user",
+  "rcpt_pubkey_name": "user_aeskey.txt",
+  "timestamp": "2025-07-26T15:01:52.317Z"
+}

@@ -8,8 +8,8 @@ import About from './components/About/About'
 import Guide from './components/Guide/Guide'
 import Contact from './components/Contact/Contact'
 import Profile from './components/Profile/Profile'
-import { EncodexPlus } from './components/Subscripation/Plus';
-import { Checkout } from './components/Subscripation/Checkout';
+import { EncodexPlus } from './components/Subscription/Plus';
+import { Checkout } from './components/Subscription/Checkout';
 import Dashboard from './pages/Dashboard/Dashboard'
 import { MyContextProvider } from './Context/MyContextProvider';
 import { ThemeProvider } from './Context/ThemeContext';
