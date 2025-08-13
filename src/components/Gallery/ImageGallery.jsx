@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useAuth } from '@/Context/AuthContext';
+import { Download } from 'lucide-react';
 
 const ImageGallery = ({ folderName, userId }) => {
     const [imageUrls, setImageUrls] = useState([]);
@@ -133,14 +134,14 @@ const ImageGallery = ({ folderName, userId }) => {
                             <a
                                 href={url}
                                 download
-                                className="text-sm px-2 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-all"
+                                className="text-sm px-2 py-1.5 border border-sky-600 text-white rounded hover:bg-sky-700 transition-all"
                                 >
-                                 Download
+                                 Download <Download size={13} className='inline-block' />
                             </a>
-                            <div className="text-white cursor-pointer bg-red-500 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
+                            <div className="text-white cursor-pointer border  border-red-400 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    width="17"
+                                    width="14"
                                     height="17"
                                     viewBox="0 0 24 24"
                                     fill="none"

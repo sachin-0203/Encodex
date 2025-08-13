@@ -35,7 +35,7 @@ export const AuthProvider = ({children})=>{
       setUserId(userRes.data.id);
       setUser(userRes.data.username);
       setUserEmail(userRes.data.email)
-      setProfileSrc(userRes.data.profile)
+      setProfileSrc(userRes.data.profile || "assets/user.jpg")
       setRole(userRes.data.role)
     } catch(err){
       setAccessToken(null)

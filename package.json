@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"npm run react\" \"npm run backend\"",
     "react": "vite",
-    "backend": "python ./Backend/app.py",
+    "backend": "python wsgi.py",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

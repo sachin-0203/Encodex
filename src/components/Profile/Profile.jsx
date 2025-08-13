@@ -5,7 +5,7 @@ import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
-import { UserPen, Plus } from "lucide-react";
+import { UserPen, Plus, Copy } from "lucide-react";
 
 
 function Profile() {
@@ -156,19 +156,19 @@ function Profile() {
           <div className="basis-2/3  lg:max-w-56 sm:w-full min-w-28">
           
             <div className="border my-2 h-12 flex items-center overflow-hidden text-ellipsis whitespace-nowrap p-2">
-              {user}
+              Name: {user}
             </div>
             
             <div className="border my-2 h-12 flex items-center p-2">
-              {username}
+              Username: {username}
             </div>
 
             <div className="border my-2 py-2 break-words overflow-hidden px-2 box-border ">
-              {userEmail}
+              Email: {userEmail}
             </div>
 
             <div className="border my-2 h-12 flex items-center p-2">
-              {role || "{your role}"}
+              Role: {role || "{your role}"}
             </div>
 
             <div >
@@ -369,16 +369,16 @@ function Profile() {
 
                             <button
                               onClick={() => handleCopyKeyContent(key)}
-                              className="text-xs bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded"
+                              className=" text-xs border border-sky-500 hover:bg-sky-600 text-white px-2 py-1 rounded"
                               >
-                              Copy Key
+                              Copy <Copy size={10} className="inline-block" />
                             </button>
-                            <span className="text-white bg-red-600 hover:bg-red-700 rounded px-2 py-1 "
+                            <span className="text-white border boder-red-400 hover:bg-red-500 rounded px-2 py-1 "
                               onClick={()=> handleDelete(key, idx, userId)}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                width="15"
+                                width="12"
                                 height="15"
                                 viewBox="0 0 24 24"
                                 fill="none"

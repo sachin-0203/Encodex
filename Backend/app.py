@@ -28,8 +28,9 @@ import datetime
 from google.oauth2 import id_token
 from google.auth.transport import requests
 
-from db import db
-from models import User
+from Backend.db import db
+from Backend.models import User
+from flask_migrate import Migrate
 
 load_dotenv()
 
@@ -55,6 +56,7 @@ app.config['JWT_REFRESH_TOKEN_IN_COOKIE'] = True
 db.init_app(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+migrate = Migrate(app,db)
 
 
 # Directories

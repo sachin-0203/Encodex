@@ -107,8 +107,10 @@ function DecryptPage() {
 
   return (
     <>
-      <div className="text-center p-4">
-        <div className="flex justify-between mb-2">
+      
+      <div>
+        <div className="flex justify-between items-center">
+          <h2>Upload Image:</h2>
           <button
             onClick={ResetForm}
             className="text-white bg-destructive hover:bg-destructive/50 rounded-sm p-2"
