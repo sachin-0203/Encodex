@@ -20,19 +20,21 @@ function ProfileMenu({ onLogout }) {
   }, []);
 
   return (
-    <div className="relative inline-block text-left  " ref={menuRef}>
+    <div className="relative text-left " ref={menuRef}>
+
       <div
         onClick={() => setOpen(!open)}
-        className="p-2 rounded-full"
+        className="p-0.5"
       >
-          <img className=" size-8 border border-foreground shadow-md rounded-full"  src={profileSrc} alt="profile" />
+          <img className={`h-7 w-7 min-w-4 min-h-4 border hover:border-2 ${open? "border-2":""} shadow-md rounded-full`}  src={profileSrc} alt="profile" />
       </div>
+
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-signup shadow-lg transition-opacity opacity-0 duration-500 ease-out animate-fadeIn ">
+        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-signup shadow-lg transition-opacity opacity-0 duration-500 ease-out animate-fadeIn border ">
           <div className="p-3">
             <div className="p-3  text-center bg-gray-800 rounded-md">
               <div>
-                <img className="mb-2 size-12 mx-auto rounded-full border border-white"  src={profileSrc} alt="profile" />
+                <img className="mb-2 size-12 mx-auto rounded-full border "  src={profileSrc} alt="profile" />
               </div>
               <div>{ user}</div>
             </div>
@@ -69,6 +71,7 @@ function ProfileMenu({ onLogout }) {
           </div>
         </div>
       )}
+      
     </div>
   );
 }

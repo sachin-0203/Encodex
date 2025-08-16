@@ -5,7 +5,9 @@ import axios from "axios";
 import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
-import { UserPen, Plus, Copy } from "lucide-react";
+import { UserPen, Plus, Copy, Activity, PenLine } from "lucide-react";
+import '../../../src/customeCss.css'
+import Example from '../../AnimatedButton'
 
 
 function Profile() {
@@ -128,118 +130,90 @@ function Profile() {
   }, [])
 
   return (
-    <div className="Relative flex w-full flex-col sm:flex-row transition-all duration-500 gap-2 p-2">
+    <div className="Relative flex w-full flex-col sm:flex-row transition-all duration-500 p-2">
 
       {/* Main- Left -section */}
-      <div className="shadow-xl  sm:h-[screen] min-w-[14rem] p-2 rounded-md ">
+      <div className="basis-[25%] sm:h-[screen] min-w-[14rem] p-2 rounded-md text-center mb-5 ">
 
-        {/* Left section: image */}
-        <div className="sticky top-24 flex flex-row sm:flex-col gap-2 ">
-        
-          <div className=" basis-1/3 sm:w-100% w-50%  ">
-          
-            <div className="border mt-2.5 sm:mt-0"> 
-              <div className="text-center">Profile</div>
-            </div>
-            
-            <div className="relative group w-fit mx-auto my-4  ">
+        <div className="sticky top-24 flex flex-col  gap-4 text-sm w-full ">
+
+          <div className="basis-1/2 shadow-[0_1px_0_rgba(255,255,255,0.06),0_2px_4px_rgba(0,0,0,0.35)] rounded-md p-2 ">
+            <div className="relative w-fit mx-auto my-4  ">
+              <div className="absolute right-2 bottom-1 rounded-full bg-green-500 size-3" />
               <img 
                 src={profileSrc} 
                 alt="Profile Pic" 
-                className={`h-32 w-32 rounded-full object-cover border-2 border-gray-300 shadow-md `}
+                className={`size-24 rounded-full object-cover border-2 shadow-md `}
               />
             </div>
-
-          </div>
-
-          {/* right section: user-info */}
-          <div className="basis-2/3  lg:max-w-56 sm:w-full min-w-28">
           
-            <div className="border my-2 h-12 flex items-center overflow-hidden text-ellipsis whitespace-nowrap p-2">
-              Name: {user}
+            <div className="text-xl" >
+              {user}
             </div>
             
-            <div className="border my-2 h-12 flex items-center p-2">
-              Username: {username}
+            <div className="text-gray-500" >
+              {username}
             </div>
 
-            <div className="border my-2 py-2 break-words overflow-hidden px-2 box-border ">
-              Email: {userEmail}
+            <div className=" truncate" >
+              {userEmail}
             </div>
 
-            <div className="border my-2 h-12 flex items-center p-2">
-              Role: {role || "{your role}"}
-            </div>
+            <Link to="/Setting" className="box-border border-2 border-double flex justify-center items-center gap-3 p-0.5 rounded-md hover:border transition-all hover:scale-105 hover:bg-background/20 active:scale-90  mt-3 mx-2 ">
+              
+              <PenLine size={15} className="stroke-1" />
+              <div className="font-thin" >Edit Profile</div>
+              
+            </Link>
+          </div> 
 
-            <div >
-              <Link to="/Setting" className="group border flex  justify-right gap-3 p-2 " >
-                
-                <UserPen  />
-                <h2 className="group-hover:text-gray-600">Edit Profile</h2>
-                
-              </Link>
+          <div className="basis-1/2">
+
+            <div className="text-center rounded-lg border shadow-[0_1px_0_rgba(255,255,255,0.06),0_2px_2px_rgba(0,0,0,0.35)] transition-all duration-200 w-full py-2">
+
+              <div 
+                className="flex size-16 items-center justify-center rounded-full border border-sky-500/40 bg-sky-500/10  text-sky-400 mx-auto my-4"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="h-10 w-10">
+                  <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 .001 3.999A2 2 0 0 0 17 18zM6.3 6l.4 2h11.4a1 1 0 0 1 .98 1.197l-1 5A2 2 0 0 1 16.12 16H9.02a2 2 0 0 1-1.96-1.598L5.1 5.2a1 1 0 0 0-.98-.8H3a1 1 0 1 1 0-2h1.12a3 3 0 0 1 2.94 2.4L7 6h-.7z"/>
+                </svg>
+              </div>
+
+              <h3 className="font-semibold text-lg mb-1 ">Explore Subscription</h3>
+
+              <p className="text-sm text-gray-400 md:px-2">
+                Unlimited projects, priority support, and advanced analytics to help you grow faster.
+              </p>
+
+
+              <button
+                type="button"
+                onClick={()=>navigate('/plus')}
+                className=" rounded-md py-1 text-white shadow-[0_8px_15px_rgba(31,162,255,0.35)] transition-all duration-500 active:translate-y-0 focus:outline-none focus:ring-4 focus:ring-sky-500/50 w-[95%] mt-3 bg-gradient-to-r from-[#1FA2FF] via-[#12D8FA] to-[#1FA2FF] bg-[length:200%_auto] hover:bg-[position:right_center]"
+
+              >
+                Explore
+              </button>
             </div>
           </div>
+
         </div>
       </div>
 
       
 
       {/* Main- Right Section */}
-      <div className=" basis-4/5 min-h-[85vh] min-w-[14rem] ">
-
-        {/* plus section */}
-        <div className="border mb-2 h-12 rounded-sm">
-          <NavLink to={'/plus'} className="px-5 py-2 flex justify-between">
-
-            {/* left */}
-            <div className="text-lg uppercase ">
-              Encode<span className="text-red-500">x</span>
-            </div>
-
-            {/* right */}
-            <div>
-              <Link className="group  flex gap-3 px-2 py-1 bg-secondary rounded-full text-white" onClick={()=> navigate('/Plus')}>
-                <div>
-                  <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={`
-                    inline-block fill-none
-                    group-hover:fill-current group-[.text-primary]:fill-current
-                  `}
-                >
-                  <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-                  <path d="M20 3v4" />
-                  <path d="M22 5h-4" />
-                  <path d="M4 17v2" />
-                  <path d="M5 18H3" />
-                  </svg>
-
-                </div>
-                <div>
-                  Get Plus
-                </div>
-              </Link>
-            </div>
-          </NavLink>
-        </div>
+      <div className="basis-[80%] min-h-[85vh] min-w-[14rem] ">
 
         {/* Upper Col */}
         <div className="flex flex-grow gap-2 md:flex-row flex-col ">
 
           {/* right-col-1 : Progress */}
-          <div id="Overall Progress" className=" min-h-[16rem] border rounded-sm basis-[65%] mb-2">
+          <div id="Overall Progress" className=" min-h-[16rem] rounded-md basis-[60%] mb-2 shadow-[inset_0_6px_12px_rgba(0,0,0,0.3)]">
 
             <div className="flex flex-col h-full"  >
-              <header className="px-5">
+              <header className="px-5 inline-flex items-center gap-2">
+                <Activity size={24} />
                 <div className="my-4 text-lg" >Overall Progress</div>
               </header>
               <div className="px-6 py-10 pt-3 flex-1 h-full overflow-hidden overflow-x-auto no-scrollbar">

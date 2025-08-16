@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { LayoutList } from 'lucide-react';
 
 const MetadataActivity = ({userId , accessToken}) => {
   const [metadata, setMetadata] = useState([]);
@@ -46,9 +47,10 @@ const MetadataActivity = ({userId , accessToken}) => {
     }
   }
   return (
-    <div className="min-h-[17rem] sm:h-[16rem]  border rounded-sm basis-1/2 mb-2">
+    <div className="min-h-[17rem] sm:h-[16rem] shadow-[inset_0_6px_12px_rgba(0,0,0,0.3)] rounded-md basis-1/2 mb-2">
       <div className="flex flex-col h-full">
-        <header className="px-5 py-4">
+        <header className="px-5 py-4 inline-flex items-center gap-2">
+          <LayoutList size={24} />
           <div className="text-lg font-bold ">Image MetaData</div>
         </header>
 

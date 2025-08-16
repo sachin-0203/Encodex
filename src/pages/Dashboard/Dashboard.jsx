@@ -184,27 +184,36 @@ function Dashboard() {
 
             <div id="main-container" 
               className="flex flex-grow-1 ml-16  h-screen text-foreground ">
+
               <div className="w-full p-3 pt-0">
-                <div className="shadow-sm shadow-success rounded-md h-16  w-full my-2 flex justify-between align-middle p-1">
-                  <div>
-                    <h2 className="text-3xl font-bold text-secondary">
-                      Dashboard
-                    </h2>
-                  </div>
-                  <div className="text-right">
-                    <LiveClock/>
-                  </div>
+
+                <div className="shadow-md rounded-md  w-full sm:my-2 p-1 text-center">
+                 <div 
+                 className=" mx-auto md:text-4xl text-lg ">
+                  Welcome Back,
+                  <span className="capitalize text-success">
+                    {user}
+                  </span>
+                 </div>
+                 <div className="text-[9px] md:text-lg my-2 md:mx-10">
+                  Secure your images with military-grade encryption. Upload, encrypt, and share with confidence.
+                 </div>
+                 <div className="flex justify-center items-center text-center gap-2">
+                  <div className=" text-[7px] sm:px-2 text-secondary bg-success/20 border border-secondary rounded-full">All System Operational</div>
+                  <div className=" text-[7px] sm:px-2 text-sky-700 bg-sky-100/20 border border-sky-800 rounded-full">RSA-2048 Encryption Active</div>
+                 </div>
                 </div>
 
-                <div className="flex gap-2 mt-2 h-3/4 box-content">
+                <div className="flex mt-2 h-3/4 box-content ">
                   <div className=" w-full">
-                    <div className="flex justify-evenly rounded-lg bg-back relative w-full px-2 my-1 h-[4.2rem] sm:px-0">
+
+                    <div className="flex gap-1 justify-evenly items-center rounded-full bg-back relative w-full  my-1 h-[1.5rem]  sm:h-[3rem]">
 
                       <h2
                         ref={encryptRef}
                         onClick={()=> handlePageChange('Encrypt')}
-                        className={`box-border z-10 p-4 m-1
-                           cursor-pointer rounded-lg hover:bg-success/10 w-1/3 text-center transition-all text-sm md:text-lg  ${activePage === 'Encrypt'? 'text-white':''}
+                        className={`box-border z-10 sm:py-2.5 py-0
+                           cursor-pointer rounded-full  hover:border border-success/20 w-full text-center transition-all text-sm md:text-lg  ${activePage === 'Encrypt'? 'text-white':''}
                         `}
                       >
                         Encryption
@@ -213,8 +222,8 @@ function Dashboard() {
                       <h2
                         ref={decryptRef}
                         onClick={()=> handlePageChange('Decrypt')}
-                        className={`box-border z-10 p-4 m-1
-                          cursor-pointer rounded-lg hover:bg-success/10 text-foreground w-1/3 text-sm md:text-lg text-center transition-all
+                        className={`box-border z-10  sm:py-2.5 py-0
+                          cursor-pointer rounded-full hover:border border-success/20 text-foreground  text-sm md:text-lg w-full text-center transition-all
                           ${activePage === 'Decrypt'? 'text-white':''}
                        `}
                       >
@@ -225,7 +234,7 @@ function Dashboard() {
                         ref={messageRef}
                         onClick={()=> handlePageChange('Message')}
                         className={`box-border z-10 m-1
-                           p-4 rounded-lg cursor-pointer text-center hover:bg-success/10 w-[30%] text-sm md:text-lg transition-all
+                           py-1.5 rounded-lg cursor-pointer text-center hover:bg-success/10 w-[30%] text-sm md:text-lg transition-all
                            ${activePage === 'Message'? 'text-white':''}
                            hidden
                         `}
@@ -234,7 +243,7 @@ function Dashboard() {
                       </h2>
 
                       <motion.div
-                        className="absolute h-[3.8em] bg-primary border rounded-lg my-1"
+                        className="absolute h-[1.5rem] sm:h-[3em] bg-primary  rounded-full w-full "
                         animate={underlineStyle}
                         transition={{ type: "spring", stiffness: 200, damping: 30, }}
                       />
@@ -242,7 +251,7 @@ function Dashboard() {
 
                     </div>
 
-                    <div id="data-container" className="border rounded-lg p-2 pb-0 z-4">
+                    <div id="data-container" className="overflow-hidden rounded-lg p-2 z-4">
                       <AnimatePresence mode="wait">
                         <motion.div
                           key={activePage}
@@ -261,11 +270,12 @@ function Dashboard() {
                   </div>
 
                   {/* Notification , History */}
-                  <div className="hidden lg:block w-[30%] text-center">
+                  <div className="hidden lg:block w-[30%] text-center  ">
                     <div className="h-full ">
-                      <div className="mb-4 border border-sky-700 rounded-md rounded-b-sm">
+
+                      <div className="mb-1 border border-sky-700 rounded-md rounded-b-sm">
                         <h2 className=" font-mono text-lg bg-[hsl(205,73%,34%)] text-white rounded-t-md py-2 ">Notifications </h2>
-                        <div className="w-full max-w-md bg-sky-100  overflow-auto h-52 rounded-b-sm ">
+                        <div className="w-full max-w-md bg-sky-100  overflow-auto h-48 rounded-b-sm ">
                           {
                             messages.length > 0 ? (
                               <div className="text-sm">
@@ -286,9 +296,9 @@ function Dashboard() {
                         </div>
                       </div>
 
-                      <div className="border border-gray-800 rounded-md mt-2 0  w-full">
+                      <div className=" border border-gray-800 rounded-md mt-2 0  w-full">
                         <h2 className="font-mono text-lg bg-zinc-500 text-white p-1 rounded-t-md">History</h2>
-                        <div className="bg-zinc-200 overflow-y-auto h-48 rounded-b-md ">
+                        <div className="bg-zinc-200 overflow-y-auto h-44 rounded-b-md ">
                         {
                           history.length > 0 ? (
                             <div className="border-2 text-sm border-l-zinc-700 rounded-md">

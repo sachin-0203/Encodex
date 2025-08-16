@@ -134,11 +134,11 @@ const ImageGallery = ({ folderName, userId }) => {
                             <a
                                 href={url}
                                 download
-                                className="text-sm px-2 py-1.5 border border-sky-600 text-white rounded hover:bg-sky-700 transition-all"
+                                className="text-sm px-2 py-1.5 border border-sky-600 hover:text-white rounded hover:bg-sky-700 transition-all"
                                 >
                                  Download <Download size={13} className='inline-block' />
                             </a>
-                            <div className="text-white cursor-pointer border  border-red-400 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
+                            <div className="hover:text-white cursor-pointer border  border-red-400 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="14"

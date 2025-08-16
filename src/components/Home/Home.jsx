@@ -69,10 +69,26 @@ function Home() {
 
             <div className="mt-1">
             <button 
-              className=" rounded-full  text-foreground border border-ring hover:bg-cyan-900 hover:text-white h-16 w-56 text-[2rem]  "
+              className="group relative font-medium text-foreground transition-colors duration-[400ms] hover:text-primary px-4 py-2 "
               onClick={()=>handleLetBegin("login")} >
-               Let's Begin
+
+                <span>Let's Begin</span>
+                
+                {/* TOP */}
+                <span className="absolute left-0 top-0 h-[2px] w-0 bg-primary transition-all duration-200 group-hover:w-full hover:rounded-full " />
+
+                {/* RIGHT */}
+                <span className="absolute right-0 top-0 h-0 w-[2px] bg-primary transition-all delay-100 duration-200 group-hover:h-full" />
+
+                {/* BOTTOM */}
+                <span className="absolute bottom-0 right-0 h-[2px] w-0 bg-primary transition-all delay-200 duration-200 group-hover:w-full" />
+
+                {/* LEFT */}
+                <span className="absolute bottom-0 left-0 h-0 w-[2px] bg-primary transition-all delay-300 duration-200 group-hover:h-full" />
+
               </button>
+
+              
             </div>
           </div>
           {/* <div className="right-container">
