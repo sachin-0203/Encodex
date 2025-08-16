@@ -1,0 +1,8 @@
+/* custom.css */
+.bg-animate {
+  background-size: 200% auto;
+  transition: background-position 0.5s;
+}
+.bg-animate:hover {
+  background-position: right center;
+}

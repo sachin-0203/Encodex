@@ -30,6 +30,7 @@ from google.auth.transport import requests
 
 from Backend.db import db
 from Backend.models import User
+from Backend.models import Plan
 from flask_migrate import Migrate
 
 load_dotenv()
@@ -375,11 +376,12 @@ def aes_encrypt(image_path, recipient, user_id, filename):
     with open(encrypted_image_path, 'w') as encrypted_file:
         encrypted_file.write(encrypted_image_b64)
 
-    encrypted_aes_key_path = os.path.join(KEYS_FOLDER, str(user_id), f"{recipient}_aeskey.txt")
+    keyname = f"{recipient}_aeskey.txt"
+    encrypted_aes_key_path = os.path.join(KEYS_FOLDER, str(user_id), keyname )
     with open(encrypted_aes_key_path, 'w') as f:
         f.write(encrypted_aes_key_b64)
     
-    return encrypted_image_b64, encrypted_aes_key_b64, encrypted_filename
+    return encrypted_image_b64, encrypted_aes_key_b64, encrypted_filename,keyname
 
 # route: Encrypt
 @app.route('/encrypt', methods=['POST'])
@@ -404,7 +406,7 @@ def encrypt():
             return jsonify({'status': 'error', 'message': 'Invalid image file'}), 400
         
         user_id = get_jwt_identity()
-        encrypted_image, encrypted_aes_key, encrypted_filename = aes_encrypt(file_path, recipient, user_id, filename)
+        encrypted_image, encrypted_aes_key, encrypted_filename, encrypted_keyname = aes_encrypt(file_path, recipient, user_id, filename)
 
         
         # Save metadata JSON after encryption
@@ -422,6 +424,7 @@ def encrypt():
             'encrypted_content': encrypted_image,
             'encrypted_aes_key': encrypted_aes_key,
             'image_name' : encrypted_filename,
+            'key_name' : encrypted_keyname
         })
     else:
         return jsonify({'status': 'error', 'message': 'This file type is not allowed'}), 400
@@ -719,7 +722,7 @@ def upload_profile_pic():
 def update_user_info():
 
     data = request.get_json()
-    print('[DATA]:', data)  
+    print('[DATA]:', data)   
     email = data.get('email')
     new_username = data.get('name')
     userid = data.get('id')
@@ -743,6 +746,29 @@ def update_user_info():
     return jsonify({
         'message': 'user not update'
     }), 404
+
+
+# route: plan
+@app.route('/api/plan/<string:plan_name>', methods = ['GET'])
+def get_plan_by_name(plan_name):
+    plan  = Plan.query.filter_by(name = plan_name).first()
+    if plan:
+        plan_data ={
+            'status': 'success',
+            'id': plan.id,
+            'name': plan.name,
+            'price': plan.price,
+            'duration': plan.duration_days,
+            'features': {
+                'downloads_per_month': plan.features.get('downloads_per_month'),
+                'storage': plan.features.get('storage'),
+                'priority_support': plan.features.get('priority_support'),
+            }            
+        }
+        return jsonify(plan_data)
+    
+    else: 
+        return jsonify({'error': 'Plan not found'}), 404
 
     
 

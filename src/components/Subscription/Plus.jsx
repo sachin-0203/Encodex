@@ -173,8 +173,8 @@ export const EncodexPlus = () => {
 
           {/* Free Plan */}
           <div className="border p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h2 className="text-xl font-semibold">Free</h2>
-            <p className="mt-2 text-2xl font-bold">₹0<span className="text-sm">/mo</span></p>
+            <h2 className="text-xl font-semibold">Basic <sup className="text-red-white bg-red-700 p-1 rounded-full">Free</sup></h2>
+            <p className="mt-2 text-2xl font-bold">₹0<span className="text-sm">/mo  </span></p>
             <ul className="mt-4 space-y-2 text-sm ">
               <li>🔐 Image encryption & decryption</li>
               <li>🗂 100MB secure storage</li>
@@ -188,7 +188,7 @@ export const EncodexPlus = () => {
               className="mt-6 bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700" 
               onClick={()=> handlefreeClick('login')}
             >
-              Get Started
+              Get Started 
             </button>
             
           </div>
@@ -212,7 +212,7 @@ export const EncodexPlus = () => {
             </ul>
             <button 
               className="mt-6 bg-primary text-white py-2 px-4 rounded hover:bg-primary/55" 
-              onClick={()=> handlePaidClick('login','pro')}
+              onClick={()=> handlePaidClick('login','Pro')}
               >Subscribe</button>
           </div>
 
@@ -233,7 +233,7 @@ export const EncodexPlus = () => {
             </ul>
             <button 
               className="mt-6 bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700" 
-              onClick={()=> handlePaidClick('login', 'premium')}
+              onClick={()=> handlePaidClick('login', 'Premium')}
             >
               Subscribe
             </button>
