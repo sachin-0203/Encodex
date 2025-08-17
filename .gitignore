@@ -1,4 +1,6 @@
+# =========================
 # Logs
+# =========================
 logs
 *.log
 npm-debug.log*
@@ -7,25 +9,54 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# =========================
+# Dependency directories
+# =========================
+node_modules/
+venv/
+.env/
+.venv/
+env/
+ENV/
+
+# =========================
+# Build / dist output
+# =========================
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# =========================
+# Python cache / bytecode
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# =========================
+# Test / Coverage
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
+
+# =========================
+# Environment & secrets
+# =========================
+.env.*
+*.db
+keys/
+
+# =========================
+# Editor / IDE
+# =========================
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-venv/
-.env.*
-
-
-*.db
-keys

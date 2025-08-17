@@ -14,10 +14,11 @@ function Header() {
   const {user, logout, profileSrc} = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [authView, setAuthView] = useState("login");
-
+  
   const {theme, ToggleTheme} = useTheme()
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(()=>{
 
@@ -26,6 +27,15 @@ function Header() {
     }
     window.addEventListener("resize", handleResize)
     return ()=> window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(()=>{
+
+    const handleScroll = () =>{
+      setScrolled(window.scrollY > 100)
+    }
+    window.addEventListener("scroll", handleScroll)
+    return ()=> window.removeEventListener("scroll", handleScroll)
   }, [])
 
   const handleBegin = (owner)=>{
@@ -48,9 +58,9 @@ function Header() {
   };
 
   return (
-    <header className="shadow-xl sticky z-50 top-0 ">
+    <header className=" sticky z-50 top-0 ">
       <nav 
-        className="bg-signup  px-4 lg:px-6 py-2.5 duration-400 transition-all text-white "
+        className={` ${ scrolled? "bg-signup ":"bg-transparent translate-y-2"}   px-4 lg:px-6 py-2.5 duration-400 transition-all ease-in text-white`}
       >
         <div className="flex  justify-between items-center h-[5rem]">
 

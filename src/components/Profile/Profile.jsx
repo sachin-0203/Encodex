@@ -6,8 +6,6 @@ import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
 import { UserPen, Plus, Copy, Activity, PenLine } from "lucide-react";
-import '../../../src/customeCss.css'
-import Example from '../../AnimatedButton'
 
 
 function Profile() {

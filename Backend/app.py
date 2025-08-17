@@ -9,7 +9,7 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 import secrets
 import json
-
+from flask_mailman import Mail
 
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import  (
