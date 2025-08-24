@@ -14,7 +14,7 @@ export default function AuthModal({ isOpen, onClose, defaultView = "login" }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center">
+    <div className="fixed  inset-0 z-50 bg-black bg-opacity-60 flex items-center justify-center">
       <div className="bg-white p-10 rounded-md w-full max-w-md relative">
         <button
           className="absolute top-3 right-3 text-3xl font-bold text-red-500"

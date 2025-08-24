@@ -63,7 +63,7 @@ function Home() {
 
         <div >
 
-          <div className="z-10 left-container text-3xl text-primary text-center flex flex-col gap-10 sm:gap-15 md:gap-12">
+          <div className="z-10 left-container text-3xl text-primary text-center flex flex-col gap-7 sm:gap-15 md:gap-12">
             
             <h1 className=" mt-12 sm:mt-16 text-5xl sm:text-6xl md:text-7xl lg:text-8xl  " >
               Secure Your Images,

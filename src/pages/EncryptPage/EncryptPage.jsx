@@ -72,6 +72,7 @@ function EncryptPage() {
       setCopied(false)
     } , 1000)
   }
+  
   const downloadButtonAnimation = () =>{
     if(!encImage) return;
     const btn = btnRef.current;

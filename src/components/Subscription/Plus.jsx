@@ -173,7 +173,7 @@ export const EncodexPlus = () => {
 
           {/* Free Plan */}
           <div className="border p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h2 className="text-xl font-semibold">Basic <sup className="text-red-white bg-red-700 p-1 rounded-full">Free</sup></h2>
+            <h2 className="text-xl font-semibold">Basic</h2>
             <p className="mt-2 text-2xl font-bold">₹0<span className="text-sm">/mo  </span></p>
             <ul className="mt-4 space-y-2 text-sm ">
               <li>🔐 Image encryption & decryption</li>
@@ -350,7 +350,7 @@ export const EncodexPlus = () => {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className=" border rounded-xl p-5 shadow-sm transition"
+                className=" border rounded-lg p-5 shadow-sm transition"
               >
                 <button
                   onClick={() => toggleFAQ(index)}

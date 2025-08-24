@@ -11,9 +11,9 @@ export const AuthProvider = ({children})=>{
 
   const [userId, setUserId] = useState(null);
   const [user, setUser] = useState('');
-  const [role, setRole] = useState('');
   const [userEmail, setUserEmail] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
+  const [Isverified, setIsverified] = useState(false);
 
   const username = user ?  "@" + user.replace(/\s+/g,'').toLowerCase() : " ";
 
@@ -36,7 +36,7 @@ export const AuthProvider = ({children})=>{
       setUser(userRes.data.username);
       setUserEmail(userRes.data.email)
       setProfileSrc(userRes.data.profile || "assets/user.jpg")
-      setRole(userRes.data.role)
+      setIsverified(userRes.data.isVerified)
     } catch(err){
       setAccessToken(null)
     }
@@ -57,7 +57,6 @@ export const AuthProvider = ({children})=>{
       const result = response.data;
       if(result.status === 'success'){
         
-        console.log(result)
         const token = result.access_token;
         const userData = result.username;
         const email = result.email;
@@ -97,7 +96,8 @@ export const AuthProvider = ({children})=>{
 
     } catch(error){
       if(error.response.data.status === 'register_error'){
-        return {success: false, message: error.response.data.message};
+        toast.error(error.response.data.message)
+        return 
       }
       console.error(`Signup Failed: ${error}`)
       return { success: false, message: "An error occured during signup" };
@@ -142,8 +142,7 @@ export const AuthProvider = ({children})=>{
     setProfileSrc,
     userEmail,
     username,
-    role,
-    setRole
+    Isverified,
   };
 
   return (

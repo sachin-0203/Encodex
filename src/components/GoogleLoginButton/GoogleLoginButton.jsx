@@ -20,9 +20,12 @@ const GoogleLoginBtn = ({ onLogin })=>{
         username: result.username,
         dp: result.dp,
       });
+      // else{
+      //   toast.error(``)
+      // }
     }
     catch(error){
-      toast.error(`Google Login error, User not found`);
+      toast.error(`Google Login Failed, ${resp.data.message}`);
       console.error(`Google Login error, ${error}`);
       
     }

@@ -30,9 +30,6 @@ export default function SignupForm() {
       setUseremail("");
       setUserpassword("");
     }
-    else{
-      toast.error("SignUp failed");
-    }
   }
 
   return (

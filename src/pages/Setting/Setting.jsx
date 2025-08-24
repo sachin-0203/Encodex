@@ -2,21 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
+import { BadgeCent, BadgeCheck, BadgeX } from "lucide-react";
 
 export const Setting = () => {
 
-  const {userId, user, setUser, userEmail, profileSrc, accessToken, setProfileSrc, username, role, setRole } = useAuth();
+  const {userId, user, setUser, userEmail, profileSrc, accessToken, setProfileSrc, username, Isverified } = useAuth();
 
   const [users, setUsers] = useState({
     name: user || " ",
-    role: role || " " ,
+    status: Isverified? 'Verified' : 'Not Verified' ,
   })
 
   useEffect(() => {
     if (user) {
       setUsers({
         name: user,
-        role: role, 
+        status: Isverified? "Verified" : "Not Verified " , 
       });
     }
   }, [user]);
@@ -118,7 +119,7 @@ export const Setting = () => {
                         <img className="rounded-full border-4 border-background min-w-[5rem] size-24 sm:size-32 " src={profileSrc} alt="dp" />
 
                         {/* Hover overlay with pencil icon */}
-                        <div className="flex justify-center border rounded-md  ">
+                        <div className="flex justify-center border rounded-md hover:scale-95  ">
                           <label htmlFor="profile_pic" className="cursor-pointer text-[0.7rem] sm:text-sm font-medium  ">
                             Profile pic 
                           </label>
@@ -181,19 +182,24 @@ export const Setting = () => {
                   </div>
 
                    {/* Role */}
-                  <div className="border p-2 mb-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-md">
-                    <label htmlFor="purpose" className="w-32  text-lg sm:text-xl  font-medium">User Type</label>
-                    <input
-                      id="purpose"
-                      type="text"
-                      value={users.role || " "}
-                      onChange={(e)=>{setUsers(prev =>({
-                        ...prev,
-                        role : e.target.value,
-                      }))}}
-                      placeholder="Purpose of using Encodex"
-                      className="flex-1 p-1 border rounded text-black w-full sm:w-[80%] text-sm sm:text-md"
-                    />
+                  <div className="border p-2 mb-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-md ">
+                    <label htmlFor="purpose" className="w-32  text-lg sm:text-xl  font-medium">Status</label>
+                    <div className="w-full sm:w-[80%] flex relative" >
+                      <input
+                        id="purpose"
+                        type="text"
+                        value={users.status}
+                        placeholder="Purpose of using Encodex"
+                        className={`flex-1 p-1 border rounded ${Isverified? "text-secondary":"text-red-600 "}  w-full text-sm sm:text-md  outline-none `}
+                        readOnly
+                      />
+                      {Isverified ? (
+                        <BadgeCheck className="absolute right-1 top-1 text-secondary size-5" />
+                        ):(
+                          <BadgeX className="absolute right-1 top-1 text-red-600 size-5" />
+                      )}
+                      
+                    </div>
                   </div>
 
                 </div>
@@ -234,7 +240,7 @@ export const Setting = () => {
               <div className="mt-6">
                 <button 
                   className="px-5 py-1 bg-green-800 text-white rounded hover:bg-green-900 transition w-full sm:w-28" 
-                  onClick={()=>handleChanges(userId ,users.name, users.role)}
+                  onClick={()=>handleChanges(userId ,users.name, )}
                 >
                   Save
                 </button>

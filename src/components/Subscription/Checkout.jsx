@@ -14,7 +14,10 @@ export const Checkout = () => {
   const [plan, setPlan] = useState(null);
   const [planname, setPlanname] = useState(null);
   const [amount, setAmount] = useState(null);
-  const [activeStep, setActiveStep] = useState("2");
+  const [totalAmount, setTotalAmount] = useState(null);
+  const [activeStep, setActiveStep] = useState(
+    localStorage.getItem("activeStep") || "2"
+  );
   const [email , setEmail] = useState(userEmail || "");
   const [number , setNumber] = useState("");
   const [loading1 , setLoading1] = useState(false);
@@ -28,9 +31,11 @@ export const Checkout = () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/plan/${planName}`);
         if (response) {
-          setPlan(response.data);
-          setPlanname(response.data.name)
-          setAmount(response.data.price)
+          const data = response.data;
+          setPlan(data);
+          setPlanname(data.name)
+          setAmount(data.price)
+          setTotalAmount(Math.ceil(1.18 * data.price));
         } else {
           console.log('No response data');
         }
@@ -84,6 +89,7 @@ export const Checkout = () => {
       return
     }
     setActiveStep("3")
+    localStorage.setItem('activeStep', '3')
   }
 
   const handleRazorpayPayment = async (plan, amount)=>{
@@ -342,7 +348,11 @@ export const Checkout = () => {
             <div>
               <div className="capitalize">
                 <button 
-                  onClick={() => setActiveStep('2')}
+                  onClick={() => {
+                      localStorage.setItem('activeStep',2)
+                      setActiveStep('2')
+                    }
+                  }
                   className="hover:bg-muted p-1 rounded-md "
                 >
                   <ChevronLeft size={18} className="inline-block" />
@@ -359,25 +369,30 @@ export const Checkout = () => {
                 </div>
 
                 <div className="border-t border-b py-3 mb-4">
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>{amount}.00</span>
+                    <span>
+                      ₹{amount}
+                      <span className=" line-through text-sm ml-2 text-gray-600 font-semibold ">  
+                        ₹{amount + 300} 
+                      </span> 
+                    </span>
                   </div>
                   <div className="flex justify-between text-gray-600">
                     <span>GST (18%)</span>
                     <span>₹{Math.ceil(0.18*amount)}</span>
                   </div>
-                  <div className="flex justify-between font-bold text-lg mt-2">
+                  <div className="flex justify-between font-bold text-lg mt-2 text-success">
                     <span>Total</span>
-                    <span>₹{Math.ceil(amount + 0.18 * amount)}</span>
+                    <span>₹{totalAmount}</span>
                   </div>
                 </div>
 
                 <button 
                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium"
-                  onClick={()=> handleRazorpayPayment(planname, amount)}
+                  onClick={()=> handleRazorpayPayment(planname, totalAmount)}
                 >
-                  Proceed to Pay ₹{Math.ceil(amount + 0.18 * amount)}
+                  Proceed to Pay ₹{totalAmount}
                 </button>
 
                 <p className="text-xs text-gray-400 text-center mt-3">
