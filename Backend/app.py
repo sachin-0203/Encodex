@@ -9,7 +9,10 @@ from Crypto.PublicKey import RSA
 from Crypto.Random import get_random_bytes
 import secrets
 import json
-from flask_mailman import Mail
+from flask import render_template
+from flask_mail import Mail
+from flask_mail import Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended import  (
@@ -32,6 +35,8 @@ from Backend.db import db
 from Backend.models import User
 from Backend.models import Plan
 from flask_migrate import Migrate
+from Backend.utils.email_utils import send_email
+from Backend.payment import register_payment_routes
 
 load_dotenv()
 
@@ -54,10 +59,22 @@ app.config["JWT_REFRESH_COOKIE_NAME"] = "refresh_token_cookie"
 app.config['JWT_COOKIE_SECURE'] = False
 app.config['JWT_REFRESH_TOKEN_IN_COOKIE'] = True
 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("EMAIL_USER")  
+app.config['MAIL_PASSWORD'] = os.getenv("EMAIL_PASS") 
+app.config['MAIL_DEFAULT_SENDER'] = ("Encodex", "encodex.team@gmail.com")
+app.config['MAIL_SECRET_KEY'] = os.getenv("MAIL_SECRET_KEY")
+serializer = URLSafeTimedSerializer(app.config["MAIL_SECRET_KEY"])
+FRONTEND_URL = "http://localhost:5173"
+
 db.init_app(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 migrate = Migrate(app,db)
+mail = Mail(app)
+register_payment_routes(app)
 
 
 # Directories
@@ -99,6 +116,28 @@ def is_valid_image(file_path):
     except Exception:
         return False
 
+def generate_verification_token(email):
+    return serializer.dumps(email, salt='email-confirm')
+
+@app.route("/test-email", methods=["POST"])
+def test_email():
+    try:
+        data = request.json
+        to_email = data.get("email")
+
+        if not to_email:
+            return jsonify({"error": "Recipient email is required"}), 400
+        
+        subject = "Welcome to Encodex 🎉"
+        body = f"Hi {to_email},\n\nThanks for signing up to Encodex! 🚀\n\n- Team Encodex"
+
+        send_email(to_email, subject, body)
+
+        return jsonify({"message": f"Test email sent to {to_email}!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # Temporary route:  to see the registered user data
 @app.route("/users", methods=["GET"])
 @jwt_required()
@@ -112,8 +151,25 @@ def get_users():
             "email": user.email,
             "profile": user.profile_pic,
             "role": user.role,
+            "isVerified" : user.is_verified,
         })
     return jsonify(user_list)
+
+@app.route("/delete_user", methods=["POST"])
+def delete_user_test():
+    data = request.json
+    user_id = data.get("user_id")
+
+    if not user_id:
+        return jsonify({"error": "User ID required"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+    return jsonify({"message": f"User {user_id} deleted successfully"}), 200
 
 # route: get current user data
 @app.route("/me", methods=["GET"])
@@ -132,8 +188,101 @@ def get_current_user():
         "email": user.email,
         "profile": user.profile_pic,
         "role": user.role,
+        "isVerified" : user.is_verified,
     }), 200
 
+#route: Verify
+@app.route('/verify', methods = ['POST'])
+def verify_user():
+    data = request.get_json()
+    token = data.get("token")
+
+    if not token:
+        return jsonify({
+            "success": False,
+            "message" : 'Missing token'
+        }),400
+    
+    try:
+        email = serializer.loads(token, salt='email-confirm', max_age=3600)
+
+    except SignatureExpired:
+        return jsonify({
+            "success": False,
+            "message": "Token Expired"
+        }), 400
+    
+    except BadSignature:
+        return jsonify({
+            "success": False,
+            "message": "Invalid token"
+        }), 400
+
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({
+            "success": False,
+            "message": "user not found"
+        }), 404
+    
+    user.is_verified = True
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": 'Email verified successfully'
+    })
+
+@app.route('/resend_verification', methods=['POST'])
+@jwt_required()
+def resend_verification():
+
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if user.is_verified:
+        return jsonify({
+            "success": False,
+            "message": 'Already Verified'
+        })
+    
+    token = generate_verification_token(user.email)
+
+    verify_link = f"http://localhost:5173/verify?token={token}"
+
+    html_body = f"<p>Click <a href='{verify_link}' >here</a> to verify your email </p>"
+
+    send_email(user.email, "Verify your Encodex Account", html_body, is_html=True)
+    
+    return jsonify({
+        "success": True,
+        "message": "Verification email sent"
+    })
+
+@app.route('/update_email', methods = ['POST'])
+@jwt_required()
+def update_email():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    new_email = data.get('email')
+
+    if User.query.filter_by(email = new_email).first():
+        return jsonify({
+            "success": False,
+            "message": "Enter new email"
+        }), 400
+    
+    user = User.query.get(user_id)
+    user.email = new_email
+    user.is_verified = False
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Email updated"
+    })
 
 
 # route: Sign-Up
@@ -149,7 +298,7 @@ def signup():
     if not username or not email or not password:
         return jsonify({'error': 'All fields are required'}), 400
     
-    existing_user = User.query.filter( (User.username == username ) | (User.email == email )).first()
+    existing_user = User.query.filter( (User.email == email )).first()
 
     if(existing_user):
         return jsonify({
@@ -166,6 +315,22 @@ def signup():
     )
     db.session.add(new_user)
     db.session.commit()
+
+
+    token = generate_verification_token(email)
+    verify_link = f"{FRONTEND_URL}/verify?token={token}"
+
+    subject = "Welcome to Encodex 🎉"
+    html_body = f"""
+        <p>Hello,</p>
+        <p>Please click the link below to verify your email:</p>
+        <p><a href="{verify_link}">Verify Email</a></p>
+        <p>If the button doesn’t work, copy this link:</p>
+        <p>{verify_link}</p>
+        """
+
+    send_email(email, subject, html_body, is_html=True)
+
 
     return jsonify({
         'status' : 'success',

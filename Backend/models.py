@@ -10,6 +10,7 @@ class User(db.Model):
   password = db.Column(db.String(128), nullable=False)
   profile_pic = db.Column(db.String(500))
   role = db.Column(db.String(80))
+  is_verified = db.Column(db.Boolean, default=False, server_default="0", nullable=False)
 
   subscriptions = db.relationship("Subscription", back_populates="user", cascade="all, delete-orphan")
 

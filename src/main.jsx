@@ -20,6 +20,7 @@ import { Setting } from './pages/Setting/Setting';
 import TermsAndConditions from './pages/Term&Condition/Terms&Conditions';
 import PrivacyPolicy from './pages/Term&Condition/PrivacyPolicy';
 import CancellationRefundPolicy from './pages/Term&Condition/Refund';
+import VerifyEmail from './Email/VerifyEmail';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,8 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         } 
       />
+
+      <Route path='/verify' element={<VerifyEmail />} />
       
       <Route path="/dashboard" 
         element={

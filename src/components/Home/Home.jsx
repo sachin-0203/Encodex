@@ -22,7 +22,7 @@ function Home() {
 
   useEffect(()=>{
     const handleScroll = ()=>{
-      if(window.scrollY > 100){
+      if(window.scrollY > 50){
       setVisible(true)
       }
       else{
@@ -54,46 +54,52 @@ function Home() {
   return (
     <div>
       <div id="hero-section" className="relative bg-background text-foreground  dark:bg-background-dark dark:text-text-light">
-      <AuthModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        defaultView={authView}
-      />
-        <div className="h-screen w-full flex flex-col md:flex-row justify-evenly font-mono ">
-          <div className="z-10 left-container py-20 text-3xl text-primary text-center flex flex-col gap-20">
-              <h1 className="text-[5rem] mt-16" >
-                Secure Your Images,
-              </h1>
-              <h1 className="text-[5rem] text-primary" >Protect Your Privacy</h1>
-              <p className=" text-xl text-wrap text-primary  ">"Experience Advance Encryption at Your Fingertips"</p>
 
-            <div className="mt-1">
-            <button 
-              className="group relative font-medium text-foreground transition-colors duration-[400ms] hover:text-primary px-4 py-2 "
-              onClick={()=>handleLetBegin("login")} >
+        <AuthModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          defaultView={authView}
+        />
+
+        <div >
+
+          <div className="z-10 left-container text-3xl text-primary text-center flex flex-col gap-10 sm:gap-15 md:gap-12">
+            
+            <h1 className=" mt-12 sm:mt-16 text-5xl sm:text-6xl md:text-7xl lg:text-8xl  " >
+              Secure Your Images,
+            </h1>
+
+            <h1 className=" text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-primary" >
+              Protect Your Privacy
+            </h1>
+
+            <p className="mt-4 text-[10px] sm:text-sm text-wrap text-primary  ">"Experience Advance Encryption at Your Fingertips"</p>
+
+            <div className="mt-4 relative flex items-center justify-center "> 
+
+               <div className="absolute w-40 h-40 md:w-60 md:h-60  rounded-full bg-circle blur-[120px]" />
+
+              <button 
+                className="group relative font-medium text-foreground transition-colors duration-200 hover:text-primary px-4 py-2 "
+                onClick={()=>handleLetBegin("login")} >
 
                 <span>Let's Begin</span>
                 
-                {/* TOP */}
                 <span className="absolute left-0 top-0 h-[2px] w-0 bg-primary transition-all duration-200 group-hover:w-full hover:rounded-full " />
 
-                {/* RIGHT */}
                 <span className="absolute right-0 top-0 h-0 w-[2px] bg-primary transition-all delay-100 duration-200 group-hover:h-full" />
 
-                {/* BOTTOM */}
                 <span className="absolute bottom-0 right-0 h-[2px] w-0 bg-primary transition-all delay-200 duration-200 group-hover:w-full" />
 
-                {/* LEFT */}
                 <span className="absolute bottom-0 left-0 h-0 w-[2px] bg-primary transition-all delay-300 duration-200 group-hover:h-full" />
 
               </button>
-
-              
             </div>
+           
+
           </div>
-          {/* <div className="right-container">
-            <img src="assets/right-logo.png" alt="home-image" />
-          </div> */}
+
+
         </div>
 				
 				<button id="moveTop" onClick={scrollToTop} 
@@ -101,9 +107,6 @@ function Home() {
         >
 					<MoveUp size={20} />
 				</button>
-        <div className="absolute z-0 top-[90%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex items-center justify-center size-80 rounded-full bg-circle blur-[120px] " />
-        <div className="absolute z-0 top-[90%] left-[47%] translate-x-[-120%] translate-y-[-50%] flex items-center justify-center size-60 rounded-full bg-black-500 blur-[100px]"/>
-
         
       </div>
       
