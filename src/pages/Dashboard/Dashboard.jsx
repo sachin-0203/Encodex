@@ -18,6 +18,10 @@ import {
   ToggleLeft,
   Filter,
   Scale,
+  Upload,
+  LockOpen,
+  Key,
+  Lock,
 } from "lucide-react";
 
 import { useTheme } from "../../Context/ThemeContext";
@@ -35,6 +39,14 @@ function Dashboard() {
 
   const [showSkeleton, setShowSkeleton] = useState(false);
   const [showDashBoard,setShowDashBoard] = useState(false);
+
+  
+  const stats = [
+    { title: "Upload", number: 120, icon: Upload},
+    { title: "Encrypted", number: 95, icon: Lock },
+    { title: "Decrypted", number: 80, icon: LockOpen },
+    { title: "Key", number: 5, icon: Key },
+  ];
 
   const [activePage, setActivePage] = useState(localStorage.getItem("active") || 'Encrypt');
 
@@ -189,9 +201,9 @@ function Dashboard() {
 
                 <div className="shadow-md rounded-md  w-full sm:my-2 p-1 text-center">
                  <div 
-                 className=" mx-auto md:text-4xl text-lg ">
-                  Welcome Back,
-                  <span className="capitalize text-success">
+                 className=" mx-auto md:text-4xl text-lg text-wrap ">
+                  Welcome Back,{" "}
+                  <span className="capitalize text-success min-w-4 ">
                     {user}
                   </span>
                  </div>
@@ -202,6 +214,32 @@ function Dashboard() {
                   <div className=" text-[7px] sm:px-2 text-secondary bg-success/20 border border-secondary rounded-full">All System Operational</div>
                   <div className=" text-[7px] sm:px-2 text-sky-700 bg-sky-100/20 border border-sky-800 rounded-full">RSA-2048 Encryption Active</div>
                  </div>
+                </div>
+
+                <div>
+                  <div className="flex w-full gap-2 mt-2">
+                    {stats.map((stat, idx) => (
+                      <div
+                        
+                        key={idx}
+                        className="flex items-center justify-evenly shadow-md rounded-lg 
+                        transition-all duration-300
+                        flex-1 sm:h-16 border sm:aspect-square  sm:justify-center sm:text-center sm:flex-row flex-col sm:px-2"
+                      >
+                       
+                        <div className="flex flex-col items-center sm:items-start w-3/4 order-2 sm:order-1 ">
+                          <p className="sm:text-sm font-medium text-[0.6rem]">{stat.title}</p>
+                          <p className="sm:text-xl font-bold text-[12px]">{stat.number}</p>
+                        </div>
+
+                        <div className=" text-blue-600 order-1">
+                          <div className="bg-gray-300 p-1 sm:p-2 rounded-full text-center shadow-inner min-w-4 mt-1">
+                            <stat.icon className="w-3 h-3 sm:w-6 sm:h-6" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>              
                 </div>
 
                 <div className="flex mt-2 h-3/4 box-content ">
@@ -248,7 +286,6 @@ function Dashboard() {
                         transition={{ type: "spring", stiffness: 200, damping: 30, }}
                       />
                         
-
                     </div>
 
                     <div id="data-container" className="overflow-hidden rounded-lg p-2 z-4">

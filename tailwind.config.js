@@ -84,12 +84,13 @@ export default {
   		},
 			boxShadow: {
 				'custom-dark': '0 4px 6px rgba(0, 0, 0, 0.5)',
-			}
+			},
   	}
   },
   plugins: [
 		require('tailwind-scrollbar'), 
 		require("tailwindcss-animate"),
+
 		function({addUtilities}){
 			addUtilities({
 				'.hide-scrollbar': {
@@ -102,6 +103,15 @@ export default {
 				},
 			})
 		},
+
+		function ({ addBase }) {
+      addBase({
+        '.textSize': { fontSize: '12px' },
+        '@screen sm': {
+          '.textSize': { fontSize: '1rem' },
+        },
+      })
+    },
 	],
 }
 

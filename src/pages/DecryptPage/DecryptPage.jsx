@@ -15,7 +15,8 @@ function DecryptPage() {
   const [decryptImageUrl, setDecryptImageUrl] = useState(null);
   const [imagename, setImagename] = useState("")
   const [loading, setLoading] = useState(false);
-
+  const [errors, setErrors] = useState({});
+  
   const btnRef = useRef(null);
   const resetIconRef = useRef(null);
 
@@ -27,6 +28,7 @@ function DecryptPage() {
     setRecipient("");
     setDecryptImageUrl(null);
     resetAnimation();
+    setErrors({});
     logMessage("✅ Form Reset Successfully");
   };
   const resetAnimation=()=>{
@@ -50,6 +52,10 @@ function DecryptPage() {
     const file = e.target.files[0];
     if (!file) return logMessage("No file selected ❗");
     setFile(file)
+    setErrors((prev) => {
+      const { image, ...rest } = prev;
+      return rest; 
+    });
     const reader = new FileReader();
     reader.readAsText(file);
     reader.onload = () => {
@@ -59,7 +65,20 @@ function DecryptPage() {
     const nameWithoutExtension = file.name.replace(/\.enc$/, '');
     const name = `${nameWithoutExtension}_dec.png`;
     setImagename(name);
+    
   };
+
+  const handleTextChange = (setter, field) => (e) => {
+    const value = e.target.value;
+    setter(value);
+
+    if (value.trim()) {
+      setErrors((prev) => {
+        const { [field]: removed, ...rest } = prev;
+        return rest;
+      });
+    }
+  }
 
   const downloadAnimation= ()=>{
     if(!decryptImageUrl) return;
@@ -71,17 +90,25 @@ function DecryptPage() {
         btn.classList.remove("bounce-arrow");
       }, 400); 
     }
-}
+  }
+
   const decHandleSubmit = async (e) => {
     e.preventDefault();
+    let newErrors = {};
     if (!decText || !decKey || !recipient) {
       logMessage("The Encrypted text, Key, or Recipient is missing ❗");
+
+      if(!decText) newErrors.image = "Image is required";
+      if(!recipient)  newErrors.recipient = "Recipient is required";
+      if(!decKey) newErrors.decKey = "Key is required";
+
+      setErrors(newErrors);
       return;
     }
     setLoading(true);
     const filename = imagename;
     try {
-
+      setErrors({});
       await new Promise((res) => setTimeout(res, 2000));
       const response = await axios.post(
         "http://127.0.0.1:5000/decrypt",
@@ -94,7 +121,7 @@ function DecryptPage() {
 
       if (response.data.decrypted_image) {
 
-         setLoading(false);
+        setLoading(false);
         const base64Image = response.data.decrypted_image;
         const filename = response.data.filename
 
@@ -120,15 +147,16 @@ function DecryptPage() {
       setLoading(false);
     }
   };
+
   return (
     <>
       <div> 
 
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center textSize">
           <h2>Upload Image:</h2>
           <button
             onClick={ResetForm}
-            className="text-white bg-destructive hover:bg-destructive/50 rounded-sm p-2"
+            className="text-white bg-destructive hover:bg-destructive/50 rounded-full p-1 sm:p-2"
           >
             <svg 
               ref={resetIconRef}
@@ -154,11 +182,11 @@ function DecryptPage() {
         <form id="decrypt-form" method="post" onSubmit={decHandleSubmit}>
           <div className="mb-2">
             
-            <label className={`flex flex-col items-center justify-center w-full  h-28 border-2 border-dotted border-gray-500 ${file? "border-sky-300":""} rounded-md cursor-pointer hover:border-primary transition-colors mt-2 group`}>
+            <label className={`flex flex-col items-center justify-center w-full  h-28 border-2 border-dotted border-gray-500 ${file? "border-sky-300":""} ${errors.image? "border-destructive":""} rounded-md cursor-pointer hover:border-primary transition-colors mt-2 group`}>
               {!file? (
                   <div className="flex flex-col items-center justify-center space-y-1">
-                    <CloudUpload size={25} className="stroke-1 group-hover:text-muted-foreground" />
-                    <p className="text-sm group-hover:text-muted-foreground " > Click to upload .enc file</p>
+                    <CloudUpload size={20} className="stroke-1 group-hover:text-muted-foreground" />
+                    <p className=" text-[10px] sm:text-xs group-hover:text-muted-foreground " > Click to upload .enc file</p>
                   </div>
                 ):(
                 <div className="flex flex-col items-center justify-center space-y-1 px-2 text-sky-900">
@@ -170,27 +198,30 @@ function DecryptPage() {
               
               <input className="hidden"  type="file" accept=".enc" onChange={handleFileUpload} />
             </label>
+            {errors.image && <p className="text-red-500 text-sm">{errors.image}</p>}
 
 
           </div>
           <div className="mb-3">
-            <h2 className=" mb-1">Recipient:</h2>
+            <h2 className="textSize mb-1">Recipient:</h2>
             <input
               value={recipient}
-              onChange={(e) => setRecipient(e.target.value)}
-              className={`w-full p-2 rounded-md outline-none border bg-background text-foreground ${recipient? "border-sky-300 text-sky-600 " : ""} `}
+              onChange={handleTextChange(setRecipient, "recipient")}
+              className={`w-full p-2 rounded-md outline-none border bg-background text-foreground text-sm ${errors.recipient? "border-destructive":""} ${recipient? "border-sky-300 text-sky-600 " : ""} `}
               type="text"
-              placeholder="Enter Recipient (Username)"
+              placeholder="Enter Recipient"
             />
+            {errors.recipient && <p className="text-red-500 text-sm">{errors.recipient}</p>}
           </div>
           <div className="mb-3">
-            <h2 className=" mb-1">Decryption Key:</h2>
+            <h2 className="textSize mb-1">Decryption Key:</h2>
             <textarea
               value={decKey}
-              onChange={(e) => setDecKey(e.target.value)}
-              placeholder="Decryption Key here"
-              className={`w-full h-10 border border-gray-500 resize-none rounded-md p-2 outline-none text-sm bg-background ${decKey? "text-sky-600 border-sky-300" : ""} scrollbar-none `}
+              onChange={handleTextChange(setDecKey, "decKey")}
+              placeholder="key"
+              className={`w-full h-10 border border-gray-500 resize-none rounded-md p-2 outline-none text-sm bg-background ${errors.decKey? "border-destructive":""} ${decKey? "text-sky-600 border-sky-300" : ""} scrollbar-none text-sm `}
             ></textarea>
+            {errors.decKey && <p className="text-red-500 text-sm">{errors.decKey}</p>}
           </div>
           <button
             className=" inline-flex justify-center gap-2 items-center text-white bg-primary hover:bg-primary/60 rounded-sm w-full p-2 disabled:opacity-60 disabled:cursor-not-allowed "

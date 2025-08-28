@@ -16,13 +16,12 @@ export default function Sidebar({ children }) {
     <aside className="h-screen fixed z-50">
       <nav className="h-full inline-flex flex-col border-r border-gray-600 shadow-sm transition-all duration-500 bg-sidebarC  text-sidebarT  ">
         <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src="./assets/Logo.png"
-            className={`overflow-hidden transition-all duration-400 h-12 ${
-              expanded ? "w-32" : "w-0"
+          <div
+            className={`overflow-hidden text-4xl transition-all duration-400 ${
+              expanded ? "w-36" : "w-0"
             }`}
-            alt="encodex_logo"
-          />
+          > Encodex
+            </div>
           <button
             onClick={() => setExpanded((curr) => !curr)}
             className="p-1.5 rounded-md  text-lime-500 hover:bg-ring"

@@ -14,6 +14,7 @@ function EncryptPage() {
 
   const [file, setFile] = useState(null);
   const [recipient, setRecipient] = useState("");
+  const [errors, setErrors] = useState({});
   const [encImage, setEncImage] = useState("");
   const [encKey, setEncKey] = useState("");
   const [imagename , setImagename] = useState("");
@@ -35,6 +36,7 @@ function EncryptPage() {
     setEncKey("");
     logMessage("✅ Form Reset Successfully");
     resetAnimation();
+    setErrors({})
   };
   const resetAnimation=()=>{
     const resetIcon = resetIconRef.current;
@@ -93,44 +95,59 @@ function EncryptPage() {
   };
 
   const handleFileChange = async (e) => {
-  const file = e.target.files[0];
-  if (!file){
-    logMessage('Upload a file');
-    return;
-  }
 
-
-
-  const formData = new FormData();
-  formData.append('file', file);
-
-  try {
-    const res = await axios.post('http://127.0.0.1:5000/upload', formData, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    const result =  res.data;
-    if (result.status === 'success') {
-      logMessage('File Upload')
-      setFile(file)
-      logHistory(`File uploaded: ${result.filename}`);
-
-    } else {
-      logMessage('Upload failed');
+    const file = e.target.files[0];
+    if (!file){
+      logMessage('Upload a file');
+      return;
     }
-  } catch (err) {
-    logMessage('Error uploading file');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    setErrors({})
+
+    try {
+      const res = await axios.post('http://127.0.0.1:5000/upload', formData, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      const result =  res.data;
+      if (result.status === 'success') {
+        logMessage('File Upload')
+        setFile(file)
+        logHistory(`File uploaded: ${result.filename}`);
+
+      } else {
+        logMessage('Upload failed');
+      }
+    } catch (err) {
+      logMessage('Error uploading file');
+    }
+  };
+  const handleTextChange = (setter, field) => (e) => {
+    const value = e.target.value;
+    setter(value);
+
+    if (value.trim()) {
+      setErrors((prev) => {
+        const { [field]: removed, ...rest } = prev;
+        return rest; 
+      });
+    }
   }
-};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    let newErrors = {};
     if (!file || !recipient){
       logMessage("Please! Select an Image or Recipient❗");
+      if(!file) newErrors.image = "Image is required";
+      if(!recipient) newErrors.recipient = "Recipient is required";
+      setErrors(newErrors);
       setLoading(false);
       return
     }
@@ -141,7 +158,8 @@ function EncryptPage() {
 
     try {
 
-      await new Promise((res) => setTimeout(res, 2000));
+      setErrors({})
+      await  new Promise((res) => setTimeout(res, 2000));
       const response = await axios.post("http://127.0.0.1:5000/encrypt", formData, {
         headers: { 
           'Authorization': `Bearer ${accessToken}`,
@@ -192,11 +210,11 @@ function EncryptPage() {
   return (
     <div>
 
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center textSize ">
 
-        <div>Upload Your Image:</div>
+        <div>Upload Image:</div>
 
-        <button  className="bg-destructive hover:bg-destructive/50 rounded-sm p-2 text-destructive-foreground" onClick={ResetForm}>
+        <button  className="bg-destructive hover:bg-destructive/50 rounded-full p-1 sm:p-2 text-destructive-foreground " onClick={ResetForm}>
 
           <svg ref={resetIconRef} xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-rotate-cw-icon lucide-rotate-cw"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
 
@@ -207,12 +225,12 @@ function EncryptPage() {
       <form className="flex flex-col gap-4 " id="encrypt-form" method="post" onSubmit={handleSubmit} encType="multipart/form-data">
 
         <div>
-          <label className="flex flex-col items-center justify-center w-full h-52 border-2 border-dotted rounded-md cursor-pointer hover:border-primary transition-colors mt-2 group">
+          <label className={`flex flex-col items-center justify-center w-full h-52 border-2 border-dotted rounded-md cursor-pointer hover:border-primary transition-colors mt-2 group ${errors.image? "border-destructive" : ""} `}>
             {!file? 
             (  
               <div className="flex flex-col items-center justify-center space-y-2">
                 <CloudUpload size={25} className="stroke-1" />
-                <p className="text-sm">
+                <p className="textSize">
                   Upload your image
                 </p>
               </div>
@@ -234,6 +252,7 @@ function EncryptPage() {
               className="hidden"
             />
           </label>
+          {errors.image && <p className="text-red-500 text-xs">{errors.image}</p>}
         </div>
         
 
@@ -241,17 +260,18 @@ function EncryptPage() {
         <div className="relative">
           <input
             id="recipient"
-            className={`peer w-full border  p-2 rounded-md my-2 outline-none`}
+            className={`peer w-full border ${errors.recipient? "border-destructive" : ""} ${recipient? 'text-sky-600 border-sky-300':''}  p-2 rounded-md my-2 outline-none bg-transparent `}
             type="text"
-            placeholder=" "
+            placeholder=""
             value={recipient}
-            onChange={(e) => setRecipient(e.target.value)}
+            onChange={handleTextChange(setRecipient, "recipient")}
           />
           <label htmlFor="recipient" 
-            className={`absolute left-2 px-1 top-5 text-gray-500 text-sm transition-all  peer-focus:top-[-12px] peer-focus:left-0 peer-focus:text-ring ${recipient? 'top-[2px]':''} `}
+            className={`absolute left-2 px-1 top-5 text-gray-500 text-sm transition-all  peer-focus:top-[-12px] peer-focus:left-0 peer-focus:text-ring ${recipient? 'top-[-12px] left-[0] ':''} `}
           >
             Enter Recipient
           </label>
+          {errors.recipient && <p className="text-red-500 text-xs">{errors.recipient}</p>}
         </div>
 
         <button
