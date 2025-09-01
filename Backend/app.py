@@ -41,7 +41,7 @@ from Backend.payment import register_payment_routes
 load_dotenv()
 
 app = Flask(__name__, static_folder='static')
-CORS(app, supports_credentials=True,origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True,origins=["http://localhost:5173", "https://encodexx.netlify.app"])
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
