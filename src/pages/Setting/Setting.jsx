@@ -3,6 +3,7 @@ import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
 import { BadgeCent, BadgeCheck, BadgeX } from "lucide-react";
+import BACKEND_URL from '../../../config'
 
 export const Setting = () => {
 
@@ -12,6 +13,12 @@ export const Setting = () => {
     name: user || " ",
     status: Isverified? 'Verified' : 'Not Verified' ,
   })
+
+  const options = [
+    { title : 'General'},
+    { title : 'Security'},
+    { title : 'Preference'},
+  ]
 
   useEffect(() => {
     if (user) {
@@ -31,7 +38,7 @@ export const Setting = () => {
 
     try{
       
-      const response  = await axios.post('http://localhost:5000/upload_profile_pic',  formData
+      const response  = await axios.post(`${BACKEND_URL}/upload_profile_pic`,  formData
       , {
         headers : {
           Authorization : `Bearer ${accessToken}`,
@@ -56,23 +63,23 @@ export const Setting = () => {
     }
   };
 
-  const handleChanges = async (userid, new_name, new_role) => {
+  const handleChanges = async (userid, new_name) => {
 
     if (!users.name.trim()) {
       toast.warning("Name cannot be empty.");
       return;
-  }
+    }
 
 
-    if(user === users.name && new_role === role){
-      toast.warning("Enter new name or role")
+    if(user === users.name){
+      toast.warning("Enter new name")
       return ;
     }
 
     try{
 
-      const response = await axios.post("http://localhost:5000/update_user_info", 
-        { 'id': userid, 'name': new_name, 'role': new_role, 'email': userEmail },
+      const response = await axios.post(`${BACKEND_URL}/update_user_info`, 
+        { 'id': userid, 'name': new_name, 'email': userEmail },
         {
           headers : {
           Authorization : `Bearer ${accessToken}`,
@@ -85,7 +92,6 @@ export const Setting = () => {
       if(result.status === 'success'){
         toast.success("sucess: Update Changes")
         setUser(result.username)
-        setRole(result.role)
       }
       else(
         toast.error(result.message)
@@ -157,6 +163,14 @@ export const Setting = () => {
                 <h2 className="text-3xl sm:text-4xl font-semibold ">
                   Profile Setting
                 </h2>
+              </div>
+
+              <div className="flex w-full justify-evenly border py-1">
+                {options.map((option,idx) =>(
+                  <div key={idx}>
+                    <div>{option.title}</div>
+                  </div>
+                ))}
               </div>
 
               <div className="flex flex-col md:flex-row gap-3 w-full text-sm"> 
@@ -240,7 +254,7 @@ export const Setting = () => {
               <div className="mt-6">
                 <button 
                   className="px-5 py-1 bg-green-800 text-white rounded hover:bg-green-900 transition w-full sm:w-28" 
-                  onClick={()=>handleChanges(userId ,users.name, )}
+                  onClick={()=>handleChanges(userId ,users.name)}
                 >
                   Save
                 </button>

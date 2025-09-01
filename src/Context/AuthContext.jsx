@@ -1,7 +1,7 @@
 import React, {useState, createContext, useContext, useEffect} from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-
+import BACKEND_URL from '../../config';
 
 const AuthContext = createContext({})
 
@@ -25,11 +25,11 @@ export const AuthProvider = ({children})=>{
 
   const tryRefresh = async ()=>{
     try{
-      const response = await axios.post("http://localhost:5000/refresh", {}, {withCredentials: true,});
+      const response = await axios.post(`${BACKEND_URL}/refresh`, {}, {withCredentials: true,});
 
       const token = response.data.access_token;
       setAccessToken(token);
-      const userRes = await axios.get("http://localhost:5000/me",{
+      const userRes = await axios.get(`${BACKEND_URL}/me`,{
         headers: { Authorization: `Bearer ${token}` }
       })
       setUserId(userRes.data.id);
@@ -46,7 +46,7 @@ export const AuthProvider = ({children})=>{
 
     try{
 
-      const response = await axios.post("http://localhost:5000/login",
+      const response = await axios.post(`${BACKEND_URL}/login`,
         {email, password},
         {
           headers: { "Content-Type": "application/json" },
@@ -81,7 +81,7 @@ export const AuthProvider = ({children})=>{
   const signup = async (username, email, password)=>{
 
     try{
-      const response = await axios.post("http://localhost:5000/signup",
+      const response = await axios.post(`${BACKEND_URL}/signup`,
         { username, email, password },
         { 
           headers: { "Content-Type": "application/json" },
@@ -110,7 +110,7 @@ export const AuthProvider = ({children})=>{
     setAccessToken(null);
     setUser(null);
     try{
-       const res= await axios.post("http://localhost:5000/logout",{}, {
+       const res= await axios.post(`${BACKEND_URL}/logout`,{}, {
         withCredentials: true,
       });
 

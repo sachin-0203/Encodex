@@ -4,6 +4,7 @@ import axios from "axios";
 import { MyContext } from "../../Context/MyContext";
 import "../../App.css";
 import { useAuth } from "@/Context/AuthContext";
+import BACKEND_URL from '../../../config';
 
 
 
@@ -107,7 +108,7 @@ function EncryptPage() {
     setErrors({})
 
     try {
-      const res = await axios.post('http://127.0.0.1:5000/upload', formData, {
+      const res = await axios.post(`${BACKEND_URL}/upload`, formData, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'multipart/form-data'
@@ -160,7 +161,7 @@ function EncryptPage() {
 
       setErrors({})
       await  new Promise((res) => setTimeout(res, 2000));
-      const response = await axios.post("http://127.0.0.1:5000/encrypt", formData, {
+      const response = await axios.post(`${BACKEND_URL}/encrypt`, formData, {
         headers: { 
           'Authorization': `Bearer ${accessToken}`,
           "Content-Type": "multipart/form-data"

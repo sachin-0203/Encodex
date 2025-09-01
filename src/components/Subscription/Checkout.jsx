@@ -6,6 +6,7 @@ import { BadgeCheck, BadgeX, Check, ChevronLast, ChevronLeft, ChevronRight, Key,
 import { useAuth } from "@/Context/AuthContext";
 import { toast } from "sonner";
 import { resendVerification, updateEmail } from "@/api/userUtils";
+import BACKEND_URL from '../../../config';
 
 export const Checkout = () => {
   const {user , userEmail, Isverified, accessToken} = useAuth()
@@ -29,7 +30,7 @@ export const Checkout = () => {
   useEffect(() => {
     const fetchPlan = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/plan/${planName}`);
+        const response = await axios.get(`${BACKEND_URL}/api/plan/${planName}`);
         if (response) {
           const data = response.data;
           setPlan(data);
@@ -96,7 +97,7 @@ export const Checkout = () => {
     
     try{
       amount = amount*100;
-      const res = await axios.post('http://localhost:5000/create_order', {plan,amount});
+      const res = await axios.post(`${BACKEND_URL}/create_order`, {plan,amount});
       const { id: order_id, amountFromServer, currency } = res.data;
 
       const options = {
@@ -108,7 +109,7 @@ export const Checkout = () => {
         order_id: order_id,
         handler : async function(response){
           try {
-            const res = await axios.post("http://localhost:5000/verify_payment", {
+            const res = await axios.post(`${BACKEND_URL}/verify_payment`, {
               ...response,
               plan,
             });

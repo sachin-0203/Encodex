@@ -27,7 +27,6 @@ import {
 import { useTheme } from "../../Context/ThemeContext";
 import { useMyContext } from "../../Context/MyContextProvider";
 import { useAuth } from "../../Context/AuthContext";
-import LiveClock from "../../components/LiveClock/LiveClock"
 import { SkeletonModel1, SkeletonModel2, SkeletonModel3, SkeletonModel4 } from "@/components/SkeleFolder/DashSk";
 
 import { motion, AnimatePresence, transform } from "framer-motion";
@@ -95,15 +94,15 @@ function Dashboard() {
     }
   }
 
-
   useLayoutEffect(()=>{
-      updateSlider(activePage);
+    updateSlider(activePage);
 
-      const onResize = ()=>updateSlider(activePage);
-      window.addEventListener('resize', onResize);
+    const onResize = ()=>updateSlider(activePage);
+    window.addEventListener('resize', onResize);
 
-      return ()=> window.removeEventListener('resize', onResize);
-    },[activePage])
+    return ()=> window.removeEventListener('resize', onResize);
+
+  },[activePage])
   
   useEffect(()=>{
     setShowSkeleton(true);

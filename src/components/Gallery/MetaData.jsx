@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { LayoutList } from 'lucide-react';
+import BACKEND_URL from '../../../config';
 
 const MetadataActivity = ({userId , accessToken}) => {
   const [metadata, setMetadata] = useState([]);
@@ -9,7 +10,7 @@ const MetadataActivity = ({userId , accessToken}) => {
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
-        const res = await fetch('http://localhost:5000/encrypted/metadata', {
+        const res = await fetch(`${BACKEND_URL}/encrypted/metadata`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
           },
@@ -27,7 +28,7 @@ const MetadataActivity = ({userId , accessToken}) => {
 
   const handleDelete = async (idx, dataname)=>{
     try{
-      const response = await axios.post('http://localhost:5000/delete-metadata', {
+      const response = await axios.post(`${BACKEND_URL}/delete-metadata`, {
           metadataName: dataname,
         },
         {

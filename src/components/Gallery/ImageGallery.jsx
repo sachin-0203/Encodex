@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useAuth } from '@/Context/AuthContext';
 import { Download } from 'lucide-react';
+import BACKEND_URL from '../../../config';
 
 const ImageGallery = ({ folderName, userId }) => {
     const [imageUrls, setImageUrls] = useState([]);
@@ -12,7 +13,7 @@ const ImageGallery = ({ folderName, userId }) => {
 
     const handleDelete = async (foldername, filename, index)=>{
         try{
-            const response = await axios.delete(`http://localhost:5000/delete/${foldername}/${filename}`, {
+            const response = await axios.delete(`${BACKEND_URL}/delete/${foldername}/${filename}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
@@ -44,7 +45,7 @@ const ImageGallery = ({ folderName, userId }) => {
                     return;
                 }
 
-                const url = `http://localhost:5000/images/${folderName}/${userId}`;
+                const url = `${BACKEND_URL}/images/${folderName}/${userId}`;
                 const response = await fetch(url);
 
                 if (!response.ok) {

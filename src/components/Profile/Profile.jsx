@@ -6,7 +6,7 @@ import ImageGallery from "../Gallery/ImageGallery";
 import MetadataActivity from "../Gallery/MetaData";
 import { toast } from "sonner";
 import { UserPen, Plus, Copy, Activity, PenLine } from "lucide-react";
-
+import BACKEND_URL from '../../../config'
 
 function Profile() {
   const {user, userEmail, userId, accessToken, profileSrc, username, role} = useAuth();
@@ -32,7 +32,7 @@ function Profile() {
   useEffect(() => {
     const fetchImageCounts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/image-counts', {
+        const res = await axios.get(`${BACKEND_URL}/image-counts`, {
           headers: {
             Authorization: `Bearer ${accessToken}`  
           }
@@ -51,7 +51,7 @@ function Profile() {
 
   const handleDelete = async (key, idx, userId) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/delete-key', 
+      const response = await axios.post(`${BACKEND_URL}/api/delete-key`, 
       {
         key,
         user_id: userId,
@@ -85,7 +85,7 @@ function Profile() {
 
   const fetchKeys = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/keys`, {
+      const res = await axios.get(`${BACKEND_URL}/keys`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -98,7 +98,7 @@ function Profile() {
 
   const handleCopyKeyContent = async (keyName) => {
     try {
-      const res = await axios.get(`http://localhost:5000/key-content/${keyName}`, {
+      const res = await axios.get(`${BACKEND_URL}/key-content/${keyName}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -119,12 +119,11 @@ function Profile() {
   const [islargeScreen, setIslargeScreen] = useState(window.innerWidth>= 1024);
 
   useEffect(()=>{
-  
-      const handleResize = () =>{
-        setIslargeScreen(window.innerWidth>= 1024)
-      }
-      window.addEventListener("resize", handleResize)
-      return ()=> window.removeEventListener("resize", handleResize)
+    const handleResize = () =>{
+      setIslargeScreen(window.innerWidth>= 1024)
+    }
+    window.addEventListener("resize", handleResize)
+    return ()=> window.removeEventListener("resize", handleResize)
   }, [])
 
   return (

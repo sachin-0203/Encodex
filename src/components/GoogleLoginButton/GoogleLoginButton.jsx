@@ -1,6 +1,7 @@
 import { GoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 import { toast } from "sonner";
+import BACKEND_URL from '../../../config';
 
 const GoogleLoginBtn = ({ onLogin })=>{
 
@@ -9,7 +10,7 @@ const GoogleLoginBtn = ({ onLogin })=>{
     const { credential } = credentialResponse;
 
     try {
-      const resp = await axios.post("http://localhost:5000/googleLogin", {token : credential,}, { withCredentials : true, });
+      const resp = await axios.post(`${BACKEND_URL}/googleLogin`, {token : credential,}, { withCredentials : true, });
 
       const result = resp.data;
       if(result.status === 'success'){

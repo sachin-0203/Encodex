@@ -4,6 +4,7 @@ import axios from "axios";
 import { MyContext } from "../../Context/MyContext";
 import "../../App.css"
 import { useAuth } from "@/Context/AuthContext";
+import BACKEND_URL from '../../../config';
 
 function DecryptPage() {
   const { logMessage, logHistory } = useContext(MyContext);
@@ -111,7 +112,7 @@ function DecryptPage() {
       setErrors({});
       await new Promise((res) => setTimeout(res, 2000));
       const response = await axios.post(
-        "http://127.0.0.1:5000/decrypt",
+        `${BACKEND_URL}/decrypt`,
         JSON.stringify({ encrypted_image: decText, encryption_key: decKey,recipient, filename }),
         { headers: {
           'Authorization': `Bearer ${accessToken}`,

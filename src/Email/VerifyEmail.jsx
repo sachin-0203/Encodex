@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
+import BACKEND_URL from '../../config';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -19,7 +20,7 @@ export default function VerifyEmail() {
   const handleVerification = async ()=>{
     try {
       
-      const response = await axios.post("http://localhost:5000/verify", 
+      const response = await axios.post(`${BACKEND_URL}/verify`, 
       {
         token
       }, 
