@@ -5,12 +5,14 @@ import { useAuth } from "../../Context/AuthContext";
 import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { Loader } from "lucide-react";
 
 export default function SignupForm() {
 
   const [username, setUsername] = useState("");
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const {signup, setUser, setAccessToken} = useAuth();
   const navigate = useNavigate();
@@ -22,13 +24,27 @@ export default function SignupForm() {
       toast.error("User data is missing!")
       return;
     }
-    
-    const signup_res =  await signup(username, useremail, userpassword);
-    if(signup_res.success){
-      toast.success(`Signup success: ${signup_res.user}, LogIn now!`);
-      setUsername("");
-      setUseremail("");
-      setUserpassword("");
+    setLoading(true)
+    try{
+      const signup_res =  await signup(username, useremail, userpassword);
+      if(signup_res.success){
+        toast.success(`Signup success: ${signup_res.user}, LogIn now!`, { duration: 2000})
+        setTimeout(()=>{
+          toast.info('Please check your mailbox and verify yourself', {duration:4000});
+        }, 2000)
+        setUsername("");
+        setUseremail("");
+        setUserpassword("");
+      }
+      else{
+        toast.error(`${signup_res.message}`)
+        return;
+      }
+    }
+    catch(err){
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -90,9 +106,20 @@ export default function SignupForm() {
         </div>
         <button
           type="submit"
-          className="w-full py-2 bg-accent-dark text-white rounded-md hover:bg-primary text-sm font-semibold"
+          className={`w-full py-2 bg-accent-dark text-white rounded-md hover:bg-primary text-sm font-semibold1 ${loading? " cursor-not-allowed" : ""} `}
         >
-          Sign Up
+          {loading?
+            (
+              <>
+                <Loader size={20} className="animate-spin mx-auto" />
+              </>
+            ):
+            (
+              <>
+                Signup
+              </>
+            )
+          }
         </button>
       </form>
       <div className="mt-3 border rounded-sm">

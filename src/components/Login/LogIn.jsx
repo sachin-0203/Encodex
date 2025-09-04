@@ -2,30 +2,44 @@ import React, { useState } from "react";
 import { useAuth } from "../../Context/AuthContext";
 import GoogleLoginBtn from "../GoogleLoginButton/GoogleLoginButton";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 export default function LoginForm() {
   const { login, setAccessToken, setUser } = useAuth();
 
   const [useremail, setUseremail] = useState("");
   const [userpassword, setUserpassword] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    
     if (!useremail || !userpassword) {
       toast.error("Incomplete User Data");
       return;
     }
-
-    const res = await login(useremail, userpassword);
-
-    if (res.success) {
-      toast.success(`Login Success! Hello ${res.user}`);
-    } else {
-      toast(`Login Failed: ${res.message}`, {
-        cancel: { label: "Ok" },
-      });
+    
+    setLoading(true);
+    try{
+      const res = await login(useremail, userpassword);
+  
+      if (res.success) {
+        toast.success(`Login Success! Hello ${res.user}`);
+      } 
+      else {
+        toast(`Login Failed: ${res.message}`, {
+          cancel: { label: "Ok" },
+        });
+      }
     }
+    catch(err){
+      toast.error("Login failed! Try agin later ");
+    }
+    finally{
+      setLoading(false);
+    }
+
   };
 
   return (
@@ -82,9 +96,17 @@ export default function LoginForm() {
 
         <button
           type="submit"
-          className="w-full py-2 bg-accent-dark text-white rounded-md hover:bg-primary text-sm font-semibold"
+          className={`w-full py-2 bg-accent-dark text-white rounded-md hover:bg-primary text-sm font-semibold ${ loading? "cursor-not-allowed":"" }`}
         >
-          Log In
+          { loading? (
+            <>
+              <Loader size={20} className="animate-spin mx-auto" />
+            </>
+          ):(
+            <>
+              Login
+            </>
+          )}
         </button>
       </form>
 
