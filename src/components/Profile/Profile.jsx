@@ -349,9 +349,9 @@ function Profile() {
                       >
                         <div className="w-32 h-20">
                           <img
-                            src="src/assets/key.jpg"
+                            src="/assets/key.jpg"
                             className="rounded-md"
-                            alt=""
+                            alt="Key File"
                           />
                         </div>
                         <div className="break-all my-3">{key.keyname}</div>

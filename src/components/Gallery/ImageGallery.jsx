@@ -168,7 +168,7 @@ const ImageGallery = ({ folderName, userId }) => {
               {isEncrypted ? (
                 <div className="relative w-32 h-20 flex items-center justify-center rounded bg-gray-500">
                   <img
-                    src="src/assets/enc-bg.jpg"
+                    src="/assets/enc-bg.jpg"
                     className=" object-contain rounded"
                     alt="Encrypted File"
                   />
