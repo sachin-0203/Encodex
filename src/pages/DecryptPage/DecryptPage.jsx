@@ -136,7 +136,8 @@ function DecryptPage() {
 
         const imageUrl = URL.createObjectURL(blob);
         setDecryptImageUrl(imageUrl);
-        logMessage("Image Decrypted Successfully ✅");
+        logMessage(response.data.message);
+        
         logHistory(`File: ${filename}`);
       } else {
         logMessage("❌ Failed to Decrypt the image");

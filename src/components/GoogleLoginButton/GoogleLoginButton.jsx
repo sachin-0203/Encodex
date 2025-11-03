@@ -36,7 +36,7 @@ const GoogleLoginBtn = ({ onLogin })=>{
   return(
     <GoogleLogin 
       onSuccess={handleSuccess} 
-      onError={()=> console.log("Google Login Failed")}
+      onError={()=> toast.error("Google Login Failed")}
       clientId = "907532710684-9ehbdn45tkhmgtrcbkusljdshdq8rd8d.apps.googleusercontent.com"
     />
   );

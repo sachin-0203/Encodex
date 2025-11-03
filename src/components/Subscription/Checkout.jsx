@@ -38,7 +38,7 @@ export const Checkout = () => {
           setAmount(data.price)
           setTotalAmount(Math.ceil(1.18 * data.price));
         } else {
-          console.log('No response data');
+          toast.warning('No response data');
         }
       } catch (error) {
         console.error("Failed to fetch Plan", error);
@@ -280,7 +280,7 @@ export const Checkout = () => {
                   </div>
 
                   <div className=" my-3">
-                    <label htmlFor="number" className="ml-2">Phone Number*</label>
+                    <label htmlFor="number" className="ml-2">Phone Number</label>
                     <input value={number} onChange={(e)=>{setNumber(e.target.value)}} type="Number" name="number" id="number" className="text-sm w-[97%] ml-2 text-black mt-1 rounded-sm border outline-ring pl-2  " placeholder="987 654 3210" />
                   </div>
 

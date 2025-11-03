@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/Context/AuthContext";
 import axios from "axios";
 import { toast, Toaster } from "sonner";
-import { BadgeCent, BadgeCheck, BadgeX } from "lucide-react";
+import { BadgeCent, BadgeCheck, Loader2, MailPlus } from "lucide-react";
 import BACKEND_URL from '../../../config'
+import { resendVerification, updateEmail } from "@/api/userUtils";
 
 export const Setting = () => {
 
   const {userId, user, setUser, userEmail, profileSrc, accessToken, setProfileSrc, username, Isverified } = useAuth();
+
+  const [loading1 , setLoading1] = useState(false);
+  const [loading2 , setLoading2] = useState(false);
+  const [email, setEmail] = useState(userEmail || " ");
+
 
   const [users, setUsers] = useState({
     name: user || " ",
@@ -50,10 +56,10 @@ export const Setting = () => {
         
         setProfileSrc(res.image_url);
         toast.success(res.message);
+        console.log(profileSrc)
 
       }
       else{
-        console.log("profile change error", res.image_url)
         console.error(res.message)
       }
     }
@@ -100,9 +106,39 @@ export const Setting = () => {
     }
     catch(err){
       toast.error("error: Not update changes ")
-      console.log("error", err)
+      console.error("error", err)
     }
   }
+
+  const handleUpdateEmail = async ()=>{
+    try{
+      setLoading1(true)
+      const result = await updateEmail(email,accessToken);
+      toast.success(result.message);
+    }
+    catch(errmsg){
+      toast.error(errmsg)
+    }
+    finally{
+      setLoading1(false)
+    }
+  }
+  
+
+
+  const handleResend = async () => {
+    try{
+      setLoading2(true)
+      const result = await resendVerification(accessToken);
+      toast.success(result.message);
+    }
+    catch(errmsg){
+      toast.error(errmsg);
+    }
+    finally{
+      setLoading2(false);
+    }
+  };
 
   return (
     <>
@@ -164,17 +200,8 @@ export const Setting = () => {
                   Profile Setting
                 </h2>
               </div>
+              <div className="flex flex-col md:flex-row gap-3 w-full text-sm">
 
-              <div className="flex w-full justify-evenly border py-1">
-                {options.map((option,idx) =>(
-                  <div key={idx}>
-                    <div>{option.title}</div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-3 w-full text-sm"> 
-                {/* Left Column */}
                 <div className="flex flex-col w-full md:w-1/2">
                   
                   {/* Name */}
@@ -195,7 +222,7 @@ export const Setting = () => {
                     />
                   </div>
 
-                   {/* Role */}
+                   {/* status */}
                   <div className="border p-2 mb-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-md ">
                     <label htmlFor="purpose" className="w-32  text-lg sm:text-xl  font-medium">Status</label>
                     <div className="w-full sm:w-[80%] flex relative" >
@@ -203,14 +230,27 @@ export const Setting = () => {
                         id="purpose"
                         type="text"
                         value={users.status}
-                        placeholder="Purpose of using Encodex"
-                        className={`flex-1 p-1 border rounded ${Isverified? "text-secondary":"text-red-600 "}  w-full text-sm sm:text-md  outline-none `}
+                        className={`flex-1 p-1 border rounded ${Isverified? "text-secondary":"text-red-600 "}  w-full text-sm sm:text-md  outline-none`}
                         readOnly
                       />
                       {Isverified ? (
-                        <BadgeCheck className="absolute right-1 top-1 text-secondary size-5" />
+                        <>
+                          <BadgeCheck className="absolute right-1 top-1 text-secondary size-5" />
+                        </>
                         ):(
-                          <BadgeX className="absolute right-1 top-1 text-red-600 size-5" />
+                          <div>
+                            <div className="absolute right-1 top-1 cursor-pointer  active:scale-90 " onClick={handleResend} disabled={loading2} >
+                            {loading2? (
+                              <Loader2 className="animate-spin mr-1" size={16} />
+                            ):(
+                              
+                              <div className="border bg-accent px-1 text-sm rounded-sm">
+                                verify
+                              </div>
+                              
+                            )}
+                            </div>
+                          </div>
                       )}
                       
                     </div>
@@ -218,12 +258,11 @@ export const Setting = () => {
 
                 </div>
 
-                {/* Right Column */}
                 <div className="flex flex-col w-full md:w-1/2">
 
                  {/* Username */}
                   <div className="border p-2 mb-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-md">
-                    <label htmlFor="username" className="w-32  text-lg sm:text-xl  font-medium">Username</label>
+                    <label htmlFor="username" className="w-32  text-lg sm:text-xl  font-medium ">Username</label>
                     <input
                       id="username"
                       type="text"
@@ -234,16 +273,26 @@ export const Setting = () => {
                     />
                   </div>
 
-                  {/* Email (Read-only) */}
+                  {/* Email */}
                   <div className="border p-2 mb-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-md">
-                    <label htmlFor="email" className="w-32 font-medium  text-lg sm:text-xl ">Email</label>
-                    <input
-                      id="email"
-                      type="email"
-                      value={userEmail || " "}
-                      readOnly
-                      className="flex-1 p-1 border rounded bg-gray-200 cursor-not-allowed text-gray-800 w-full sm:w-[80%] text-sm sm:text-md outline-none"
-                    />
+                    <label htmlFor="email" className="w-32  text-lg sm:text-xl  font-medium ">Email</label>
+                    <div className="flex relative cursor-pointer w-full sm:w-[80%] ">
+                      <input value={email} onChange={(e)=>setEmail(e.target.value)} type="text" name="email" id="email" className=" w-full h-7  text-black mt-1 rounded-sm  border outline-ring pl-2  " disabled={Isverified}  />
+                      
+                      {Isverified? (
+                        ""
+                      ):(
+                        <>
+                          <div className="absolute right-0  top-2 text-black text-[12px] px-1 peer active:scale-95" onClick={handleUpdateEmail} disabled={loading1}>
+                            {loading1? (
+                              <Loader2 className="animate-spin" size={18} />
+                            ):(
+                              <MailPlus size={20} />
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
 
                 </div>

@@ -22,6 +22,7 @@ function EncryptPage() {
   const [keyname , setKeyname] = useState("");
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [fileArr , setFileArr] = useState([]);
   
 
   const btnRef = useRef(null);
@@ -105,6 +106,7 @@ function EncryptPage() {
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('file_type', "original");
     setErrors({})
 
     try {
@@ -117,9 +119,10 @@ function EncryptPage() {
 
       const result =  res.data;
       if (result.status === 'success') {
-        logMessage('File Upload')
+        logMessage(result.message)
         setFile(file)
-        logHistory(`File uploaded: ${result.filename}`);
+        setFileArr((prev)=>[...prev , result.file_id]);
+        logHistory(`Image uploaded in db with id: ${result.file_id}`);
 
       } else {
         logMessage('Upload failed');
@@ -128,6 +131,7 @@ function EncryptPage() {
       logMessage('Error uploading file');
     }
   };
+  
   const handleTextChange = (setter, field) => (e) => {
     const value = e.target.value;
     setter(value);

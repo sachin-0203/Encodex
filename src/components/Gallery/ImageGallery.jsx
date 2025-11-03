@@ -1,170 +1,254 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'sonner';
-import axios from 'axios';
-import { useAuth } from '@/Context/AuthContext';
-import { Download } from 'lucide-react';
-import BACKEND_URL from '../../../config';
+import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
+import axios from "axios";
+import { useAuth } from "@/Context/AuthContext";
+import { Download, FileType, LoaderCircle } from "lucide-react";
+import BACKEND_URL from "../../../config";
 
 const ImageGallery = ({ folderName, userId }) => {
-    const [imageUrls, setImageUrls] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const {accessToken} = useAuth();
 
-    const handleDelete = async (foldername, filename, index)=>{
-        try{
-            const response = await axios.delete(`${BACKEND_URL}/delete/${foldername}/${filename}`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                },
-            })
+  const fileType  = folderName
+  const [imageUrls, setImageUrls] = useState([]);
 
-            if(response.data.success){
-                toast.warning(`Delete: ${filename}`);
-                setImageUrls((prevImgUrl) => prevImgUrl.filter((_,i)=> i !== index ))
-            }
-            else{
-                toast.error('Image is not deleted');
-            }
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { accessToken } = useAuth();
+
+  const [imgUrl, setImgUrl] = useState([]);
+
+  useEffect(() => {
+    return () => {
+      if (imgUrl) URL.revokeObjectURL(imgUrl);
+    };
+  }, [imgUrl]);
+
+  const handleDownload = (fileData, filename, mimetype, fileType) => {
+    if (!fileData) return alert("No data to download");
+
+    try {
+      let blob;
+
+      if (fileType === "encrypted") {
+        blob = new Blob([fileData], { type: "text/plain" });
+      } 
+      else {
+        const binaryString = atob(fileData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
         }
-        catch(error){
-            toast.error('Error while deleting the Image');
-            console.error("error:", error);
-        }
+        blob = new Blob([bytes.buffer], { type: mimetype || "application/octet-stream" });
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename || "downloaded_file";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+    } catch (error) {
+      console.error("Error downloading file:", error);
     }
-    
-    useEffect(() => {
-        const fetchImages = async () => {
-            setLoading(true);
-            setError(null);
-            try {
-                if (!userId) {
-                    setError("User ID is required to fetch images.");
-                    setLoading(false);
-                    setImageUrls([]);
-                    return;
-                }
+  };
 
-                const url = `${BACKEND_URL}/images/${folderName}/${userId}`;
-                const response = await fetch(url);
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-                }
 
-                const data = await response.json();
-                setImageUrls(data);
-            } catch (e) {
-                setError("Failed to fetch images: " + e.message);
-                console.error("Error fetching images:", e);
-            } finally {
-                setLoading(false);
+  const handleDelete = async (fileType, filename, index)=>{
+    try {
+      const response = await axios.delete(
+        `${BACKEND_URL}/api/delete-image`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          data : {
+            fileType,
+            filename
+          }
+        });
+
+      if (response.data.success) {
+        toast.warning(`Delete: ${filename}`);
+        setImageUrls((prevImgUrl) => prevImgUrl.filter((_, i) => i !== index));
+      } else {
+        toast.error("Image is not deleted");
+      }
+    } catch (error) {
+      toast.error("Error while deleting the Image");
+      console.error("error:", error);
+    }
+  };
+
+  useEffect(() => {
+
+    const fetchImages = async () => {
+
+      setLoading(true);
+      setError(null);
+      try {
+        const resp = await axios.get(`${BACKEND_URL}/displayfile${fileType ? `?file_type=${fileType}` : ""}`,
+          {   
+            headers : {
+              Authorization: `Bearer ${accessToken}`
             }
-        };
+          }
+        );
 
-        if (folderName && userId) {
-            fetchImages();
+        const data = resp.data;
+
+        if (data.files && data.files.length > 0) {
+          setImageUrls(data.files);
         } else {
-            setImageUrls([]);
-            if (folderName && !userId) {
-                setError("Please enter a User ID to view images.");
-            } else {
-                setError(null);
-            }
+          setImageUrls([]);
         }
-    }, [folderName, userId]);
+      } 
+      
+      catch (err) {
+        toast.error( err.response.data.message ||"Error Displaying file");
+      } 
 
-    if (loading) {
-        return <p className="text-center text-gray-500 pt-16">Loading images...</p>;
+      finally {
+        setLoading(false);
+      }
+    };
+
+    if (folderName && userId) {
+      fetchImages();
+    } else {
+      setImageUrls([]);
+      if (folderName && !userId) {
+        setError("Please enter a User ID to view images.");
+      } else {
+        setError(null);
+      }
     }
+  }, [folderName, userId]);
 
-    if (error) {
-        return <p className="text-center text-red-500">{error}</p>;
-    }
-
-    if (imageUrls.length === 0 && folderName && userId) {
-        return (
-            <p className="text-center text-gray-500 pt-16">
-                {`No images found  in ${folderName} folder.`}
-            </p>
-        );
-    } else if (!folderName || !userId) {
-        return (
-            <p className="text-center text-gray-500 pt-16 ">
-                No Folder Selected
-            </p>
-        );
-    }
-
+  if (loading) {
     return (
-        <div className="flex flex-wrap gap-4 justify-center p-2 m-2 transition-opacity opacity-0 duration-200 ease-out animate-fadeIn ">
-            {imageUrls.map((url, index) => {
-                const isEncrypted = url.endsWith('.enc');
-                const fileName = url.split('/').pop();
+      <p className="flex gap-1 items-center  justify-center text-gray-500 pt-16">
+        <LoaderCircle size={18} className="animate-spin " />
+        Loading images...  
+      </p>
+    )
+  }
 
-                return (
-                    <div
-                        key={index}
-                        className="w-48 border border-ring rounded-lg p-3 flex flex-col items-center shadow-sm bg-card text-card-foreground "
-                    >
-                        {isEncrypted ? (
-                            <div className="relative w-32 h-20 flex items-center justify-center rounded bg-gray-500">
-                                <img src="src\assets\enc-bg.jpg" className=' object-contain rounded' />
-                                <div className='absolute text-white '>
-                                    <span>Encrypted File</span>
-                                </div>
-                            </div>
-                        ) : (
-                            <img
-                                src={url}
-                                alt={`Image ${index + 1}`}
-                                className="w-32 h-20 rounded-lg "
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = 'https://via.placeholder.com/200?text=Error';
-                                    console.error("Image failed to load:", url);
-                                }}
-                            />
-                        )}
+  if (error) {
+    return <p className="text-center text-red-500">{error}</p>;
+  }
 
-                        <p className="mt-2 text-sm truncate text-center w-full" title={fileName}>
-                            {fileName}
-                        </p>
-                        <div className='flex align-middle gap-3 mt-2 '>
-
-                            <a
-                                href={url}
-                                download
-                                className="text-sm px-2 py-1.5 border border-sky-600 hover:text-white rounded hover:bg-sky-700 transition-all"
-                                >
-                                 Download <Download size={13} className='inline-block' />
-                            </a>
-                            <div className="hover:text-white cursor-pointer border  border-red-400 px-2 py-1.5 rounded hover:bg-red-700" onClick={()=>handleDelete(folderName, fileName, index)}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="14"
-                                    height="17"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="lucide lucide-trash2-icon lucide-trash-2"
-                                >
-                                    <path d="M3 6h18" />
-                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                    <line x1="10" x2="10" y1="11" y2="17" />
-                                    <line x1="14" x2="14" y1="11" y2="17" />
-                                </svg>
-                                </div>
-                            </div>
-                    </div>
-                );
-            })}
-        </div>
+  if (imageUrls.length === 0 && imgUrl.length === 0 && folderName && userId) {
+    return (
+      <p className="text-center text-gray-500 pt-16">
+        {`No images found  in ${folderName} folder.`}
+      </p>
     );
+  } else if (!folderName || !userId) {
+    return (
+      <p className="text-center text-gray-500 pt-16 ">No Folder Selected</p>
+    );
+  }
+
+  return (
+    <>
+      <div className="flex flex-wrap gap-4 justify-center p-2 m-2 transition-opacity opacity-0 duration-200 ease-out animate-fadeIn ">
+        {imageUrls.map((file, index) => {
+          const isEncrypted = file.mimetype === "application/octet-stream";
+          const fileUrl = file.file_type === "encrypted" ? null : `data:${file.mimetype};base64,${file.data}`; 
+          const fileName = file.filename;
+
+          return (
+            <div
+              key={file.id || index}
+              className="w-48 border border-ring rounded-lg p-3 flex flex-col items-center shadow-sm bg-card text-card-foreground "
+            >
+              {isEncrypted ? (
+                <div className="relative w-32 h-20 flex items-center justify-center rounded bg-gray-500">
+                  <img
+                    src="src/assets/enc-bg.jpg"
+                    className=" object-contain rounded"
+                    alt="Encrypted File"
+                  />
+                  <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center">
+                    <span className="text-white text-xs font-semibold tracking-wide">
+                      Encrypted File
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <img
+                  src={fileUrl}
+                  alt={`Image ${index + 1}`}
+                  className="w-32 h-20 rounded-lg "
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/200?text=Error";
+                    console.error("Image failed to load:", fileUrl);
+                  }}
+                />
+              )}
+
+              <p
+                className="mt-2 text-sm truncate text-center w-full"
+                title={fileName}
+              >
+                {fileName}
+              </p>
+
+              <div className="flex align-middle gap-3 mt-2 ">
+
+                <a
+                  onClick={() => handleDownload(file.data, fileName, file.mimetype, file.file_type)}
+                  className="text-sm px-2 py-1.5 border border-sky-600 hover:text-white rounded hover:bg-sky-700 cursor-pointer transition-all active:scale-95"
+                >
+                  Download <Download size={13} className="inline-block" />
+                </a>
+
+                <div
+                  className="hover:text-white cursor-pointer border  border-red-400 px-2 py-1.5 rounded hover:bg-red-700 active:scale-95"
+                  onClick={() => handleDelete(file.file_type, fileName, index)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-trash2-icon lucide-trash-2"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    <line x1="10" x2="10" y1="11" y2="17" />
+                    <line x1="14" x2="14" y1="11" y2="17" />
+                  </svg>
+                </div>
+
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div>
+        {imgUrl.map((url, idx) => (
+          <img
+            key={idx}
+            src={url}
+            alt={`Fetched ${idx}`}
+            style={{ maxWidth: "400px" }}
+          />
+        ))}
+      </div>
+    </>
+  );
 };
 
 export default ImageGallery;

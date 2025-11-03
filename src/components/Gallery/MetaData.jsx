@@ -10,7 +10,7 @@ const MetadataActivity = ({userId , accessToken}) => {
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
-        const res = await fetch(`${BACKEND_URL}/encrypted/metadata`, {
+        const res = await fetch(`${BACKEND_URL}/metadata`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
           },
@@ -26,9 +26,27 @@ const MetadataActivity = ({userId , accessToken}) => {
     fetchMetadata();
   }, [userId]);
 
+  const ReadableTimestamp = ({ timestamp }) => {
+    const date = new Date(timestamp);
+
+    return (
+      <span>
+        {date.toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+        })}
+      </span>
+    );
+  };
+
   const handleDelete = async (idx, dataname)=>{
     try{
-      const response = await axios.post(`${BACKEND_URL}/delete-metadata`, {
+      const response = await axios.post(`${BACKEND_URL}/delete-metadata`, 
+        {
           metadataName: dataname,
         },
         {
@@ -67,6 +85,7 @@ const MetadataActivity = ({userId , accessToken}) => {
                     <div><strong>Original:</strong> {item.original_filename} </div>
                     <div><strong>Encrypted:</strong> {item.encrypted_filename} </div>
                     <div><strong>Public Key:</strong> {item.rcpt_pubkey_name}  </div>
+                    <div><strong>Time:</strong> <ReadableTimestamp timestamp={item.created_at} /> </div>
                   </div>
                   
                   <span>

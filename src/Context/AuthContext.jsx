@@ -17,7 +17,7 @@ export const AuthProvider = ({children})=>{
 
   const username = user ?  "@" + user.replace(/\s+/g,'').toLowerCase() : " ";
 
-  const [profileSrc, setProfileSrc] = useState("assets/user.jpg");
+  const [profileSrc, setProfileSrc] = useState();
 
   useEffect(()=>{
     tryRefresh();
@@ -32,10 +32,10 @@ export const AuthProvider = ({children})=>{
       const userRes = await axios.get(`${BACKEND_URL}/me`,{
         headers: { Authorization: `Bearer ${token}` }
       })
-      setUserId(userRes.data.id);
-      setUser(userRes.data.username);
+      setUserId(userRes.data.id)
+      setUser(userRes.data.username)
       setUserEmail(userRes.data.email)
-      setProfileSrc(userRes.data.profile || "assets/user.jpg")
+      setProfileSrc(userRes.data.profile)
       setIsverified(userRes.data.isVerified)
     } catch(err){
       setAccessToken(null)

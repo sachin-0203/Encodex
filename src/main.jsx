@@ -42,7 +42,12 @@ const router = createBrowserRouter(
         <Route path='/privacy-policy' element={<PrivacyPolicy />} />
         <Route path='/refund-and-cancellation' element={<CancellationRefundPolicy />} />
         <Route path='/plus' element={<EncodexPlus />} />
-        <Route path='checkout' element={<Checkout />} />
+        <Route path='checkout'
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+        } />
 
       </Route>
 

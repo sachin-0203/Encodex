@@ -30,6 +30,8 @@ import { useAuth } from "../../Context/AuthContext";
 import { SkeletonModel1, SkeletonModel2, SkeletonModel3, SkeletonModel4 } from "@/components/SkeleFolder/DashSk";
 
 import { motion, AnimatePresence, transform } from "framer-motion";
+import BACKEND_URL from "../../../config";
+import axios from "axios";
 
 function Dashboard() {
   const {logout, accessToken, user} = useAuth();
@@ -39,13 +41,14 @@ function Dashboard() {
   const [showSkeleton, setShowSkeleton] = useState(false);
   const [showDashBoard,setShowDashBoard] = useState(false);
 
+
   
-  const stats = [
-    { title: "Upload", number: 120, icon: Upload},
-    { title: "Encrypted", number: 95, icon: Lock },
-    { title: "Decrypted", number: 80, icon: LockOpen },
-    { title: "Key", number: 5, icon: Key },
-  ];
+const [stats, setStats] = useState([
+  { title: "Upload", number: 0, icon: Upload },
+  { title: "Encrypted", number: 0, icon: Lock },
+  { title: "Decrypted", number: 0, icon: LockOpen },
+  { title: "Key", number: 0, icon: Key },
+]);
 
   const [activePage, setActivePage] = useState(localStorage.getItem("active") || 'Encrypt');
 
@@ -93,6 +96,31 @@ function Dashboard() {
       });
     }
   }
+
+  useEffect(() => {
+    const fetchImageCounts = async () => {
+      try {
+        const res = await axios.get(`${BACKEND_URL}/count-images`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          
+        });
+        const data = res.data;
+        setStats([
+          { title: "Upload", number: data.uploads || 0, icon: Upload },
+          { title: "Encrypted", number: data.encrypted || 0, icon: Lock },
+          { title: "Decrypted", number: data.decrypted || 0, icon: LockOpen },
+          { title: "Key", number: data.keys || 0, icon: Key },
+        ]);
+
+      } catch (error) {
+        console.error("Failed to fetch", error);
+      }
+    };
+
+    fetchImageCounts();
+  }, []);
 
   useLayoutEffect(()=>{
     updateSlider(activePage);

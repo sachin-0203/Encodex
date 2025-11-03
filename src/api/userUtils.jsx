@@ -1,11 +1,10 @@
 import axios from "axios";
-
-const API_BASE = "http://localhost:5000";
+import BACKEND_URL from "../../config"; 
 
 
 export const resendVerification = async(accessToken)=>{
   try {
-    const response = await axios.post(`${API_BASE}/resend_verification`, {},
+    const response = await axios.post(`${BACKEND_URL}/resend_verification`, {},
     {
       headers: { Authorization: `Bearer ${accessToken}` }
     }
@@ -18,7 +17,7 @@ export const resendVerification = async(accessToken)=>{
 
 export const updateEmail = async (newEmail, accessToken) => {
   try {
-    const response = await axios.post(`${API_BASE}/update_email`, 
+    const response = await axios.post(`${BACKEND_URL}/update_email`, 
       { email: newEmail },
       {
         headers: { Authorization: `Bearer ${accessToken}` }
