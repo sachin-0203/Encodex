@@ -38,6 +38,7 @@ export const AuthProvider = ({children})=>{
       setProfileSrc(userRes.data.profile)
       setIsverified(userRes.data.isVerified)
     } catch(err){
+      console.error("Refresh failed:", err);
       setAccessToken(null)
     }
   };

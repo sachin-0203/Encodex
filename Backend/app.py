@@ -50,15 +50,17 @@ app.config['JWT_SECRET_KEY'] = os.getenv("JWT_SECRET_KEY")
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///encodex.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['JWT_TOKEN_LOCATION'] = ["headers", "cookies"]
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = datetime.timedelta(minutes=10)
 app.config['JWT_REFRESH_TOKEN_EXPIRES'] = datetime.timedelta(days=15)
-app.config['JWT_COOKIE_SAMESITE'] = "Lax"
+
+app.config['JWT_TOKEN_LOCATION'] = ["cookies"]
+app.config['JWT_COOKIE_SECURE'] = True
+app.config['JWT_COOKIE_SAMESITE'] = "None"
 app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+
 app.config["JWT_ACCESS_COOKIE_PATH"] = "/"
 app.config["JWT_REFRESH_COOKIE_PATH"] = "/refresh"
 app.config["JWT_REFRESH_COOKIE_NAME"] = "refresh_token_cookie"
-app.config['JWT_COOKIE_SECURE'] = False
 app.config['JWT_REFRESH_TOKEN_IN_COOKIE'] = True
 
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -173,7 +175,7 @@ def refresh():
     return jsonify({
         "message": "success",
         "access_token": new_access_token
-    })
+    }), 200
 
 
 # --------------------------------COUNT IMAGES---------------------------
