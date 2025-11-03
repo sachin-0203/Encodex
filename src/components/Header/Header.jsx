@@ -76,7 +76,7 @@ function Header() {
                 (
                   <h2 className="text-3xl uppercase font-bold  " >Encodex</h2>
                 ) :
-                (<img className="h-12 md:h-20 max-w-md min-w-sm" src="./assets/icon..png"/>)
+                (<img className="h-12 md:h-20 max-w-md min-w-sm" src="/assets/icon.png"/>)
               }
             </Link>
 

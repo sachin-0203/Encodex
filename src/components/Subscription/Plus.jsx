@@ -147,7 +147,7 @@ export const EncodexPlus = () => {
           {/* Illustration */}
           <div className=" order-1 flex justify-center min-h-[5rem]">
             <img
-              src="assets/image.svg" 
+              src="/assets/image.svg" 
               alt="Encryption illustration"
               className="max-w-full w-full h-[25em]"
             />

@@ -152,7 +152,7 @@ export const Setting = () => {
             <div id="banner-dp" className="mb-[8rem]  ">
               <div className="px-2">
                 <div className="relative "> 
-                  <img src="src/assets/Banner.png" alt="banner" className="h-[130px] w-full rounded-md object-cover " />
+                  <img src="/assets/Banner.png" alt="banner" className="h-[130px] w-full rounded-md object-cover " />
                   <div className="absolute top-[6rem] left-6 ">
 
                     <div className="relative group flex align-middle gap-3">
