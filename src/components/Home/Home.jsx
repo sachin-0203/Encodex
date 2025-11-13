@@ -162,9 +162,9 @@ function Home() {
         </div>
 
         <div 
-          className="flex flex-wrap gap-4 justify-center text-secondary-foreground bg-secondary rounded-sm">
+          className="flex  md:flex-row flex-col gap-4 justify-center text-secondary-foreground bg-secondary rounded-sm duration-200">
 
-          <div className="container-items w-1/6 p-4 m-2">
+          <div className="container-items  p-4 m-2">
             <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
               1
             </h1>
@@ -176,7 +176,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="container-items w-1/6 p-4 m-2">
+          <div className="container-items  p-4 m-2">
             <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
               2
             </h1>
@@ -188,7 +188,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="container-items w-1/6 p-4 m-2">
+          <div className="container-items  p-4 m-2">
             <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
               3
             </h1>
@@ -200,7 +200,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="container-items w-1/6 p-4 m-2">
+          <div className="container-items  p-4 m-2">
             <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
               4
             </h1>
@@ -211,7 +211,7 @@ function Home() {
               Send your encrypted image confidently, knowing it's unreadable without the correct key.
             </p>
           </div>
-          <div className="container-items w-1/6 p-4 m-2">
+          <div className="container-items  p-4 m-2">
             <h1 className="h-14 w-14 mx-auto bg-background text-primary rounded-full border p-4">
               5
             </h1>
