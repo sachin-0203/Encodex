@@ -1,6 +1,8 @@
 # 📷🔐 Encodex - Secure Image Encryption & Decryption
 Encodex is a full-stack image encryption and decryption platform designed to safeguard sensitive image data using advanced cryptographic techniques. With user authentication, secure key handling, and an intuitive interface, Encodex helps users share images confidently and securely.
 
+Live Link : https://encodexx.netlify.app/
+
 # 🚀 Features
 🔐 AES & Fernet Encryption — Secure your images with strong symmetric encryption algorithms.
 
@@ -26,7 +28,7 @@ Encodex is a full-stack image encryption and decryption platform designed to saf
 
 ## 📌 How to Run Locally
   ### 1. Clone the Repository
-  git clone https://github.com/your-username/encodex.git
+  git clone https://github.com/sachin-0203/encodex.git
   cd encodex
       
  ### 2. Backend Setup
@@ -46,3 +48,4 @@ Encodex is a full-stack image encryption and decryption platform designed to saf
 
 #### Frontend → http://localhost:5173
 #### Backend → http://localhost:5000
+
