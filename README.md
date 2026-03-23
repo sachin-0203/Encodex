@@ -1,7 +1,7 @@
 # 📷🔐 Encodex - Secure Image Encryption & Decryption
 Encodex is a full-stack image encryption and decryption platform designed to safeguard sensitive image data using advanced cryptographic techniques. With user authentication, secure key handling, and an intuitive interface, Encodex helps users share images confidently and securely.
 
-Live Link : https://encodexx.netlify.app/
+#### Live Link : https://encodexx.netlify.app/
 
 # 🚀 Features
 🔐 AES & Fernet Encryption — Secure your images with strong symmetric encryption algorithms.
