@@ -85,7 +85,7 @@ function Header() {
               <div className="order-2 flex gap-1 ">
                 <button
                   className={`rounded-full text-center  shadow-inner
-                    ${user? '':'bg-signup rounded-md p-2 '}
+                    ${user? '':'bg-signup rounded-md p-2 text-white '}
                     ${islargeScreen? '': ' '}  `}
                   onClick={()=>{
                       handleBegin(user || " ")
