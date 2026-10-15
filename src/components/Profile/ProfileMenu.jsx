@@ -30,7 +30,7 @@ function ProfileMenu({ onLogout }) {
       </div>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-signup shadow-lg transition-opacity opacity-0 duration-500 ease-out animate-fadeIn border ">
+        <div className="absolute right-0 z-10 text-white mt-2 w-56 origin-top-right rounded-md bg-signup shadow-lg transition-opacity opacity-0 duration-500 ease-out animate-fadeIn border ">
           <div className="p-3">
             <div className="p-3  text-center bg-gray-800 rounded-md">
               <div>
