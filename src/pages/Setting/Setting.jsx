@@ -12,7 +12,7 @@ export const Setting = () => {
 
   const [loading1 , setLoading1] = useState(false);
   const [loading2 , setLoading2] = useState(false);
-  const [email, setEmail] = useState(userEmail || "n/a");
+  const [email, setEmail] = useState(userEmail || "");
 
 
   const [users, setUsers] = useState({
@@ -34,6 +34,13 @@ export const Setting = () => {
       });
     }
   }, [user]);
+
+  useEffect(() => {
+  if (userEmail) {
+    setEmail(userEmail);
+  }
+  console.log("email--", email);
+}, [userEmail]);
   
   const handleProfileChange = async(event) => {
 
