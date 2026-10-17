@@ -64,7 +64,7 @@ export const AuthProvider = ({children})=>{
 
         setAccessToken(token);
         setUser(userData);
-        setUserEmail(userData);
+        setUserEmail(email);
 
 
         return { success: true, user: userData };
